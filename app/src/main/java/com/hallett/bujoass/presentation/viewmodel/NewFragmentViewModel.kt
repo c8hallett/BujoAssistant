@@ -19,10 +19,10 @@ class NewFragmentViewModel(
 
     private val selectedDateFlow = MutableStateFlow(Date())
     private val selectedScopeFlow = MutableStateFlow(PScope.NONE)
+    private val showExtraDataFlow = MutableStateFlow(false)
     private val scopeOptionFlow: MutableStateFlow<List<Int>> by lazy {
         MutableStateFlow(PScope.values().map { it.displayName })
     }
-    private val showExtraData = MutableStateFlow(false)
     private val newTaskSavedFlow = MutableStateFlow<PresentationResult<Unit>>(PresentationResult.Loading)
 
     fun selectDate(year: Int, month: Int, date: Int) {
@@ -43,7 +43,7 @@ class NewFragmentViewModel(
     fun selectScope(scopeIndex: Int) {
         viewModelScope.launch {
             selectedScopeFlow.emit(PScope.values()[scopeIndex])
-            showExtraData.emit(scopeIndex > PScope.NONE.ordinal)
+            showExtraDataFlow.emit(scopeIndex > PScope.NONE.ordinal)
         }
     }
 
@@ -55,10 +55,12 @@ class NewFragmentViewModel(
         }
     }
 
-    fun observeSelectedDate(): Flow<String> = selectedDateFlow.map { SimpleDateFormat("MMM dd, YYYY").format(it) }
-    fun observeSelectedScopeIndex(): Flow<Int> = selectedScopeFlow.map { it.ordinal }
+    fun observeSelectedDate(): Flow<String> = selectedDateFlow
+        .map { SimpleDateFormat("MMM dd, YYYY").format(it) }
+    fun observeSelectedScopeIndex(): Flow<Int> = selectedScopeFlow
+        .map { it.ordinal }
     fun observeScopeOptions(): Flow<List<Int>> = scopeOptionFlow
-    fun observeShouldShowExtraData(): Flow<Boolean> = showExtraData
-    fun observeNewTaskSaved(): Flow<PresentationResult<Unit>> = newTaskSavedFlow.also { it.value = PresentationResult.Loading }
+    fun observeShouldShowExtraData(): Flow<Boolean> = showExtraDataFlow
+    fun observeNewTaskSaved(): Flow<PresentationResult<Unit>> = newTaskSavedFlow
 
 }

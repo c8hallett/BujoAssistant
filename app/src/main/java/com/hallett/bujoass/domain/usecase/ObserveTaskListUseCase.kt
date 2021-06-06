@@ -18,7 +18,7 @@ class ObserveTaskListUseCase(
         Timber.i("Returning flowable for ${dScope?.type} at ${dScope?.date?.time}")
         return taskDao.getAllTaskForScopeInstance(dScope?.type, dScope?.date).map { list ->
             list.map {
-                Task(it.taskName, scope)
+                Task(it.taskName, scope, it.status)
             }
         }
     }

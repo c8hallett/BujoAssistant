@@ -5,6 +5,7 @@ import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.hallett.bujoass.domain.model.DScope
+import com.hallett.bujoass.domain.model.TaskStatus
 import java.util.*
 
 @Entity(tableName = BujoTaskEntity.TABLE_NAME)
@@ -13,6 +14,8 @@ data class BujoTaskEntity(
     val id: Long = 0L,
     @ColumnInfo(name = TASK_NAME)
     val taskName: String,
+    @ColumnInfo(name = TASK_STATUS)
+    val status: TaskStatus,
     @Embedded
     val scopeInfo: ScopeInfo? = null,
     @ColumnInfo(name = CREATED_AT)
@@ -32,6 +35,7 @@ data class BujoTaskEntity(
         const val TABLE_NAME = "bujo_task"
         const val TASK_NAME = "task_name"
         const val TASK_SCOPE = "task_scope"
+        const val TASK_STATUS = "task_status"
         const val SCOPE_VALUE = "scope_value"
         const val CREATED_AT = "created_at"
         const val UPDATED_AT = "updated_at"

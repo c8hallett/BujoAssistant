@@ -4,6 +4,7 @@ import com.hallett.bujoass.database.BujoTaskDao
 import com.hallett.bujoass.database.BujoTaskEntity
 import com.hallett.bujoass.domain.model.DScope
 import com.hallett.bujoass.domain.model.DScopeInstance
+import com.hallett.bujoass.domain.model.TaskStatus
 import com.hallett.bujoass.presentation.model.PScope
 import com.hallett.bujoass.domain.usecase.mapper.Mapper
 import com.hallett.bujoass.presentation.model.PScopeInstance
@@ -28,6 +29,7 @@ class SaveNewTaskUseCase(
 
         val newEntity = BujoTaskEntity(
             taskName = taskName,
+            status = TaskStatus.INCOMPLETE,
             scopeInfo = scopeInfo,
             createdAt = Date(),
             updatedAt = Date(),
