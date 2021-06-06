@@ -14,8 +14,8 @@ class NewFragmentViewModel(
     private val saveNewTaskUseCase: ISaveNewTaskUseCase
 ): ViewModel() {
 
-    private var currentlySelectedDateTime: Calendar = Calendar.getInstance()
-    private var selectedScope: PresentationScope? = null
+    private var selectedDate: Calendar = Calendar.getInstance()
+    private var selectedScope: PresentationScope = PresentationScope.NONE
 
     private val selectedDateFlow = MutableStateFlow(formatUiDateString())
     private val selectedScopeFlow = MutableStateFlow(PresentationScope.NONE.ordinal)
@@ -26,7 +26,7 @@ class NewFragmentViewModel(
 
     fun selectDate(year: Int, month: Int, date: Int) {
         viewModelScope.launch {
-            currentlySelectedDateTime = currentlySelectedDateTime.apply {
+            selectedDate = selectedDate.apply {
                 set(Calendar.YEAR, year)
                 set(Calendar.MONTH, month)
                 set(Calendar.DATE, date)
@@ -42,6 +42,11 @@ class NewFragmentViewModel(
         }
     }
 
+    fun saveTask(taskName: String) {
+        viewModelScope.launch {
+            saveNewTaskUseCase.execute(taskName, selectedScope, selectedDate.time)
+        }
+    }
 
     fun observeSelectedDate(): Flow<String> = selectedDateFlow
     fun observeSelectedScopeIndex(): Flow<Int> = selectedScopeFlow
@@ -49,6 +54,6 @@ class NewFragmentViewModel(
     fun observeShouldShowDate(): Flow<Boolean> = showExtraData
 
 
-    private fun formatUiDateString(): String = SimpleDateFormat("MMM dd, YYYY").format(currentlySelectedDateTime.time)
+    private fun formatUiDateString(): String = SimpleDateFormat("MMM dd, YYYY").format(selectedDate.time)
 
 }

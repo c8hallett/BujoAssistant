@@ -17,7 +17,6 @@ import kotlinx.coroutines.launch
 
 class NewFragment: BujoAssFragment() {
     private lateinit var binding: FragmentNewBinding
-    private lateinit var adapter: ArrayAdapter<String>
 
     private val viewModel: NewFragmentViewModel by lazy {
         ViewModelProvider(this, vmpfactory).get(NewFragmentViewModel::class.java)
@@ -93,6 +92,9 @@ class NewFragment: BujoAssFragment() {
                     }
                     datePicker.minDate = System.currentTimeMillis()
                 }.show()
+            }
+            saveBtn.setOnClickListener {
+                viewModel.saveTask(taskName.text.toString())
             }
         }
 
