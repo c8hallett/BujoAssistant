@@ -10,6 +10,6 @@ import org.kodein.di.generic.instanceOrNull
 
 class KodeinViewModelProviderFactory(override val kodein: Kodein): ViewModelProvider.Factory, KodeinAware {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return kodein.direct.instanceOrNull<ViewModel>(tag = modelClass.simpleName) as? T ?: modelClass.newInstance()
+        return kodein.direct.instanceOrNull<ViewModel>(tag = modelClass) as? T ?: modelClass.newInstance()
     }
 }

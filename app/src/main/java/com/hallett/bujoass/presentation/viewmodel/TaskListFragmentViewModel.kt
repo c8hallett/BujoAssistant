@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 
-class TaskListViewModel(
+class TaskListFragmentViewModel(
     private val observeTaskListFlowableUseCase: IObserveTaskListFlowableUseCase
 ): ViewModel() {
 
