@@ -1,4 +1,4 @@
-package com.hallett.bujoass
+package com.hallett.bujoass.presentation.ui
 
 import android.app.DatePickerDialog
 import android.os.Bundle
@@ -50,5 +50,6 @@ class MainFragment: Fragment() {
 
     private var currentlySelectedDateTime: ZonedDateTime = ZonedDateTime.now()
 
-    private var scope: Scope = Scope.DAY
+    private var scope: Scope =
+        Scope.DAY
 }

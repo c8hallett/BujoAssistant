@@ -1,4 +1,4 @@
-package com.hallett.bujoass
+package com.hallett.bujoass.presentation.ui
 
 import android.app.Application
 import timber.log.Timber

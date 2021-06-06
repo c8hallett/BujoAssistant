@@ -3,7 +3,7 @@
     package="com.hallett.bujoass">
 
     <application
-        android:name=".BujoAssApplication"
+        android:name=".presentation.ui.BujoAssApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -11,7 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BujoAssistant">
 
-        <activity android:name=".BujoAssActivity">
+        <activity android:name=".presentation.ui.BujoAssActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

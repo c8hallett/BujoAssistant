@@ -5,10 +5,10 @@
 
     <fragment
         android:id="@+id/mainFragment"
-        android:name="com.hallett.bujoass.MainFragment"
+        android:name="com.hallett.bujoass.presentation.ui.MainFragment"
         android:label="MainFragment" />
     <fragment
         android:id="@+id/newFragment"
-        android:name="com.hallett.bujoass.NewFragment"
+        android:name="com.hallett.bujoass.presentation.ui.NewFragment"
         android:label="NewFragment" />
 </navigation>

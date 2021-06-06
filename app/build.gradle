@@ -67,4 +67,7 @@ dependencies {
     // timber
     implementation 'com.jakewharton.timber:timber:4.7.1'
 
+    // kodein
+    implementation "org.kodein.di:kodein-di-generic-jvm:$kodein_version"
+    implementation "org.kodein.di:kodein-di-framework-android:$kodein_version"
 }

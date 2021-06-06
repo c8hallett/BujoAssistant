@@ -1,4 +1,4 @@
-package com.hallett.bujoass
+package com.hallett.bujoass.presentation.ui
 
 import android.app.DatePickerDialog
 import android.os.Bundle
@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
+import com.hallett.bujoass.R
 import com.hallett.bujoass.databinding.FragmentNewBinding
 import com.hallett.bujoass.domain.Scope
 import java.text.SimpleDateFormat
@@ -32,7 +33,8 @@ class NewFragment: Fragment() {
         binding.run{
             dateValue.text = SimpleDateFormat("MMM DD, YYYY").format(currentlySelectedDateTime.time)
             pickScopeSpn.apply {
-                adapter = ArrayAdapter.createFromResource(context, R.array.scope_array, android.R.layout.simple_spinner_item)
+                adapter = ArrayAdapter.createFromResource(context,
+                    R.array.scope_array, android.R.layout.simple_spinner_item)
             }
             pickDateBtn.setOnClickListener {
                 DatePickerDialog(requireContext()).apply {
