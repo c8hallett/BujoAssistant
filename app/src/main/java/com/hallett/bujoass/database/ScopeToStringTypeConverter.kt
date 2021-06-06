@@ -5,8 +5,11 @@ import com.hallett.bujoass.domain.model.DScope
 
 class ScopeToStringTypeConverter {
     @TypeConverter
-    fun scopeToString(scope: DScope): String = scope.name
+    fun scopeToString(scope: DScope?): String? = scope?.name
 
     @TypeConverter
-    fun stringToScope(name: String): DScope = DScope.valueOf(name)
+    fun stringToScope(name: String?): DScope? = when(name){
+        null -> null
+        else -> DScope.valueOf(name)
+    }
 }

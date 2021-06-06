@@ -1,6 +1,6 @@
 package com.hallett.bujoass.presentation.ui.task_list
 
-import android.R
+import android.R as androidR
 import android.app.DatePickerDialog
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,7 +10,9 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.hallett.bujoass.R
 import com.hallett.bujoass.databinding.FragmentTaskListBinding
 import com.hallett.bujoass.presentation.ui.BujoAssFragment
 import com.hallett.bujoass.presentation.viewmodel.TaskListFragmentViewModel
@@ -51,7 +53,7 @@ class TaskListFragment: BujoAssFragment() {
                     context?.let { ctx ->
                         val spinnerOptions = resList.map { ctx.getString(it) }
                         pickScopeSpn.adapter =
-                            ArrayAdapter(ctx, R.layout.simple_spinner_item, spinnerOptions)
+                            ArrayAdapter(ctx, androidR.layout.simple_spinner_item, spinnerOptions)
                     }
                 }
             }
@@ -83,21 +85,18 @@ class TaskListFragment: BujoAssFragment() {
                     datePicker.minDate = System.currentTimeMillis()
                 }.show()
             }
-            pickScopeSpn.apply {
-                onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
-                    override fun onItemSelected(
-                        parent: AdapterView<*>?,
-                        view: View?,
-                        position: Int,
-                        id: Long
-                    ) {
-                        viewModel.selectScope(position)
-                    }
+            pickScopeSpn.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) = viewModel.selectScope(position)
 
-                    override fun onNothingSelected(parent: AdapterView<*>?) {
-                        viewModel.selectScope(0)
-                    }
-                }
+                override fun onNothingSelected(parent: AdapterView<*>?) = viewModel.selectScope(0)
+            }
+            newTaskBtn.setOnClickListener {
+                findNavController().navigate(R.id.action_taskListFragment_to_newFragment)
             }
         }
     }

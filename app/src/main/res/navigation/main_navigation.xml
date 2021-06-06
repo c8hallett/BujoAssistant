@@ -1,10 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/main_navigation"
-    app:startDestination="@id/newFragment">
+    app:startDestination="@id/taskListFragment">
 
     <fragment
         android:id="@+id/newFragment"
         android:name="com.hallett.bujoass.presentation.ui.NewFragment"
         android:label="NewFragment" />
+    <fragment
+        android:id="@+id/taskListFragment"
+        android:name="com.hallett.bujoass.presentation.ui.task_list.TaskListFragment"
+        android:label="TaskListFragment" >
+        <action
+            android:id="@+id/action_taskListFragment_to_newFragment"
+            app:destination="@id/newFragment" />
+    </fragment>
 </navigation>

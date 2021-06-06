@@ -5,8 +5,11 @@ import java.util.Date
 
 class DateToLongConverter {
     @TypeConverter
-    fun dateToLong(dateTime: Date): Long = dateTime.time
+    fun dateToLong(dateTime: Date?): Long? = dateTime?.time
 
     @TypeConverter
-    fun longToDate(epochMillis: Long): Date = Date(epochMillis)
+    fun longToDate(epochMillis: Long?): Date? = when(epochMillis){
+        null -> null
+        else -> Date(epochMillis)
+    }
 }

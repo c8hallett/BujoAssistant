@@ -9,6 +9,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.hallett.bujoass.databinding.FragmentNewBinding
 import com.hallett.bujoass.presentation.viewmodel.NewFragmentViewModel
 import kotlinx.coroutines.flow.collect
@@ -68,21 +69,15 @@ class NewFragment: BujoAssFragment() {
 
     private fun hookupClickListeners() {
         binding.run {
-            pickScopeSpn.apply {
-                onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
-                    override fun onItemSelected(
-                        parent: AdapterView<*>?,
-                        view: View?,
-                        position: Int,
-                        id: Long
-                    ) {
-                        viewModel.selectScope(position)
-                    }
+            pickScopeSpn.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) = viewModel.selectScope(position)
 
-                    override fun onNothingSelected(parent: AdapterView<*>?) {
-                        viewModel.selectScope(0)
-                    }
-                }
+                override fun onNothingSelected(parent: AdapterView<*>?) = viewModel.selectScope(0)
             }
             pickDateBtn.setOnClickListener {
                 DatePickerDialog(requireContext()).apply {
@@ -94,6 +89,10 @@ class NewFragment: BujoAssFragment() {
             }
             saveBtn.setOnClickListener {
                 viewModel.saveTask(taskName.text.toString())
+                findNavController().popBackStack()
+            }
+            cancelBtn.setOnClickListener {
+                findNavController().popBackStack()
             }
         }
 
