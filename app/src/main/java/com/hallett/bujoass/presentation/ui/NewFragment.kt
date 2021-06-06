@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.DatePicker
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -45,7 +46,7 @@ class NewFragment: BujoAssFragment() {
             lifecycleScope.launch {
                 viewModel.observeSelectedDate().collect{
                     Timber.i("New selected date = $it")
-                    dateValue.text = it
+                    dateSelector.text = it
                 }
             }
             lifecycleScope.launch {
@@ -66,7 +67,7 @@ class NewFragment: BujoAssFragment() {
                     val vis = if(it) View.VISIBLE else View.GONE
                     scopePreLabel.visibility = vis
                     scopePostLabel.visibility = vis
-                    dateBlock.visibility = vis
+                    dateSelector.visibility = vis
                 }
             }
             lifecycleScope.launch {
@@ -95,14 +96,9 @@ class NewFragment: BujoAssFragment() {
 
                 override fun onNothingSelected(parent: AdapterView<*>?) = viewModel.selectScope(0)
             }
-            pickDateBtn.setOnClickListener {
-                DatePickerDialog(requireContext()).apply {
-                    setOnDateSetListener { _, year, month, dayOfMonth ->
-                        Timber.i("Updating view model with $year, $month, $dayOfMonth")
-                        viewModel.selectDate(year, month, dayOfMonth)
-                    }
-                    datePicker.minDate = System.currentTimeMillis()
-                }.show()
+            dateSelector.setOnDateSetListener { _, year, month, dayOfMonth ->
+                Timber.i("Updating view model with $year, $month, $dayOfMonth")
+                viewModel.selectDate(year, month, dayOfMonth)
             }
             saveBtn.setOnClickListener {
                 viewModel.saveTask(taskName.text.toString())

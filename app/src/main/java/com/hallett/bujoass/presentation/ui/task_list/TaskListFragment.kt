@@ -69,7 +69,7 @@ class TaskListFragment: BujoAssFragment() {
             }
             lifecycleScope.launch {
                 viewModel.observeSelectedDate().collect {
-                    dateValue.text = it
+                    dateSelector.text = it
                 }
             }
         }
@@ -77,13 +77,8 @@ class TaskListFragment: BujoAssFragment() {
 
     private fun setOnClickListeners() {
         binding.run {
-            pickDateBtn.setOnClickListener {
-                DatePickerDialog(requireContext()).apply {
-                    setOnDateSetListener { _, year, month, dayOfMonth ->
-                        viewModel.selectDate(year, month, dayOfMonth)
-                    }
-                    datePicker.minDate = System.currentTimeMillis()
-                }.show()
+            dateSelector.setOnDateSetListener{ _, year, month, dayOfMonth ->
+                viewModel.selectDate(year, month, dayOfMonth)
             }
             pickScopeSpn.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(

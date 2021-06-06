@@ -17,37 +17,6 @@
         app:layout_constraintTop_toTopOf="parent"
         />
 
-    <!--DATE-->
-    <RelativeLayout
-        android:id="@+id/date_block"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="6dp"
-        android:visibility="gone"
-        tools:visibility="visible"
-        app:layout_constraintTop_toBottomOf="@id/scope_block">
-
-        <TextView
-            android:id="@+id/date_value"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="4dp"
-            tools:text="June 5th, 2021"
-            android:textSize="16dp"
-            android:textStyle="bold"
-            android:layout_centerVertical="true"
-            android:layout_alignParentStart="true"/>
-
-        <Button
-            android:id="@+id/pick_date_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="pick date"
-            android:layout_centerVertical="true"
-            android:layout_alignParentEnd="true"
-            />
-    </RelativeLayout>
-
     <!--SCOPE-->
     <RelativeLayout
         android:id="@+id/scope_block"
@@ -88,6 +57,14 @@
             android:layout_centerVertical="true"
             android:layout_toEndOf="@id/pick_scope_spn"
             />
+
+        <com.hallett.bujoass.presentation.widget.DateSelectorView
+            android:id="@+id/date_selector"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="6dp"
+            android:layout_toEndOf="@id/scope_post_label"/>
     </RelativeLayout>
 
 

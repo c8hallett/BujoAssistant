@@ -22,24 +22,12 @@
             android:textSize="16dp"
             />
 
-        <TextView
-            android:id="@+id/date_value"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="4dp"
-            tools:text="June 5th, 2021"
-            android:textSize="16dp"
-            android:textStyle="bold"
-            android:layout_centerVertical="true"
-            android:layout_toStartOf="@+id/pick_date_btn"/>
-
-        <Button
-            android:id="@+id/pick_date_btn"
+        <com.hallett.bujoass.presentation.widget.DateSelectorView
+            android:id="@+id/date_selector"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_alignParentEnd="true"
-            android:text="pick date"/>
+            android:layout_alignParentEnd="true"/>
 
     </RelativeLayout>
 
