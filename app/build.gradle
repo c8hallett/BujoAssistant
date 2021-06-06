@@ -69,5 +69,5 @@ dependencies {
 
     // kodein
     implementation "org.kodein.di:kodein-di-generic-jvm:$kodein_version"
-    implementation "org.kodein.di:kodein-di-framework-android:$kodein_version"
+    implementation "org.kodein.di:kodein-di-framework-android-core:$kodein_version"
 }
