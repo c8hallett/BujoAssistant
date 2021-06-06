@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.hallett.bujoass.domain.Scope
+import com.hallett.bujoass.domain.DomainScope
 import java.util.*
 
 @Entity(tableName = BujoTaskEntity.TABLE_NAME)
@@ -23,7 +23,7 @@ data class BujoTaskEntity(
 
     data class ScopeInfo(
         @ColumnInfo(name = TASK_SCOPE)
-        val taskScope: Scope = Scope.DAY,
+        val taskScope: DomainScope = DomainScope.DAY,
         @ColumnInfo(name = SCOPE_VALUE)
         val scopeValue: Date = Date(),
     )

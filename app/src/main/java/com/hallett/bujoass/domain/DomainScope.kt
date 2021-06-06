@@ -1,6 +1,6 @@
 package com.hallett.bujoass.domain
 
-enum class Scope {
+enum class DomainScope {
     DAY,
     WEEK,
     MONTH,

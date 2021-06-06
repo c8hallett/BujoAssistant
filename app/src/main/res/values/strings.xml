@@ -1,11 +1,8 @@
 <resources>
     <string name="app_name">BujoAssistant</string>
-
-    <string-array name="scope_array">
-        <item>Day</item>
-        <item>Week</item>
-        <item>Month</item>
-        <item>Year</item>
-    </string-array>
-
+    <string name="display_scope_none">Sometime</string>
+    <string name="display_scope_day">Day</string>
+    <string name="display_scope_week">Week</string>
+    <string name="display_scope_month">Month</string>
+    <string name="display_scope_year">Year</string>
 </resources>
