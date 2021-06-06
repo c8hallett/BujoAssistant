@@ -1,4 +1,4 @@
-package com.hallett.bujoass.usecase.mapper
+package com.hallett.bujoass.domain.usecase.mapper
 
 interface Mapper<I, O> {
     fun map(input: I): O

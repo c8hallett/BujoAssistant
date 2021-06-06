@@ -2,8 +2,9 @@ package com.hallett.bujoass.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hallett.bujoass.presentation.PresentationScope
-import com.hallett.bujoass.usecase.ISaveNewTaskUseCase
+import com.hallett.bujoass.presentation.model.PScope
+import com.hallett.bujoass.domain.usecase.ISaveNewTaskUseCase
+import com.hallett.bujoass.presentation.model.PScopeInstance
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -15,12 +16,12 @@ class NewFragmentViewModel(
 ): ViewModel() {
 
     private var selectedDate: Calendar = Calendar.getInstance()
-    private var selectedScope: PresentationScope = PresentationScope.NONE
+    private var selectedScope: PScope = PScope.NONE
 
     private val selectedDateFlow = MutableStateFlow(formatUiDateString())
-    private val selectedScopeFlow = MutableStateFlow(PresentationScope.NONE.ordinal)
+    private val selectedScopeFlow = MutableStateFlow(PScope.NONE.ordinal)
     private val scopeOptionFlow: MutableStateFlow<List<Int>> by lazy {
-        MutableStateFlow(PresentationScope.values().map { it.displayName })
+        MutableStateFlow(PScope.values().map { it.displayName })
     }
     private val showExtraData = MutableStateFlow(false)
 
@@ -36,15 +37,15 @@ class NewFragmentViewModel(
     }
 
     fun selectScope(scopeIndex: Int) {
-        selectedScope = PresentationScope.values()[scopeIndex]
+        selectedScope = PScope.values()[scopeIndex]
         viewModelScope.launch {
-            showExtraData.emit(scopeIndex > PresentationScope.NONE.ordinal)
+            showExtraData.emit(scopeIndex > PScope.NONE.ordinal)
         }
     }
 
     fun saveTask(taskName: String) {
         viewModelScope.launch {
-            saveNewTaskUseCase.execute(taskName, selectedScope, selectedDate.time)
+            saveNewTaskUseCase.execute(taskName, PScopeInstance(selectedScope, selectedDate.time))
         }
     }
 
