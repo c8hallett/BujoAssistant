@@ -11,9 +11,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.hallett.bujoass.databinding.FragmentNewBinding
+import com.hallett.bujoass.presentation.model.PresentationResult
 import com.hallett.bujoass.presentation.viewmodel.NewFragmentViewModel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class NewFragment: BujoAssFragment() {
     private lateinit var binding: FragmentNewBinding
@@ -41,7 +43,10 @@ class NewFragment: BujoAssFragment() {
     private fun hookUpViewModelObservers(){
         binding.run{
             lifecycleScope.launch {
-                viewModel.observeSelectedDate().collect{ dateValue.text = it }
+                viewModel.observeSelectedDate().collect{
+                    Timber.i("New selected date = $it")
+                    dateValue.text = it
+                }
             }
             lifecycleScope.launch {
                 viewModel.observeScopeOptions().collect { resList ->
@@ -64,6 +69,17 @@ class NewFragment: BujoAssFragment() {
                     dateBlock.visibility = vis
                 }
             }
+            lifecycleScope.launch {
+                viewModel.observeNewTaskSaved().collect {
+                    when(it){
+                        is PresentationResult.Loading -> {}
+                        is PresentationResult.Error -> {
+                            Timber.w(it.error, "Couldn't save task for some reason")
+                        }
+                        is PresentationResult.Success -> findNavController().popBackStack()
+                    }
+                }
+            }
         }
     }
 
@@ -82,6 +98,7 @@ class NewFragment: BujoAssFragment() {
             pickDateBtn.setOnClickListener {
                 DatePickerDialog(requireContext()).apply {
                     setOnDateSetListener { _, year, month, dayOfMonth ->
+                        Timber.i("Updating view model with $year, $month, $dayOfMonth")
                         viewModel.selectDate(year, month, dayOfMonth)
                     }
                     datePicker.minDate = System.currentTimeMillis()
@@ -89,7 +106,6 @@ class NewFragment: BujoAssFragment() {
             }
             saveBtn.setOnClickListener {
                 viewModel.saveTask(taskName.text.toString())
-                findNavController().popBackStack()
             }
             cancelBtn.setOnClickListener {
                 findNavController().popBackStack()

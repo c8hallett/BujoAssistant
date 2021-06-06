@@ -1,6 +1,5 @@
 package com.hallett.bujoass.presentation.viewmodel
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hallett.bujoass.domain.usecase.IObserveTaskListFlowableUseCase
 import com.hallett.bujoass.presentation.model.PScope
@@ -16,24 +15,27 @@ import java.util.*
 
 class TaskListFragmentViewModel(
     private val observeTaskListFlowableUseCase: IObserveTaskListFlowableUseCase
-): ViewModel() {
+): BujoAssViewModel() {
 
-    private val selectedDateFlow = MutableStateFlow(Calendar.getInstance())
+    private val selectedDateFlow = MutableStateFlow(Date())
     private val selectedScopeFlow = MutableStateFlow(PScope.NONE)
     private val scopeOptionFlow: MutableStateFlow<List<Int>> by lazy {
         MutableStateFlow(PScope.values().map { it.displayName })
     }
-    private val scopeFlow = selectedScopeFlow.combine(selectedDateFlow){ type, calendar ->
-        PScopeInstance(type, calendar.time)
+    private val scopeFlow = selectedScopeFlow.combine(selectedDateFlow){ type, date ->
+        PScopeInstance(type, date)
     }
 
     fun selectDate(year: Int, month: Int, date: Int) {
         viewModelScope.launch {
-            selectedDateFlow.emit(selectedDateFlow.value.apply {
+            val newSelectedDate = Calendar.getInstance().apply {
+                time = selectedDateFlow.value
+
                 set(Calendar.YEAR, year)
                 set(Calendar.MONTH, month)
                 set(Calendar.DATE, date)
-            })
+            }.time
+            selectedDateFlow.emit(newSelectedDate)
         }
     }
 
@@ -44,7 +46,7 @@ class TaskListFragmentViewModel(
     }
 
     fun observeTaskList(): Flow<List<Task>> = observeTaskListFlowableUseCase.execute(scopeFlow)
-    fun observeSelectedDate(): Flow<String> = selectedDateFlow.map{ SimpleDateFormat("MMM dd, YYYY").format(it.time) }
+    fun observeSelectedDate(): Flow<String> = selectedDateFlow.map{ SimpleDateFormat("MMM dd, YYYY").format(it) }
     fun observeSelectedScopeIndex(): Flow<Int> = selectedScopeFlow.map { it.ordinal }
     fun observeScopeOptions(): Flow<List<Int>> = scopeOptionFlow
 }
