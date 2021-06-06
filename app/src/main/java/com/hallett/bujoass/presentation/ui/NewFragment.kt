@@ -16,10 +16,11 @@ import com.hallett.bujoass.presentation.viewmodel.NewFragmentViewModel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
-class NewFragment: Fragment() {
+class NewFragment: BujoAssFragment() {
     private lateinit var binding: FragmentNewBinding;
+
     private val viewModel: NewFragmentViewModel by lazy {
-        ViewModelProvider(this).get(NewFragmentViewModel::class.java)
+        ViewModelProvider(this, vmpfactory).get(NewFragmentViewModel::class.java)
     }
 
     override fun onCreateView(
