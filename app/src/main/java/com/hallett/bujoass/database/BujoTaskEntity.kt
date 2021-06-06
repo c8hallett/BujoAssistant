@@ -3,11 +3,14 @@ package com.hallett.bujoass.database
 import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.hallett.bujoass.domain.Scope
 import java.util.*
 
 @Entity(tableName = BujoTaskEntity.TABLE_NAME)
 data class BujoTaskEntity(
+    @PrimaryKey(autoGenerate = true)
+    val id: Long = 0L,
     @ColumnInfo(name = TASK_NAME)
     val taskName: String,
     @Embedded

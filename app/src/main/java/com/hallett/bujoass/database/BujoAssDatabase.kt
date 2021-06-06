@@ -16,13 +16,4 @@ import androidx.room.TypeConverters
 )
 abstract class BujoAssDatabase: RoomDatabase() {
     abstract fun bujoTaskDao(): BujoTaskDao
-
-    companion object{
-        fun create(appContext: Context): BujoAssDatabase =
-            Room.databaseBuilder(
-                appContext,
-                BujoAssDatabase::class.java,
-                "bujo_ass_database"
-            ).build()
-    }
 }
