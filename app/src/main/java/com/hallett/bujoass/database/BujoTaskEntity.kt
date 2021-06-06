@@ -22,7 +22,7 @@ data class BujoTaskEntity(
         @ColumnInfo(name = TASK_SCOPE)
         val taskScope: Scope = Scope.DAY,
         @ColumnInfo(name = SCOPE_VALUE)
-        val scopeValue: Date? = Date(),
+        val scopeValue: Date = Date(),
     )
 
     companion object{

@@ -2,13 +2,16 @@ package com.hallett.bujoass.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.hallett.bujoass.usecase.ISaveNewTaskUseCase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 
-class NewFragmentViewModel: ViewModel() {
+class NewFragmentViewModel(
+    private val saveNewTaskUseCase: ISaveNewTaskUseCase
+): ViewModel() {
     private var currentlySelectedDateTime: Calendar = Calendar.getInstance()
     private val selectedDateFlow = MutableStateFlow(formatUiDateString())
 
@@ -25,6 +28,6 @@ class NewFragmentViewModel: ViewModel() {
 
     fun observeSelectedDate(): Flow<String> = selectedDateFlow
 
-    private fun formatUiDateString(): String = SimpleDateFormat("MMM DD, YYYY").format(currentlySelectedDateTime.time)
+    private fun formatUiDateString(): String = SimpleDateFormat("MMM dd, YYYY").format(currentlySelectedDateTime.time)
 
 }
