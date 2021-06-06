@@ -9,7 +9,6 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.hallett.bujoass.R
 import com.hallett.bujoass.databinding.FragmentNewBinding
 import com.hallett.bujoass.presentation.viewmodel.NewFragmentViewModel
 import kotlinx.coroutines.flow.collect
@@ -57,7 +56,7 @@ class NewFragment: BujoAssFragment() {
                 }
             }
             lifecycleScope.launch{
-                viewModel.observeShouldShowDate().collect {
+                viewModel.observeShouldShowExtraData().collect {
                     val vis = if(it) View.VISIBLE else View.GONE
                     scopePreLabel.visibility = vis
                     scopePostLabel.visibility = vis
