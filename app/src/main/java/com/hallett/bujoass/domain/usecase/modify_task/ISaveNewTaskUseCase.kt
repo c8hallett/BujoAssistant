@@ -1,4 +1,4 @@
-package com.hallett.bujoass.domain.usecase
+package com.hallett.bujoass.domain.usecase.modify_task
 
 import com.hallett.bujoass.presentation.model.PScopeInstance
 

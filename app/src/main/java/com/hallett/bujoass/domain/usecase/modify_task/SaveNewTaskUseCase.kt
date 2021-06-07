@@ -1,11 +1,9 @@
-package com.hallett.bujoass.domain.usecase
+package com.hallett.bujoass.domain.usecase.modify_task
 
 import com.hallett.bujoass.database.BujoTaskDao
 import com.hallett.bujoass.database.BujoTaskEntity
-import com.hallett.bujoass.domain.model.DScope
 import com.hallett.bujoass.domain.model.DScopeInstance
 import com.hallett.bujoass.domain.model.TaskStatus
-import com.hallett.bujoass.presentation.model.PScope
 import com.hallett.bujoass.domain.usecase.mapper.Mapper
 import com.hallett.bujoass.presentation.model.PScopeInstance
 import kotlinx.coroutines.Dispatchers

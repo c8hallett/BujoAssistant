@@ -1,6 +1,6 @@
 package com.hallett.bujoass.presentation.ui.view_task
 
-import com.hallett.bujoass.domain.usecase.IObserveSingleTaskUseCase
+import com.hallett.bujoass.domain.usecase.observe_task.IObserveSingleTaskUseCase
 import com.hallett.bujoass.presentation.ui.BujoAssViewModel
 import com.hallett.bujoass.presentation.format.Formatter
 import com.hallett.bujoass.presentation.model.PScopeInstance

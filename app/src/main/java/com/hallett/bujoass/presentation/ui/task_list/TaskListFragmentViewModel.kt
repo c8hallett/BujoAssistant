@@ -1,7 +1,7 @@
 package com.hallett.bujoass.presentation.ui.task_list
 
 import androidx.lifecycle.viewModelScope
-import com.hallett.bujoass.domain.usecase.IObserveTaskListFlowableUseCase
+import com.hallett.bujoass.domain.usecase.observe_task.IObserveTaskListFlowableUseCase
 import com.hallett.bujoass.presentation.model.PScope
 import com.hallett.bujoass.presentation.model.PScopeInstance
 import com.hallett.bujoass.presentation.model.Task

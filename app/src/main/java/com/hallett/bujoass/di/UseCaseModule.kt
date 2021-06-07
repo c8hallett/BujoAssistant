@@ -1,6 +1,9 @@
 package com.hallett.bujoass.di
 
 import com.hallett.bujoass.domain.usecase.*
+import com.hallett.bujoass.domain.usecase.modify_task.ISaveNewTaskUseCase
+import com.hallett.bujoass.domain.usecase.modify_task.SaveNewTaskUseCase
+import com.hallett.bujoass.domain.usecase.observe_task.*
 import org.kodein.di.Kodein
 import org.kodein.di.generic.bind
 import org.kodein.di.generic.instance

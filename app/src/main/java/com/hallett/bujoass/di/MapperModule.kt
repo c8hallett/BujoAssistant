@@ -1,6 +1,5 @@
 package com.hallett.bujoass.di
 
-import androidx.lifecycle.ViewModelProvider
 import com.hallett.bujoass.database.BujoTaskEntity
 import com.hallett.bujoass.domain.model.DScope
 import com.hallett.bujoass.domain.model.DScopeInstance

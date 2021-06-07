@@ -2,7 +2,7 @@ package com.hallett.bujoass.presentation.ui.new_task
 
 import androidx.lifecycle.viewModelScope
 import com.hallett.bujoass.presentation.model.PScope
-import com.hallett.bujoass.domain.usecase.ISaveNewTaskUseCase
+import com.hallett.bujoass.domain.usecase.modify_task.ISaveNewTaskUseCase
 import com.hallett.bujoass.presentation.model.PScopeInstance
 import com.hallett.bujoass.presentation.model.PresentationResult
 import com.hallett.bujoass.presentation.ui.BujoAssViewModel
