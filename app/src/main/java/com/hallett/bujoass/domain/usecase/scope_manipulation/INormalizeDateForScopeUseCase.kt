@@ -1,4 +1,4 @@
-package com.hallett.bujoass.domain.usecase
+package com.hallett.bujoass.domain.usecase.scope_manipulation
 
 import com.hallett.bujoass.domain.model.DScope
 import java.util.*
