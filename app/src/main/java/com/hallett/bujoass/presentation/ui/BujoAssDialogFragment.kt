@@ -9,7 +9,7 @@ import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
 
-class BujoAssDialogFragment: DialogFragment(), KodeinAware {
+open class BujoAssDialogFragment: DialogFragment(), KodeinAware {
 
     override val kodein: Kodein by closestKodein()
     protected val vmpfactory: ViewModelProvider.Factory by instance()

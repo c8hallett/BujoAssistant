@@ -17,7 +17,7 @@
         tools:text="Do some laundry" />
 
     <TextView
-        android:id="@+id/scope_instance_label"
+        android:id="@+id/scope_label"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:text="On the DAY of June 05, 2021"

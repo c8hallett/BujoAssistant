@@ -1,4 +1,4 @@
-package com.hallett.bujoass.presentation
+package com.hallett.bujoass.presentation.ui
 
 import androidx.lifecycle.ViewModel
 import com.hallett.bujoass.presentation.model.PresentationResult

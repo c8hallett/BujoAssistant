@@ -5,7 +5,7 @@ import com.hallett.bujoass.presentation.model.PScope
 import com.hallett.bujoass.domain.usecase.ISaveNewTaskUseCase
 import com.hallett.bujoass.presentation.model.PScopeInstance
 import com.hallett.bujoass.presentation.model.PresentationResult
-import com.hallett.bujoass.presentation.BujoAssViewModel
+import com.hallett.bujoass.presentation.ui.BujoAssViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
