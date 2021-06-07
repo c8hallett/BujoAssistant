@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_alignParentStart="true"
-            android:textSize="16dp"
+            android:textSize="16sp"
             />
 
         <com.hallett.bujoass.presentation.widget.DateSelectorView

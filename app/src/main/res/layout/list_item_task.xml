@@ -20,7 +20,7 @@
         android:layout_centerVertical="true"
         android:layout_toEndOf="@id/task_icon"
         tools:text="Do some laundry"
-        android:textSize="16dp"
+        android:textSize="16sp"
         android:textStyle="bold"/>
 
 </RelativeLayout>
