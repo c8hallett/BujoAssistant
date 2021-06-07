@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.hallett.bujoass.databinding.ListItemTaskBinding
 import com.hallett.bujoass.presentation.model.Task
 
-class TaskListAdapter: RecyclerView.Adapter<TaskListAdapter.ViewHolder>() {
+class TaskListAdapter(val onTaskClicked: (Task) -> Unit): RecyclerView.Adapter<TaskListAdapter.ViewHolder>() {
 
     private var itemList: List<Task> = listOf()
 
@@ -21,7 +21,11 @@ class TaskListAdapter: RecyclerView.Adapter<TaskListAdapter.ViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.binding.taskValue.text = itemList[position].taskName
+        holder.binding.apply{
+            val task = itemList[position]
+            taskValue.text = task.taskName
+            root.setOnClickListener { onTaskClicked(task) }
+        }
     }
 
     override fun getItemCount(): Int = itemList.size

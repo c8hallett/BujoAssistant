@@ -11,6 +11,7 @@ import java.util.*
 @Entity(tableName = BujoTaskEntity.TABLE_NAME)
 data class BujoTaskEntity(
     @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = ID)
     val id: Long = 0L,
     @ColumnInfo(name = TASK_NAME)
     val taskName: String,
@@ -33,6 +34,7 @@ data class BujoTaskEntity(
 
     companion object{
         const val TABLE_NAME = "bujo_task"
+        const val ID = "id"
         const val TASK_NAME = "task_name"
         const val TASK_SCOPE = "task_scope"
         const val TASK_STATUS = "task_status"

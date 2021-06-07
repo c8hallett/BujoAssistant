@@ -1,10 +1,7 @@
 package com.hallett.bujoass.presentation.ui
 
 import android.app.Application
-import com.hallett.bujoass.di.databaseModule
-import com.hallett.bujoass.di.useCaseModule
-import com.hallett.bujoass.di.utilModule
-import com.hallett.bujoass.di.viewModelModule
+import com.hallett.bujoass.di.*
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.androidModule
@@ -19,6 +16,7 @@ class BujoAssApplication: Application(), KodeinAware {
             import(useCaseModule)
             import(utilModule)
             import(viewModelModule)
+            import(formatterModule)
         }
     }
 

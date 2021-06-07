@@ -13,9 +13,4 @@ import org.kodein.di.generic.singleton
 
 val utilModule = Kodein.Module("util_module") {
     bind<ViewModelProvider.Factory>() with singleton { KodeinViewModelProviderFactory(kodein) }
-
-    bind<Mapper<DScope?, PScope>>() with singleton { DtoPScopeMapper() }
-    bind<Mapper<PScope, DScope?>>() with singleton { PtoDScopeMapper() }
-    bind<Mapper<DScopeInstance?, PScopeInstance>>() with singleton { DtoPScopeInstanceMapper(instance()) }
-    bind<Mapper<PScopeInstance, DScopeInstance?>>() with singleton { PtoDScopeInstanceMapper(instance(), instance()) }
 }

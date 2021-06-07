@@ -1,6 +1,7 @@
 package com.hallett.bujoass.database
 
 import androidx.room.*
+import com.hallett.bujoass.database.BujoTaskEntity.Companion.ID
 import com.hallett.bujoass.database.BujoTaskEntity.Companion.SCOPE_VALUE
 import com.hallett.bujoass.database.BujoTaskEntity.Companion.TABLE_NAME
 import com.hallett.bujoass.database.BujoTaskEntity.Companion.TASK_SCOPE
@@ -33,4 +34,7 @@ interface BujoTaskDao {
 
     @Query("SELECT * FROM $TABLE_NAME WHERE $TASK_SCOPE IS :scope AND $SCOPE_VALUE IS :date")
     fun getAllTaskForScopeInstance(scope: DScope?, date: Date?): Flow<List<BujoTaskEntity>>
+
+    @Query("SELECT * FROM $TABLE_NAME WHERE $ID = :taskId")
+    fun observeTask(taskId: Long): Flow<BujoTaskEntity>
 }

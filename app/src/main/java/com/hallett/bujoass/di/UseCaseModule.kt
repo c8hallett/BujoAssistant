@@ -11,4 +11,5 @@ val useCaseModule = Kodein.Module("use_case_module") {
     bind<INormalizeDateForScopeUseCase>() with singleton { NormalizeDateForScopeUseCase() }
     bind<IObserveTaskListUseCase>() with singleton { ObserveTaskListUseCase(instance(), instance()) }
     bind<IObserveTaskListFlowableUseCase>() with singleton { ObserveTaskListFlowableUseCase(instance()) }
+    bind<IObserveSingleTaskUseCase>() with singleton { ObserveSingleTaskUseCase(instance(), instance()) }
 }
