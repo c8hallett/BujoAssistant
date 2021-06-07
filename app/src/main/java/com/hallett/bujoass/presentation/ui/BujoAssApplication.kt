@@ -17,6 +17,7 @@ class BujoAssApplication: Application(), KodeinAware {
             import(utilModule)
             import(viewModelModule)
             import(formatterModule)
+            import(mapperModule)
         }
     }
 
