@@ -5,7 +5,7 @@
 
     <fragment
         android:id="@+id/newFragment"
-        android:name="com.hallett.bujoass.presentation.ui.NewFragment"
+        android:name="com.hallett.bujoass.presentation.ui.new_task.NewFragment"
         android:label="NewFragment" />
     <fragment
         android:id="@+id/taskListFragment"

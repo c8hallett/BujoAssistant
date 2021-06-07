@@ -1,19 +1,17 @@
-package com.hallett.bujoass.presentation.ui
+package com.hallett.bujoass.presentation.ui.new_task
 
-import android.app.DatePickerDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.DatePicker
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.hallett.bujoass.databinding.FragmentNewBinding
 import com.hallett.bujoass.presentation.model.PresentationResult
-import com.hallett.bujoass.presentation.viewmodel.NewFragmentViewModel
+import com.hallett.bujoass.presentation.ui.BujoAssFragment
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import timber.log.Timber
