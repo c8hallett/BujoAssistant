@@ -1,6 +1,6 @@
 package com.hallett.bujoass.di
 
-import com.hallett.bujoass.database.BujoTaskEntity
+import com.hallett.bujoass.database.task.BujoTaskEntity
 import com.hallett.bujoass.domain.model.DScope
 import com.hallett.bujoass.domain.model.DScopeInstance
 import com.hallett.bujoass.domain.usecase.mapper.*

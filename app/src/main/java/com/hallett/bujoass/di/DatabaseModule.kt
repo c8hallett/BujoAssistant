@@ -2,7 +2,7 @@ package com.hallett.bujoass.di
 
 import androidx.room.Room
 import com.hallett.bujoass.database.BujoAssDatabase
-import com.hallett.bujoass.database.BujoTaskDao
+import com.hallett.bujoass.database.task.BujoTaskDao
 import org.kodein.di.Kodein
 import org.kodein.di.generic.bind
 import org.kodein.di.generic.instance

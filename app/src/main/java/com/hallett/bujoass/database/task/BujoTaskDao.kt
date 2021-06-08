@@ -1,10 +1,10 @@
-package com.hallett.bujoass.database
+package com.hallett.bujoass.database.task
 
 import androidx.room.*
-import com.hallett.bujoass.database.BujoTaskEntity.Companion.ID
-import com.hallett.bujoass.database.BujoTaskEntity.Companion.SCOPE_VALUE
-import com.hallett.bujoass.database.BujoTaskEntity.Companion.TABLE_NAME
-import com.hallett.bujoass.database.BujoTaskEntity.Companion.TASK_SCOPE
+import com.hallett.bujoass.database.task.BujoTaskEntity.Companion.ID
+import com.hallett.bujoass.database.task.BujoTaskEntity.Companion.SCOPE_VALUE
+import com.hallett.bujoass.database.task.BujoTaskEntity.Companion.TABLE_NAME
+import com.hallett.bujoass.database.task.BujoTaskEntity.Companion.TASK_SCOPE
 import com.hallett.bujoass.domain.model.DScope
 import kotlinx.coroutines.flow.Flow
 import java.util.*
@@ -40,4 +40,7 @@ interface BujoTaskDao {
 
     @Query("SELECT * FROM $TABLE_NAME WHERE $ID = :taskId")
     fun observeTask(taskId: Long): Flow<BujoTaskEntity>
+
+    @Update(entity = BujoTaskEntity::class)
+    fun updateTaskStatus(update: BujoTaskEntity.StatusUpdate)
 }

@@ -1,9 +1,6 @@
 package com.hallett.bujoass.di
 
-import com.hallett.bujoass.domain.usecase.modify_task.DeleteTaskUseCase
-import com.hallett.bujoass.domain.usecase.modify_task.IDeleteTaskUseCase
-import com.hallett.bujoass.domain.usecase.modify_task.ISaveNewTaskUseCase
-import com.hallett.bujoass.domain.usecase.modify_task.SaveNewTaskUseCase
+import com.hallett.bujoass.domain.usecase.modify_task.*
 import com.hallett.bujoass.domain.usecase.observe_task.*
 import com.hallett.bujoass.domain.usecase.scope_manipulation.INormalizeDateForScopeUseCase
 import com.hallett.bujoass.domain.usecase.scope_manipulation.NormalizeDateForScopeUseCase
@@ -19,4 +16,5 @@ val useCaseModule = Kodein.Module("use_case_module") {
     bind<IObserveTaskListFlowableUseCase>() with singleton { ObserveTaskListFlowableUseCase(instance()) }
     bind<IObserveSingleTaskUseCase>() with singleton { ObserveSingleTaskUseCase(instance(), instance()) }
     bind<IDeleteTaskUseCase>() with singleton { DeleteTaskUseCase(instance()) }
+    bind<IModifyTaskStatusUseCase>() with singleton { ModifyTaskStatusUseCase(instance()) }
 }

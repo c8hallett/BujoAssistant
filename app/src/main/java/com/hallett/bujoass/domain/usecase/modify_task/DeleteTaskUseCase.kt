@@ -1,6 +1,6 @@
 package com.hallett.bujoass.domain.usecase.modify_task
 
-import com.hallett.bujoass.database.BujoTaskDao
+import com.hallett.bujoass.database.task.BujoTaskDao
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 

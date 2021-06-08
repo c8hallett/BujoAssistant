@@ -1,4 +1,4 @@
-package com.hallett.bujoass.database
+package com.hallett.bujoass.database.task
 
 import androidx.room.ColumnInfo
 import androidx.room.Embedded
@@ -30,6 +30,13 @@ data class BujoTaskEntity(
         val taskScope: DScope = DScope.DAY,
         @ColumnInfo(name = SCOPE_VALUE)
         val scopeValue: Date = Date(),
+    )
+
+    data class StatusUpdate(
+        @ColumnInfo(name = ID)
+        val taskId: Long,
+        @ColumnInfo(name = TASK_STATUS)
+        val status: TaskStatus,
     )
 
     companion object{

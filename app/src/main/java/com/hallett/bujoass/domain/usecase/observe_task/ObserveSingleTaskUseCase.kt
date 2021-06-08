@@ -1,9 +1,8 @@
 package com.hallett.bujoass.domain.usecase.observe_task
 
-import com.hallett.bujoass.database.BujoTaskDao
-import com.hallett.bujoass.database.BujoTaskEntity
+import com.hallett.bujoass.database.task.BujoTaskDao
+import com.hallett.bujoass.database.task.BujoTaskEntity
 import com.hallett.bujoass.domain.usecase.mapper.Mapper
-import com.hallett.bujoass.domain.usecase.observe_task.IObserveSingleTaskUseCase
 import com.hallett.bujoass.presentation.model.Task
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
