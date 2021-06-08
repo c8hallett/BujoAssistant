@@ -2,8 +2,8 @@ package com.hallett.bujoass.di
 
 import com.hallett.bujoass.domain.usecase.modify_task.*
 import com.hallett.bujoass.domain.usecase.observe_task.*
-import com.hallett.bujoass.domain.usecase.scope_manipulation.INormalizeDateForScopeUseCase
-import com.hallett.bujoass.domain.usecase.scope_manipulation.NormalizeDateForScopeUseCase
+import com.hallett.bujoass.domain.usecase.scope_operations.INormalizeDateForScopeUseCase
+import com.hallett.bujoass.domain.usecase.scope_operations.NormalizeDateForScopeUseCase
 import org.kodein.di.Kodein
 import org.kodein.di.generic.bind
 import org.kodein.di.generic.instance
