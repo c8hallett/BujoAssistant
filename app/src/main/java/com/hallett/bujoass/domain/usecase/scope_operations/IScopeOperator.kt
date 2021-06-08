@@ -7,7 +7,7 @@ import java.util.*
 abstract class IScopeOperator {
     abstract val type: DScope
     abstract val truncatedDate: Calendar
-    fun toInstance(): DScopeInstance = DScopeInstance(type, truncatedDate.time)
+    fun instance(): DScopeInstance = DScopeInstance(type, truncatedDate.time)
     fun next(): DScopeInstance = add(1)
     fun previous(): DScopeInstance = subtract(1)
     abstract fun add(unit: Int): DScopeInstance

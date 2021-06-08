@@ -6,13 +6,13 @@ import java.time.temporal.ChronoUnit
 import java.util.Date
 import java.util.Calendar
 
-class DayOperator( rawDate: Date): IScopeOperator() {
+class MonthOperator(rawDate: Date): IScopeOperator() {
     override val truncatedDate: Calendar = truncate(rawDate)
-    override val type: DScope = DScope.DAY
+    override val type: DScope = DScope.MONTH
 
     override fun add(unit: Int): DScopeInstance {
         val forwardedDate = (truncatedDate.clone() as Calendar).apply {
-            add(Calendar.DAY_OF_YEAR, unit)
+            add(Calendar.MONTH, unit)
         }.time
 
         return DScopeInstance(type, forwardedDate)
@@ -20,14 +20,14 @@ class DayOperator( rawDate: Date): IScopeOperator() {
 
     override fun subtract(unit: Int): DScopeInstance {
         val previousDate = (truncatedDate.clone() as Calendar).apply {
-            add(Calendar.DAY_OF_YEAR, -unit)
+            add(Calendar.MONTH, -unit)
         }.time
 
         return DScopeInstance(type, previousDate)
     }
 
     override fun getPosition(startDate: Date): Int =
-        ChronoUnit.DAYS.between(
+        ChronoUnit.MONTHS.between(
             truncatedDate.toInstant(),
             truncate(startDate).toInstant()
         ).toInt()
@@ -39,5 +39,6 @@ class DayOperator( rawDate: Date): IScopeOperator() {
             set(Calendar.MINUTE, 0)
             set(Calendar.SECOND, 0)
             set(Calendar.MILLISECOND, 0)
+            add(Calendar.DAY_OF_MONTH, -get(Calendar.DAY_OF_MONTH) + 1)
         }
 }
