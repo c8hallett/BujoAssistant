@@ -43,4 +43,7 @@ interface BujoTaskDao {
 
     @Update(entity = BujoTaskEntity::class)
     fun updateTaskStatus(update: BujoTaskEntity.StatusUpdate)
+
+    @Update(entity = BujoTaskEntity::class)
+    fun rescheduleTask(update: BujoTaskEntity.NewScopeUpdate)
 }

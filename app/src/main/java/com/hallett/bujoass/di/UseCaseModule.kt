@@ -17,4 +17,5 @@ val useCaseModule = Kodein.Module("use_case_module") {
     bind<IObserveSingleTaskUseCase>() with singleton { ObserveSingleTaskUseCase(instance(), instance()) }
     bind<IDeleteTaskUseCase>() with singleton { DeleteTaskUseCase(instance()) }
     bind<IModifyTaskStatusUseCase>() with singleton { ModifyTaskStatusUseCase(instance()) }
+    bind<IRescheduleTaskUseCase>() with singleton { RescheduleTaskUseCase(instance(), instance()) }
 }

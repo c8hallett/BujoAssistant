@@ -37,6 +37,18 @@ data class BujoTaskEntity(
         val taskId: Long,
         @ColumnInfo(name = TASK_STATUS)
         val status: TaskStatus,
+        @ColumnInfo(name = UPDATED_AT)
+        val updated: Date = Date()
+    )
+
+    data class NewScopeUpdate(
+        @ColumnInfo(name = ID)
+        val taskId: Long,
+        @Embedded
+        val scopeInfo: ScopeInfo?,
+        @ColumnInfo(name = UPDATED_AT)
+        val updatedAt: Date = Date()
+    // TODO: might set status to "RESCHEDULED"
     )
 
     companion object{

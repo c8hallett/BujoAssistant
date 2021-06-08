@@ -19,5 +19,6 @@ val mapperModule = Kodein.Module("mapper_module") {
     bind<Mapper<PScopeInstance, DScopeInstance?>>() with singleton { PtoDScopeInstanceMapper(instance(), instance()) }
 
     bind<Mapper<BujoTaskEntity.ScopeInfo?, PScopeInstance>>() with singleton { ScopeInfoToPScopeInstanceMapper(instance()) }
+    bind<Mapper<PScopeInstance, BujoTaskEntity.ScopeInfo?>>() with singleton { PScopeInstanceToScopeInfoMapper(instance(), instance()) }
     bind<Mapper<BujoTaskEntity, Task>>() with singleton { BujoTaskEntityToTaskMapper(instance()) }
 }
