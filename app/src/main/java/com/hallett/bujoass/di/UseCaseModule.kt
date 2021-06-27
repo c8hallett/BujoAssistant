@@ -18,4 +18,5 @@ val useCaseModule = Kodein.Module("use_case_module") {
     bind<IDeleteTaskUseCase>() with singleton { DeleteTaskUseCase(instance()) }
     bind<IModifyTaskStatusUseCase>() with singleton { ModifyTaskStatusUseCase(instance()) }
     bind<IRescheduleTaskUseCase>() with singleton { RescheduleTaskUseCase(instance(), instance()) }
+    bind<IDeferTaskUseCase>() with singleton { DeferTaskUseCase(instance(), instance()) }
 }
