@@ -9,3 +9,15 @@ fun View.setVis(isVisible: Boolean?) {
         null -> View.GONE
     }
 }
+
+fun View.visible() {
+    visibility = View.VISIBLE
+}
+
+fun View.invisible() {
+    visibility = View.INVISIBLE
+}
+
+fun View.gone() {
+    visibility = View.GONE
+}
