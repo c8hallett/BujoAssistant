@@ -7,5 +7,6 @@ data class ViewableTask(
     val taskName: String,
     val scope: PScope,
     val scopeLabel: String,
-    val status:  TaskStatus
+    val status: TaskStatus,
+    val isCurrent: Boolean
 )

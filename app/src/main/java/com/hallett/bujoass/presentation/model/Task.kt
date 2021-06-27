@@ -6,5 +6,6 @@ data class Task(
     val id: Long,
     val taskName: String,
     val scope: PScopeInstance,
-    val status: TaskStatus
+    val status: TaskStatus,
+    val isCurrentScope: Boolean,
 )

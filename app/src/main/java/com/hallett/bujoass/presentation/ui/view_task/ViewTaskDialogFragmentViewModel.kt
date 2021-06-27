@@ -20,7 +20,8 @@ class ViewTaskDialogFragmentViewModel(
                 it.taskName,
                 it.scope.type,
                 scopeFormatter.format(it.scope),
-                it.status
+                it.status,
+                it.isCurrentScope,
             )
         }
     }
