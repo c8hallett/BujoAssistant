@@ -40,64 +40,27 @@ class NewFragment: BujoAssFragment() {
     }
 
     private fun hookUpViewModelObservers(){
-        binding.run{
-            lifecycleScope.launch {
-                viewModel.observeSelectedDate().collect{
-                    Timber.i("New selected date = $it")
-                    dateSelector.text = it
-                }
-            }
-            lifecycleScope.launch {
-                viewModel.observeScopeOptions().collect { resList ->
-                    context?.let { ctx ->
-                        val spinnerOptions = resList.map { ctx.getString(it) }
-                        pickScopeSpn.adapter = ArrayAdapter(ctx, android.R.layout.simple_spinner_item, spinnerOptions)
+        lifecycleScope.launch {
+            viewModel.observeNewTaskSaved().collect {
+                when(it){
+                    is PresentationResult.Loading -> {}
+                    is PresentationResult.Error -> {
+                        Timber.w(it.error, "Couldn't save task for some reason")
                     }
+                    is PresentationResult.Success -> findNavController().popBackStack()
                 }
             }
-            lifecycleScope.launch {
-                viewModel.observeSelectedScopeIndex().collect { selectedIndex ->
-                    pickScopeSpn.setSelection(selectedIndex)
-                }
-            }
-            lifecycleScope.launch{
-                viewModel.observeShouldShowExtraData().collect {
-                    val vis = if(it) View.VISIBLE else View.GONE
-                    scopePreLabel.visibility = vis
-                    scopePostLabel.visibility = vis
-                    dateSelector.visibility = vis
-                }
-            }
-            lifecycleScope.launch {
-                viewModel.observeNewTaskSaved().collect {
-                    when(it){
-                        is PresentationResult.Loading -> {}
-                        is PresentationResult.Error -> {
-                            Timber.w(it.error, "Couldn't save task for some reason")
-                        }
-                        is PresentationResult.Success -> findNavController().popBackStack()
-                    }
-                }
+        }
+        lifecycleScope.launch{
+            viewModel.observeNewScopeSelected().collect {
+                binding.scopeSelector.displayScope(it)
             }
         }
     }
 
     private fun hookupClickListeners() {
         binding.run {
-            pickScopeSpn.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(
-                    parent: AdapterView<*>?,
-                    view: View?,
-                    position: Int,
-                    id: Long
-                ) = viewModel.selectScope(position)
-
-                override fun onNothingSelected(parent: AdapterView<*>?) = viewModel.selectScope(0)
-            }
-            dateSelector.setOnDateSetListener { _, year, month, dayOfMonth ->
-                Timber.i("Updating view model with $year, $month, $dayOfMonth")
-                viewModel.selectDate(year, month, dayOfMonth)
-            }
+            scopeSelector.setOnScopeSelectedListener{ viewModel.onNewScopeSelected(it) }
             saveBtn.setOnClickListener {
                 viewModel.saveTask(taskName.text.toString())
             }

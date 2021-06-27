@@ -18,50 +18,23 @@ class NewFragmentViewModel(
     private val saveNewTaskUseCase: ISaveNewTaskUseCase
 ): BujoAssViewModel() {
 
-    private val selectedDateFlow = MutableStateFlow(Date())
-    private val selectedScopeFlow = MutableStateFlow(PScope.NONE)
-    private val showExtraDataFlow = MutableStateFlow(false)
-    private val scopeOptionFlow: MutableStateFlow<List<Int>> by lazy {
-        MutableStateFlow(PScope.values().map { it.displayName })
-    }
+    private var selectedScopeFlow = MutableStateFlow(PScopeInstance(PScope.NONE, Date()))
     private val newTaskSavedFlow = MutableStateFlow<PresentationResult<Unit>>(PresentationResult.Loading)
-
-    fun selectDate(year: Int, month: Int, date: Int) {
-        viewModelScope.launch {
-            val newSelectedDate = Calendar.getInstance().apply {
-                time = selectedDateFlow.value
-
-                set(Calendar.YEAR, year)
-                set(Calendar.MONTH, month)
-                set(Calendar.DATE, date)
-            }.time
-
-            Timber.i("Date to be emitted: $newSelectedDate")
-            selectedDateFlow.emit(newSelectedDate)
-        }
-    }
-
-    fun selectScope(scopeIndex: Int) {
-        viewModelScope.launch {
-            selectedScopeFlow.emit(PScope.values()[scopeIndex])
-            showExtraDataFlow.emit(scopeIndex > PScope.NONE.ordinal)
-        }
-    }
 
     fun saveTask(taskName: String) {
         viewModelScope.launch {
             newTaskSavedFlow.emitResult {
-                saveNewTaskUseCase.execute(taskName, PScopeInstance(selectedScopeFlow.value, selectedDateFlow.value))
+                saveNewTaskUseCase.execute(taskName, selectedScopeFlow.value)
             }
         }
     }
+    fun onNewScopeSelected(pScopeInstance: PScopeInstance) {
+        viewModelScope.launch {
+            selectedScopeFlow.emit(pScopeInstance)
+        }
+    }
 
-    fun observeSelectedDate(): Flow<String> = selectedDateFlow
-        .map { SimpleDateFormat("MMM dd, YYYY").format(it) }
-    fun observeSelectedScopeIndex(): Flow<Int> = selectedScopeFlow
-        .map { it.ordinal }
-    fun observeScopeOptions(): Flow<List<Int>> = scopeOptionFlow
-    fun observeShouldShowExtraData(): Flow<Boolean> = showExtraDataFlow
     fun observeNewTaskSaved(): Flow<PresentationResult<Unit>> = newTaskSavedFlow
+    fun observeNewScopeSelected(): Flow<PScopeInstance> = selectedScopeFlow
 
 }

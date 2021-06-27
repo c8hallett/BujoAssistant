@@ -18,36 +18,14 @@ class TaskListFragmentViewModel(
     private val observeTaskListFlowableUseCase: IObserveTaskListFlowableUseCase
 ): BujoAssViewModel() {
 
-    private val selectedDateFlow = MutableStateFlow(Date())
-    private val selectedScopeFlow = MutableStateFlow(PScope.NONE)
-    private val scopeOptionFlow: MutableStateFlow<List<Int>> by lazy {
-        MutableStateFlow(PScope.values().map { it.displayName })
-    }
-    private val scopeFlow = selectedScopeFlow.combine(selectedDateFlow){ type, date ->
-        PScopeInstance(type, date)
-    }
-
-    fun selectDate(year: Int, month: Int, date: Int) {
+    private var selectedScopeFlow = MutableStateFlow(PScopeInstance(PScope.NONE, Date()))
+    fun onNewScopeSelected(pScopeInstance: PScopeInstance) {
         viewModelScope.launch {
-            val newSelectedDate = Calendar.getInstance().apply {
-                time = selectedDateFlow.value
-
-                set(Calendar.YEAR, year)
-                set(Calendar.MONTH, month)
-                set(Calendar.DATE, date)
-            }.time
-            selectedDateFlow.emit(newSelectedDate)
+            selectedScopeFlow.emit(pScopeInstance)
         }
     }
 
-    fun selectScope(scopeIndex: Int) {
-        viewModelScope.launch {
-            selectedScopeFlow.emit(PScope.values()[scopeIndex])
-        }
-    }
+    fun observeTaskList(): Flow<List<Task>> = observeTaskListFlowableUseCase.execute(selectedScopeFlow)
+    fun observeNewScopeSelected(): Flow<PScopeInstance> = selectedScopeFlow
 
-    fun observeTaskList(): Flow<List<Task>> = observeTaskListFlowableUseCase.execute(scopeFlow)
-    fun observeSelectedDate(): Flow<String> = selectedDateFlow.map{ SimpleDateFormat("MMM dd, YYYY").format(it) }
-    fun observeSelectedScopeIndex(): Flow<Int> = selectedScopeFlow.map { it.ordinal }
-    fun observeScopeOptions(): Flow<List<Int>> = scopeOptionFlow
 }

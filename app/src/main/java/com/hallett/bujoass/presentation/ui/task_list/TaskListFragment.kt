@@ -1,12 +1,9 @@
 package com.hallett.bujoass.presentation.ui.task_list
 
-import android.R as androidR
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -48,49 +45,21 @@ class TaskListFragment: BujoAssFragment() {
     }
 
     private fun hookupViewModelObservers(){
-        binding.run {
-            lifecycleScope.launch {
-                viewModel.observeScopeOptions().collect { resList ->
-                    context?.let { ctx ->
-                        val spinnerOptions = resList.map { ctx.getString(it) }
-                        pickScopeSpn.adapter =
-                            ArrayAdapter(ctx, androidR.layout.simple_spinner_item, spinnerOptions)
-                    }
-                }
+        lifecycleScope.launch {
+            viewModel.observeNewScopeSelected().collect {
+                binding.scopeSelector.displayScope(it)
             }
-            lifecycleScope.launch {
-                viewModel.observeSelectedScopeIndex().collect { index ->
-                    pickScopeSpn.setSelection(index)
-                }
-            }
-            lifecycleScope.launch {
-                viewModel.observeTaskList().collect {
-                    taskAdapter.setItems(it)
-                }
-            }
-            lifecycleScope.launch {
-                viewModel.observeSelectedDate().collect {
-                    dateSelector.text = it
-                }
+        }
+        lifecycleScope.launch {
+            viewModel.observeTaskList().collect {
+                taskAdapter.setItems(it)
             }
         }
     }
 
     private fun setOnClickListeners() {
         binding.run {
-            dateSelector.setOnDateSetListener{ _, year, month, dayOfMonth ->
-                viewModel.selectDate(year, month, dayOfMonth)
-            }
-            pickScopeSpn.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(
-                    parent: AdapterView<*>?,
-                    view: View?,
-                    position: Int,
-                    id: Long
-                ) = viewModel.selectScope(position)
-
-                override fun onNothingSelected(parent: AdapterView<*>?) = viewModel.selectScope(0)
-            }
+            scopeSelector.setOnScopeSelectedListener { viewModel.onNewScopeSelected(it) }
             newTaskBtn.setOnClickListener {
                 findNavController().navigate(R.id.action_taskListFragment_to_newFragment)
             }

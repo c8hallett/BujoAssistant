@@ -18,54 +18,12 @@
         />
 
     <!--SCOPE-->
-    <RelativeLayout
-        android:id="@+id/scope_block"
+    <com.hallett.bujoass.presentation.widget.ScopeSelectorView
+        android:id="@+id/scope_selector"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="6dp"
-        app:layout_constraintTop_toBottomOf="@id/task_name">
-
-        <TextView
-            android:id="@+id/scope_pre_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_alignParentStart="true"
-            android:layout_marginEnd="6dp"
-            android:textSize="16sp"
-            android:visibility="gone"
-            tools:visibility="visible"
-            android:text="During the "
-            />
-        <Spinner
-            android:id="@+id/pick_scope_spn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:textSize="16sp"
-            android:layout_toEndOf="@+id/scope_pre_label"
-            />
-        <TextView
-            android:id="@+id/scope_post_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="6dp"
-            android:textSize="16sp"
-            android:text=" of"
-            android:visibility="gone"
-            tools:visibility="visible"
-            android:layout_centerVertical="true"
-            android:layout_toEndOf="@id/pick_scope_spn"
-            />
-
-        <com.hallett.bujoass.presentation.widget.DateSelectorView
-            android:id="@+id/date_selector"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="6dp"
-            android:layout_toEndOf="@id/scope_post_label"/>
-    </RelativeLayout>
+        app:layout_constraintTop_toBottomOf="@id/task_name"/>
 
 
     <Button
