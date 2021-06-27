@@ -10,7 +10,7 @@ import java.util.*
 @SuppressLint("SimpleDateFormat")
 class MediumDateFormatter: Formatter<PScopeInstance> {
     override fun format(input: PScopeInstance): String {
-        return when(input.type){
+        return when(input.scope){
             PScope.NONE -> "Sometime"
             PScope.DAY -> formatDayString(input.date)
             PScope.WEEK -> formatWeekString(input.date)

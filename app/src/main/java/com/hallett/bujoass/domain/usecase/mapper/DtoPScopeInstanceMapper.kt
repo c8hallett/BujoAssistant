@@ -9,7 +9,7 @@ class DtoPScopeInstanceMapper(
     private val scopeMapper: Mapper<DScope?, PScope>,
 ): Mapper<DScopeInstance?, PScopeInstance> {
     override fun map(input: DScopeInstance?): PScopeInstance =
-        when(val pScope = scopeMapper.map(input?.type)){
+        when(val pScope = scopeMapper.map(input?.scope)){
             PScope.NONE -> PScopeInstance.NONE
             else -> when(val date = input?.date) {
                 null -> PScopeInstance.NONE

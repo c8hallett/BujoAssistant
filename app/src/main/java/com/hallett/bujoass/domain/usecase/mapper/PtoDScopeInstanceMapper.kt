@@ -11,7 +11,7 @@ class PtoDScopeInstanceMapper(
     private val normalizeDateForScopeUseCase: INormalizeDateForScopeUseCase,
 ): Mapper<PScopeInstance, DScopeInstance?> {
     override fun map(input: PScopeInstance): DScopeInstance? = with(input){
-        when(val scope = scopeMapper.map(type)) {
+        when(val scope = scopeMapper.map(scope)) {
             null -> null
             else -> DScopeInstance(scope, normalizeDateForScopeUseCase.execute(scope, date))
         }

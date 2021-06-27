@@ -11,7 +11,7 @@ class PScopeInstanceToScopeInfoMapper(
     private val normalizeDateForScopeUseCase: INormalizeDateForScopeUseCase,
 ): Mapper<PScopeInstance, BujoTaskEntity.ScopeInfo?> {
     override fun map(input: PScopeInstance): BujoTaskEntity.ScopeInfo? =
-        when(val dScope = scopeMapper.map(input.type)){
+        when(val dScope = scopeMapper.map(input.scope)){
             null -> null
             else -> BujoTaskEntity.ScopeInfo(
                 dScope,

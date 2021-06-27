@@ -18,7 +18,7 @@ class DeferTaskUseCase(
                 else -> {
                     val operator = operatorFactory.create(scopeInfo.taskScope, scopeInfo.scopeValue)
                     val newScopeInfo = with(operator.add(1)) {
-                        BujoTaskEntity.ScopeInfo(type, date)
+                        BujoTaskEntity.ScopeInfo(scope, date)
                     }
                     val update = BujoTaskEntity.NewScopeUpdate(taskId, newScopeInfo)
                     taskDao.rescheduleTask(update)

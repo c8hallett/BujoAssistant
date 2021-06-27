@@ -1,6 +1,5 @@
 package com.hallett.bujoass.presentation.ui.view_task
 
-import android.app.Presentation
 import androidx.lifecycle.viewModelScope
 import com.hallett.bujoass.domain.model.TaskStatus
 import com.hallett.bujoass.domain.usecase.modify_task.IDeferTaskUseCase
@@ -53,7 +52,7 @@ class ViewTaskDialogFragmentViewModel(
                 .collect {
                     val task = ViewableTask(
                         it.taskName,
-                        it.scope.type,
+                        it.scope.scope,
                         scopeFormatter.format(it.scope),
                         it.status,
                         it.isCurrentScope,

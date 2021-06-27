@@ -16,7 +16,7 @@ class CheckIfScopeInstanceIsCurrentUseCase(
     }
 
     override fun execute(instance: DScopeInstance): Boolean =
-        instance.date == todayMap[instance.type]
+        instance.date == todayMap[instance.scope]
 
     override fun execute(scope: DScope, date: Date): Boolean =
         normalizeDateForScopeUseCase.execute(scope, date) == todayMap[scope]

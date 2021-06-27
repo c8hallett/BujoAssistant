@@ -22,7 +22,7 @@ class SaveNewTaskUseCase(
 
         val scopeInfo = when(val dScope = scopeInstanceMapper.map(scopeInstance)) {
             null -> null
-            else -> BujoTaskEntity.ScopeInfo(dScope.type, dScope.date)
+            else -> BujoTaskEntity.ScopeInfo(dScope.scope, dScope.date)
         }
 
         val newEntity = BujoTaskEntity(

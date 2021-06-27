@@ -17,12 +17,12 @@ class ObserveTaskListUseCase(
 ): IObserveTaskListUseCase {
     override fun execute(scope: PScopeInstance): Flow<List<Task>> {
         val dScope = scopeMapper.map(scope)
-        Timber.i("Returning flowable for ${dScope?.type} at ${dScope?.date?.time}")
+        Timber.i("Returning flowable for ${dScope?.scope} at ${dScope?.date?.time}")
         val isCurrent = when(dScope){
             null -> false
             else -> checkICheckIfScopeInstanceIsCurrentUseCase.execute(dScope)
         }
-        return taskDao.getAllTaskForScopeInstance(dScope?.type, dScope?.date).map { list ->
+        return taskDao.getAllTaskForScopeInstance(dScope?.scope, dScope?.date).map { list ->
             list.map {
                 Task(
                     id = it.id,
