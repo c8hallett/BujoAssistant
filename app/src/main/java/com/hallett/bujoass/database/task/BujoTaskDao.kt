@@ -13,16 +13,16 @@ import java.util.*
 interface BujoTaskDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insert(task: BujoTaskEntity): Long
+    suspend fun insert(task: BujoTaskEntity): Long
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insertAll(task: List<BujoTaskEntity>): List<Long>
+    suspend fun insertAll(task: List<BujoTaskEntity>): List<Long>
 
     @Update
-    fun update(task: BujoTaskEntity)
+    suspend fun update(task: BujoTaskEntity)
 
     @Transaction
-    fun upsert(task: BujoTaskEntity){
+    suspend fun upsert(task: BujoTaskEntity){
         when(insert(task)){
             -1L -> update(task) // conflict--update task instead
             else -> {} // no conflict
@@ -30,20 +30,23 @@ interface BujoTaskDao {
     }
 
     @Delete
-    fun delete(task: BujoTaskEntity)
+    suspend fun delete(task: BujoTaskEntity)
 
     @Query("DELETE FROM $TABLE_NAME WHERE $ID = :taskId")
-    fun delete(taskId: Long)
+    suspend fun delete(taskId: Long)
 
     @Query("SELECT * FROM $TABLE_NAME WHERE $TASK_SCOPE IS :scope AND $SCOPE_VALUE IS :date")
     fun getAllTaskForScopeInstance(scope: DScope?, date: Date?): Flow<List<BujoTaskEntity>>
 
     @Query("SELECT * FROM $TABLE_NAME WHERE $ID = :taskId")
-    fun observeTask(taskId: Long): Flow<BujoTaskEntity>
+    fun observeTask(taskId: Long): Flow<BujoTaskEntity?>
+
+    @Query("SELECT * FROM $TABLE_NAME WHERE $ID = :taskId")
+    suspend fun getTask(taskId: Long): BujoTaskEntity?
 
     @Update(entity = BujoTaskEntity::class)
-    fun updateTaskStatus(update: BujoTaskEntity.StatusUpdate)
+    suspend fun updateTaskStatus(update: BujoTaskEntity.StatusUpdate)
 
     @Update(entity = BujoTaskEntity::class)
-    fun rescheduleTask(update: BujoTaskEntity.NewScopeUpdate)
+    suspend fun rescheduleTask(update: BujoTaskEntity.NewScopeUpdate)
 }
