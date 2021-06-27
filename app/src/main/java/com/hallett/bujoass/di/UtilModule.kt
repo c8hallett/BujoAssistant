@@ -16,12 +16,5 @@ import java.util.*
 
 val utilModule = Kodein.Module("util_module") {
     bind<ViewModelProvider.Factory>() with singleton { KodeinViewModelProviderFactory(kodein) }
-    bind<IScopeOperator>() with factory { scope: DScope, rawDate: Date ->
-        when(scope){
-            DScope.DAY -> DayOperator(rawDate)
-            DScope.WEEK -> WeekOperator(rawDate)
-            DScope.MONTH -> MonthOperator(rawDate)
-            DScope.YEAR -> YearOperator(rawDate)
-        }
-    }
+    bind<IScopeOperatorFactory>() with singleton { ScopeOperatorFactory() }
 }
