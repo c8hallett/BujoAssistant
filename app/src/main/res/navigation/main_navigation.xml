@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/main_navigation"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+     android:id="@+id/main_navigation"
     app:startDestination="@id/taskListFragment">
 
     <fragment
         android:id="@+id/newFragment"
         android:name="com.hallett.bujoass.presentation.ui.new_task.NewFragment"
         android:label="NewFragment" />
+
     <fragment
         android:id="@+id/taskListFragment"
         android:name="com.hallett.bujoass.presentation.ui.task_list.TaskListFragment"
@@ -14,5 +16,13 @@
         <action
             android:id="@+id/action_taskListFragment_to_newFragment"
             app:destination="@id/newFragment" />
+        <action
+            android:id="@+id/action_taskListFragment_to_viewTaskDialogFragment"
+            app:destination="@id/viewTaskDialogFragment" />
     </fragment>
+
+    <fragment
+        android:id="@+id/viewTaskDialogFragment"
+        android:name="com.hallett.bujoass.presentation.ui.view_task.ViewTaskDialogFragment"
+        android:label="ViewTaskDialogFragment" />
 </navigation>

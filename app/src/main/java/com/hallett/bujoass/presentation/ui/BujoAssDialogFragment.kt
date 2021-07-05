@@ -1,8 +1,10 @@
 package com.hallett.bujoass.presentation.ui
 
+import android.content.DialogInterface
 import android.os.Bundle
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.hallett.bujoass.R
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
@@ -24,5 +26,21 @@ open class BujoAssDialogFragment: DialogFragment(), KodeinAware {
         } else {
             setStyle(STYLE_NORMAL, R.style.AppTheme_Dialog)
         }
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        notifyOnDismissed()
+        super.onDismiss(dialog)
+    }
+
+    open fun notifyOnDismissed() {
+        onCompleted(true)
+    }
+
+    protected fun onCompleted(completed: Boolean) {
+        findNavController().previousBackStackEntry?.savedStateHandle?.set(
+            this::class.java.simpleName,
+            completed
+        )
     }
 }
