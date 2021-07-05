@@ -23,6 +23,11 @@
 
     <fragment
         android:id="@+id/viewTaskDialogFragment"
-        android:name="com.hallett.bujoass.presentation.ui.view_task.ViewTaskDialogFragment"
-        android:label="ViewTaskDialogFragment" />
+        android:name="com.hallett.bujoass.presentation.ui.view_task.ViewTaskFragment"
+        android:label="ViewTaskDialogFragment" >
+
+        <argument
+            android:name="args_selected"
+            app:argType="long" />
+    </fragment>
 </navigation>

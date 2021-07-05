@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.hallett.bujoass.R
 import com.hallett.bujoass.databinding.FragmentTaskListBinding
 import com.hallett.bujoass.presentation.ui.BujoAssFragment
-import com.hallett.bujoass.presentation.ui.view_task.ViewTaskDialogFragment
+import com.hallett.bujoass.presentation.ui.view_task.ViewTaskFragment
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
@@ -19,7 +19,9 @@ class TaskListFragment: BujoAssFragment() {
 
     private lateinit var binding: FragmentTaskListBinding
     private val taskAdapter: TaskListAdapter = TaskListAdapter{
-        ViewTaskDialogFragment.newInstance(it.id).show(childFragmentManager, "view_task")
+        findNavController().navigate(
+            TaskListFragmentDirections.actionTaskListFragmentToViewTaskDialogFragment(it.id)
+        )
     }
 
     private val viewModel: TaskListFragmentViewModel by lazy {

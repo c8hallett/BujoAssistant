@@ -8,36 +8,23 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.chip.ChipGroup
 import com.hallett.bujoass.databinding.FragmentViewTaskBinding
 import com.hallett.bujoass.domain.model.TaskStatus
 import com.hallett.bujoass.presentation.gone
 import com.hallett.bujoass.presentation.model.PScope
 import com.hallett.bujoass.presentation.model.PresentationResult
-import com.hallett.bujoass.presentation.ui.BujoAssDialogFragment
+import com.hallett.bujoass.presentation.ui.BujoAssFragment
 import com.hallett.bujoass.presentation.visible
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.util.*
 
-class ViewTaskDialogFragment: BujoAssDialogFragment() {
-    override val isFullScreen: Boolean = false
+class ViewTaskFragment: BujoAssFragment() {
     private lateinit var binding: FragmentViewTaskBinding
-    private val viewModel: ViewTaskDialogFragmentViewModel by lazy {
-        ViewModelProvider(this, vmpfactory).get(ViewTaskDialogFragmentViewModel::class.java)
-    }
-
-    companion object{
-        private const val EXTRA_TASK_ID = "extra_task_id"
-
-        fun newInstance(taskId: Long): ViewTaskDialogFragment{
-            return ViewTaskDialogFragment().apply {
-                arguments = Bundle().apply {
-                    putLong(EXTRA_TASK_ID, taskId)
-                }
-            }
-        }
+    private val viewModel: ViewTaskFragmentViewModel by lazy {
+        ViewModelProvider(this, vmpfactory).get(ViewTaskFragmentViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -55,7 +42,7 @@ class ViewTaskDialogFragment: BujoAssDialogFragment() {
     }
 
     private fun hookupViewModelObservers(){
-        val taskId = arguments?.getLong(EXTRA_TASK_ID)
+        val taskId = arguments?.getLong(ARGS_SELECTED)
             ?: throw IllegalStateException(
                 "Launched ViewTaskDialogFragment without passing in task id. " +
                 "Use ViewTaskDialogFragment.newInstance() instead."
@@ -66,15 +53,15 @@ class ViewTaskDialogFragment: BujoAssDialogFragment() {
                     is PresentationResult.Loading -> {}
                     is PresentationResult.Error -> {
                         when(val e = it.error) {
-                            is ViewTaskDialogFragmentViewModel.PresentationException -> when(e){
-                                is ViewTaskDialogFragmentViewModel.PresentationException.TaskNoLongerExists -> dismissAllowingStateLoss()
-                                is ViewTaskDialogFragmentViewModel.PresentationException.TaskIsNotScheduled -> showError("Could not reschedule--task is currently not scheduled")
-                                is ViewTaskDialogFragmentViewModel.PresentationException.UnknownFailure ->{
+                            is ViewTaskFragmentViewModel.PresentationException -> when(e){
+                                is ViewTaskFragmentViewModel.PresentationException.TaskNoLongerExists -> findNavController().popBackStack()
+                                is ViewTaskFragmentViewModel.PresentationException.TaskIsNotScheduled -> showError("Could not reschedule--task is currently not scheduled")
+                                is ViewTaskFragmentViewModel.PresentationException.UnknownFailure ->{
                                     val text = when(e.request) {
-                                        ViewTaskDialogFragmentViewModel.Request.OBSERVE -> "Failed to update task properly."
-                                        ViewTaskDialogFragmentViewModel.Request.UPDATE_STATUS -> "Could not update status of task"
-                                        ViewTaskDialogFragmentViewModel.Request.RESCHEDULE -> "Could not schedule task"
-                                        ViewTaskDialogFragmentViewModel.Request.DELETE -> "Failed to delete task"
+                                        ViewTaskFragmentViewModel.Request.OBSERVE -> "Failed to update task properly."
+                                        ViewTaskFragmentViewModel.Request.UPDATE_STATUS -> "Could not update status of task"
+                                        ViewTaskFragmentViewModel.Request.RESCHEDULE -> "Could not schedule task"
+                                        ViewTaskFragmentViewModel.Request.DELETE -> "Failed to delete task"
                                     }
                                     showError(text)
                                     Timber.w(e.cause)

@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.util.*
 
-class ViewTaskDialogFragmentViewModel(
+class ViewTaskFragmentViewModel(
     private val observeSingleTaskUseCase: IObserveSingleTaskUseCase,
     private val modifyTaskStatusUseCase: IModifyTaskStatusUseCase,
     private val rescheduleTaskUseCase: IRescheduleTaskUseCase,

@@ -15,6 +15,10 @@ open class BujoAssFragment: Fragment(), KodeinAware {
     override val kodein: Kodein by closestKodein()
     protected val vmpfactory: ViewModelProvider.Factory by instance()
 
+    protected companion object {
+        const val ARGS_SELECTED = "args_selected"
+    }
+
     fun <T> NavController.setNavigationResult(key: String, value: T) {
         previousBackStackEntry?.savedStateHandle?.set(
             key,
