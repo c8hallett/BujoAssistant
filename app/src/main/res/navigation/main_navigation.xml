@@ -29,5 +29,19 @@
         <argument
             android:name="args_selected"
             app:argType="long" />
+        <action
+            android:id="@+id/action_viewTaskDialogFragment_to_selectScopeDialogFragment"
+            app:destination="@id/selectScopeDialogFragment" />
     </fragment>
+
+    <dialog
+        android:id="@+id/selectScopeDialogFragment"
+        android:name="com.hallett.bujoass.presentation.ui.SelectScopeDialogFragment"
+        android:label="SelectScopeDialogFragment" >
+
+        <argument
+            android:name="args_selected"
+            app:argType="com.hallett.bujoass.presentation.model.PScopeInstance"
+            app:nullable="true" />
+    </dialog>
 </navigation>

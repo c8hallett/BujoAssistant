@@ -14,8 +14,11 @@ import com.hallett.bujoass.databinding.FragmentViewTaskBinding
 import com.hallett.bujoass.domain.model.TaskStatus
 import com.hallett.bujoass.presentation.gone
 import com.hallett.bujoass.presentation.model.PScope
+import com.hallett.bujoass.presentation.model.PScopeInstance
 import com.hallett.bujoass.presentation.model.PresentationResult
+import com.hallett.bujoass.presentation.ui.ArgumentConstants
 import com.hallett.bujoass.presentation.ui.BujoAssFragment
+import com.hallett.bujoass.presentation.ui.SelectScopeDialogFragment
 import com.hallett.bujoass.presentation.visible
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -37,12 +40,13 @@ class ViewTaskFragment: BujoAssFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         hookupViewModelObservers()
         setOnClickListeners()
     }
 
     private fun hookupViewModelObservers(){
-        val taskId = arguments?.getLong(ARGS_SELECTED)
+        val taskId = arguments?.getLong(ArgumentConstants.ARGS_SELECTED)
             ?: throw IllegalStateException(
                 "Launched ViewTaskDialogFragment without passing in task id. " +
                 "Use ViewTaskDialogFragment.newInstance() instead."
@@ -77,57 +81,7 @@ class ViewTaskFragment: BujoAssFragment() {
                             TaskStatus.INCOMPLETE -> {
                                 scheduleBlock.visible()
                                 statusBlock.visible()
-                                val options = when(task.scope){
-                                    PScope.NONE -> arrayOf(
-                                        newButton("schedule"){ scheduleTask() }
-                                    )
-                                    PScope.DAY -> when {
-                                        task.isCurrent -> arrayOf(
-                                            newButton("do tomorrow"){ viewModel.deferTask() },
-                                            newButton("reschedule"){ scheduleTask() }
-                                        )
-                                        else -> arrayOf(
-                                            newButton("do today") { viewModel.moveTaskToCurrentScope(PScope.DAY) },
-                                            newButton("reschedule"){ scheduleTask() }
-                                        )
-                                    }
-                                    PScope.WEEK -> when {
-                                        task.isCurrent -> arrayOf(
-                                            newButton("do today") { viewModel.moveTaskToCurrentScope(PScope.DAY) },
-                                            newButton("do next week") { viewModel.deferTask() },
-                                            newButton("reschedule") { scheduleTask() }
-                                        )
-                                        else -> arrayOf(
-                                            newButton("do today") { viewModel.moveTaskToCurrentScope(PScope.DAY) },
-                                            newButton("do this week") { viewModel.moveTaskToCurrentScope(PScope.WEEK) },
-                                            newButton("reschedule") { scheduleTask() }
-                                        )
-                                    }
-                                    PScope.MONTH -> when {
-                                        task.isCurrent -> arrayOf(
-                                            newButton("do today") { viewModel.moveTaskToCurrentScope(PScope.DAY) },
-                                            newButton("do next month"){ viewModel.deferTask() },
-                                            newButton("reschedule"){ scheduleTask() }
-                                        )
-                                        else -> arrayOf(
-                                            newButton("do today") { viewModel.moveTaskToCurrentScope(PScope.DAY) },
-                                            newButton("do this month"){ viewModel.moveTaskToCurrentScope(PScope.MONTH) },
-                                            newButton("reschedule"){ scheduleTask() }
-                                        )
-                                    }
-                                    PScope.YEAR -> when {
-                                        task.isCurrent -> arrayOf(
-                                            newButton("do today") { viewModel.moveTaskToCurrentScope(PScope.DAY) },
-                                            newButton("do next year") { viewModel.deferTask() },
-                                            newButton("reschedule") { scheduleTask() }
-                                        )
-                                        else -> arrayOf(
-                                            newButton("do today") { viewModel.moveTaskToCurrentScope(PScope.DAY) },
-                                            newButton("do this year") { viewModel.moveTaskToCurrentScope(PScope.YEAR) },
-                                            newButton("reschedule") { scheduleTask() }
-                                        )
-                                    }
-                                }
+                                val options = populateButtons(task.scope, task.isCurrent)
                                 val statusOptions = arrayOf(
                                     newButton("complete"){ viewModel.updateStatus(TaskStatus.COMPLETE) },
                                     newButton("cancel"){ viewModel.updateStatus(TaskStatus.CANCELLED) }
@@ -154,6 +108,58 @@ class ViewTaskFragment: BujoAssFragment() {
         }
     }
 
+    private fun populateButtons(scopeInstance: PScopeInstance, isCurrent: Boolean): Array<Button> = when(scopeInstance.scope){
+        PScope.NONE -> arrayOf(
+            newButton("schedule"){ scheduleTask(scopeInstance) }
+        )
+        PScope.DAY -> when {
+            isCurrent -> arrayOf(
+                newButton("do tomorrow"){ viewModel.deferTask() },
+                newButton("reschedule"){ scheduleTask(scopeInstance) }
+            )
+            else -> arrayOf(
+                newButton("do today") { viewModel.moveTaskToCurrentScope(PScope.DAY) },
+                newButton("reschedule"){ scheduleTask(scopeInstance) }
+            )
+        }
+        PScope.WEEK -> when {
+            isCurrent -> arrayOf(
+                newButton("do today") { viewModel.moveTaskToCurrentScope(PScope.DAY) },
+                newButton("do next week") { viewModel.deferTask() },
+                newButton("reschedule") { scheduleTask(scopeInstance) }
+            )
+            else -> arrayOf(
+                newButton("do today") { viewModel.moveTaskToCurrentScope(PScope.DAY) },
+                newButton("do this week") { viewModel.moveTaskToCurrentScope(PScope.WEEK) },
+                newButton("reschedule") { scheduleTask(scopeInstance) }
+            )
+        }
+        PScope.MONTH -> when {
+            isCurrent -> arrayOf(
+                newButton("do today") { viewModel.moveTaskToCurrentScope(PScope.DAY) },
+                newButton("do next month"){ viewModel.deferTask() },
+                newButton("reschedule"){ scheduleTask(scopeInstance) }
+            )
+            else -> arrayOf(
+                newButton("do today") { viewModel.moveTaskToCurrentScope(PScope.DAY) },
+                newButton("do this month"){ viewModel.moveTaskToCurrentScope(PScope.MONTH) },
+                newButton("reschedule"){ scheduleTask(scopeInstance) }
+            )
+        }
+        PScope.YEAR -> when {
+            isCurrent -> arrayOf(
+                newButton("do today") { viewModel.moveTaskToCurrentScope(PScope.DAY) },
+                newButton("do next year") { viewModel.deferTask() },
+                newButton("reschedule") { scheduleTask(scopeInstance) }
+            )
+            else -> arrayOf(
+                newButton("do today") { viewModel.moveTaskToCurrentScope(PScope.DAY) },
+                newButton("do this year") { viewModel.moveTaskToCurrentScope(PScope.YEAR) },
+                newButton("reschedule") { scheduleTask(scopeInstance) }
+            )
+        }
+    }
+
     private fun ChipGroup.replaceViews(vararg views: View) {
         removeAllViews()
         views.forEach {
@@ -172,8 +178,20 @@ class ViewTaskFragment: BujoAssFragment() {
         }
     }
 
-    private fun scheduleTask() {
-
+    private fun scheduleTask(currentScope: PScopeInstance) {
+        findNavController().run {
+            getDialogResult<SelectScopeDialogFragment> {
+                Timber.i("Scope selected in dialog: $it")
+            }
+            getNavigationResult<PScopeInstance?>(SelectScopeDialogFragment.RETURN_VALUE_SELECTED_SCOPE) {
+                Timber.i("Received new scope: $it")
+                viewModel.rescheduleTask(it)
+            }
+            Timber.i("Selecting new scope")
+            navigate(
+                ViewTaskFragmentDirections.actionViewTaskDialogFragmentToSelectScopeDialogFragment(currentScope)
+            )
+        }
     }
 
     private fun showError(text: String) {

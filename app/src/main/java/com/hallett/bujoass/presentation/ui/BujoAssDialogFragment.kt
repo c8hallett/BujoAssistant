@@ -4,6 +4,7 @@ import android.content.DialogInterface
 import android.os.Bundle
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.hallett.bujoass.R
 import org.kodein.di.Kodein
@@ -37,10 +38,14 @@ open class BujoAssDialogFragment: DialogFragment(), KodeinAware {
         onCompleted(true)
     }
 
-    protected fun onCompleted(completed: Boolean) {
-        findNavController().previousBackStackEntry?.savedStateHandle?.set(
-            this::class.java.simpleName,
-            completed
+    protected fun <T> NavController.setNavigationResult(key: String, value: T) {
+        previousBackStackEntry?.savedStateHandle?.set(
+            key,
+            value
         )
+    }
+
+    protected fun onCompleted(completed: Boolean) {
+        findNavController().setNavigationResult(this::class.java.simpleName, completed)
     }
 }

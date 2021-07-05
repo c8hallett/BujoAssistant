@@ -52,7 +52,7 @@ class ViewTaskFragmentViewModel(
                 .collect {
                     val task = ViewableTask(
                         it.taskName,
-                        it.scope.scope,
+                        it.scope,
                         scopeFormatter.format(it.scope),
                         it.status,
                         it.isCurrentScope,
@@ -87,10 +87,13 @@ class ViewTaskFragmentViewModel(
         }
     }
 
-    fun rescheduleTask(scope: PScopeInstance) {
+    fun rescheduleTask(scope: PScopeInstance?) {
         viewModelScope.launch {
             try{
-                rescheduleTaskUseCase.execute(taskId, scope)
+                when(scope) {
+                    null -> {} // TODO: does anything need to be done if user cancels reschdule?
+                    else -> rescheduleTaskUseCase.execute(taskId, scope)
+                }
             } catch(t: Throwable) {
                 presentationFlow.emitFailure(PresentationException.UnknownFailure(Request.RESCHEDULE, t))
             }

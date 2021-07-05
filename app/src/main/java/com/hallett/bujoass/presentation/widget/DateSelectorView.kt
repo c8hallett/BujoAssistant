@@ -18,7 +18,6 @@ class DateSelectorView @JvmOverloads constructor(context: Context, attrs: Attrib
         setOnClickListener {
             DatePickerDialog(it.context).apply {
                 setOnDateSetListener { v, year, month, dayOfMonth ->
-                    Timber.i("Updating view model with $year, $month, $dayOfMonth")
                     dialogListener?.onDateSet(v, year, month, dayOfMonth)
                 }
                 with(Calendar.getInstance()) {

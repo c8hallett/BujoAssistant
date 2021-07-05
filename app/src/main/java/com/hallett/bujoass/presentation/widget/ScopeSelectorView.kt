@@ -44,7 +44,6 @@ class ScopeSelectorView @JvmOverloads constructor(context: Context, attrs: Attri
                 }
             }
             dateSelector.setOnDateSetListener{ _, year, month, dayOfMonth ->
-                Timber.i("Updating view model with $year, $month, $dayOfMonth")
                 calendar.apply {
                     set(Calendar.YEAR, year)
                     set(Calendar.MONTH, month)

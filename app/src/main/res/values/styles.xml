@@ -3,7 +3,7 @@
 
     <style name="AppTheme.Dialog" parent="Theme.MaterialComponents.Light.Dialog">
         <item name="android:windowIsFloating">false</item>
-        <item name="android:windowBackground">@android:color/white</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
     </style>
 
     <style name="AppTheme.Dialog.FullScreen" parent="AppTheme.Dialog">
