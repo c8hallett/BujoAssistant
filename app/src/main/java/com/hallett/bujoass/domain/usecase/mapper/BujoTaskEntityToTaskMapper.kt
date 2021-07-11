@@ -17,7 +17,7 @@ class BujoTaskEntityToTaskMapper(
         Task(
             id = id,
             taskName = taskName,
-            scope = scopeMapper.map(scopeInfo),
+            scopeInstance = scopeMapper.map(scopeInfo),
             status = status,
             isCurrentScope = isCurrent
         )

@@ -27,7 +27,7 @@ class ObserveTaskListUseCase(
                 Task(
                     id = it.id,
                     taskName = it.taskName,
-                    scope = scope,
+                    scopeInstance = scope,
                     status = it.status,
                     isCurrentScope = isCurrent
                 )

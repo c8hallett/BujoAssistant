@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import com.hallett.bujoass.databinding.FragmentNewBinding
+import com.hallett.bujoass.databinding.FragmentAddNewTaskBinding
 import com.hallett.bujoass.presentation.model.PresentationResult
 import com.hallett.bujoass.presentation.ui.BujoAssFragment
 import kotlinx.coroutines.flow.collect
@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class AddNewTaskFragment: BujoAssFragment() {
-    private lateinit var binding: FragmentNewBinding
+    private lateinit var binding: FragmentAddNewTaskBinding
 
     private val viewModel: AddNewTaskFragmentViewModel by lazy {
         ViewModelProvider(this, vmpfactory).get(AddNewTaskFragmentViewModel::class.java)
@@ -26,7 +26,7 @@ class AddNewTaskFragment: BujoAssFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentNewBinding.inflate(inflater, container, false)
+        binding = FragmentAddNewTaskBinding.inflate(inflater, container, false)
         return binding.root
     }
 

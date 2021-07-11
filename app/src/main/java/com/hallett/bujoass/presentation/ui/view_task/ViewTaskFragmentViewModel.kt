@@ -43,8 +43,8 @@ class ViewTaskFragmentViewModel(
                 .collect {
                     val task = ViewableTask(
                         it.taskName,
-                        it.scope,
-                        scopeFormatter.format(it.scope),
+                        it.scopeInstance,
+                        scopeFormatter.format(it.scopeInstance),
                         it.status,
                         it.isCurrentScope,
                     )
