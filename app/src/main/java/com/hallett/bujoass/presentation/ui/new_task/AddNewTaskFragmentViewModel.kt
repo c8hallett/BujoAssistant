@@ -14,7 +14,7 @@ import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 
-class NewFragmentViewModel(
+class AddNewTaskFragmentViewModel(
     private val saveNewTaskUseCase: ISaveNewTaskUseCase
 ): BujoAssViewModel() {
 

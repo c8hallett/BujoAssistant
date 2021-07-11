@@ -4,8 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -16,11 +14,11 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-class NewFragment: BujoAssFragment() {
+class AddNewTaskFragment: BujoAssFragment() {
     private lateinit var binding: FragmentNewBinding
 
-    private val viewModel: NewFragmentViewModel by lazy {
-        ViewModelProvider(this, vmpfactory).get(NewFragmentViewModel::class.java)
+    private val viewModel: AddNewTaskFragmentViewModel by lazy {
+        ViewModelProvider(this, vmpfactory).get(AddNewTaskFragmentViewModel::class.java)
     }
 
     override fun onCreateView(

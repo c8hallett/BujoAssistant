@@ -5,9 +5,9 @@
     app:startDestination="@id/taskListFragment">
 
     <fragment
-        android:id="@+id/newFragment"
-        android:name="com.hallett.bujoass.presentation.ui.new_task.NewFragment"
-        android:label="NewFragment" />
+        android:id="@+id/addNewTaskFragment"
+        android:name="com.hallett.bujoass.presentation.ui.new_task.AddNewTaskFragment"
+        android:label="AddNewTask" />
 
     <fragment
         android:id="@+id/taskListFragment"
@@ -15,7 +15,7 @@
         android:label="TaskListFragment" >
         <action
             android:id="@+id/action_taskListFragment_to_newFragment"
-            app:destination="@id/newFragment" />
+            app:destination="@id/addNewTaskFragment" />
         <action
             android:id="@+id/action_taskListFragment_to_viewTaskDialogFragment"
             app:destination="@id/viewTaskDialogFragment" />
