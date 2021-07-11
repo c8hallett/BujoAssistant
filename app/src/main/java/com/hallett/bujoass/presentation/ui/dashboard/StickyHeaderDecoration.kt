@@ -42,6 +42,7 @@ class StickyHeaderDecoration(private val getter: StickyHeaderGetter): RecyclerVi
 
     private fun View.fixLayoutSize(parent: ViewGroup) {
 
+
         // Specs for parent (RecyclerView)
         val widthSpec = View.MeasureSpec.makeMeasureSpec(parent.width, View.MeasureSpec.EXACTLY)
         val heightSpec = View.MeasureSpec.makeMeasureSpec(parent.height, View.MeasureSpec.UNSPECIFIED)
@@ -57,10 +58,10 @@ class StickyHeaderDecoration(private val getter: StickyHeaderGetter): RecyclerVi
             parent.paddingTop + parent.paddingBottom,
             layoutParams.height
         )
+
         measure(childWidthSpec, childHeightSpec)
         stickyHeaderHeight = measuredHeight
-        // top left corner, width of parent and height of header view
-        layout(0, 0, measuredWidth, stickyHeaderHeight)
+        layout(0, 0, measuredWidth, measuredHeight)
     }
 
     private fun getOverlappedView(

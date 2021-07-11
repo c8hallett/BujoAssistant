@@ -2,9 +2,11 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:background="?android:colorBackground"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/dp12">
+    android:paddingHorizontal="@dimen/dp12"
+    android:paddingTop="@dimen/dp24">
     <TextView
         android:id="@+id/label"
         android:layout_width="wrap_content"

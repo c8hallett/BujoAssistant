@@ -63,7 +63,7 @@ class DashboardAdapter(
                 ViewGroup.MarginLayoutParams.WRAP_CONTENT
             ).apply {
                 val m = context.resources.getDimensionPixelSize(R.dimen.dp12)
-                setMargins(0, 0, 0, m)
+                setMargins(m, m, m, 0)
             }
         }
         return ViewHolder.TaskItem(binding)
@@ -71,6 +71,15 @@ class DashboardAdapter(
 
     private fun createHeaderViewHolder(inflater: LayoutInflater): ViewHolder.HeaderItem {
         val binding = ListItemHeaderBinding.inflate(inflater)
+        binding.root.apply {
+            layoutParams = ViewGroup.MarginLayoutParams(
+                ViewGroup.MarginLayoutParams.MATCH_PARENT,
+                ViewGroup.MarginLayoutParams.WRAP_CONTENT
+            ).apply {
+                val m = context.resources.getDimensionPixelSize(R.dimen.dp12)
+                setMargins(m, m, m, 0)
+            }
+        }
         return ViewHolder.HeaderItem(binding)
     }
 
