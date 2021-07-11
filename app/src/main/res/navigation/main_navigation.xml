@@ -1,18 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-     android:id="@+id/main_navigation"
-    app:startDestination="@id/taskListFragment">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_navigation"
+    app:startDestination="@id/dashboardFragment">
+
+    <fragment
+        android:id="@+id/dashboardFragment"
+        android:name="com.hallett.bujoass.presentation.ui.dashboard.DashboardFragment"
+        android:label="DashboardFragment"
+        tools:layout="@layout/fragment_dashboard" />
 
     <fragment
         android:id="@+id/addNewTaskFragment"
         android:name="com.hallett.bujoass.presentation.ui.new_task.AddNewTaskFragment"
-        android:label="AddNewTask" />
+        android:label="AddNewTask"
+        tools:layout="@layout/fragment_add_new_task" />
 
     <fragment
         android:id="@+id/taskListFragment"
         android:name="com.hallett.bujoass.presentation.ui.task_list.TaskListFragment"
-        android:label="TaskListFragment" >
+        android:label="TaskListFragment"
+        tools:layout="@layout/fragment_task_list">
         <action
             android:id="@+id/action_taskListFragment_to_newFragment"
             app:destination="@id/addNewTaskFragment" />
@@ -24,7 +33,8 @@
     <fragment
         android:id="@+id/viewTaskDialogFragment"
         android:name="com.hallett.bujoass.presentation.ui.view_task.ViewTaskFragment"
-        android:label="ViewTaskDialogFragment" >
+        android:label="ViewTaskDialogFragment"
+        tools:layout="@layout/fragment_view_task" >
 
         <argument
             android:name="args_selected"
@@ -37,7 +47,8 @@
     <dialog
         android:id="@+id/selectScopeDialogFragment"
         android:name="com.hallett.bujoass.presentation.ui.SelectScopeDialogFragment"
-        android:label="SelectScopeDialogFragment" >
+        android:label="SelectScopeDialogFragment"
+        tools:layout="@layout/dialog_select_scope" >
 
         <argument
             android:name="args_selected"
