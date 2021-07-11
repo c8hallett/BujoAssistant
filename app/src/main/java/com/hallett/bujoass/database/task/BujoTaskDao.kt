@@ -35,6 +35,9 @@ interface BujoTaskDao {
     @Query("DELETE FROM $TABLE_NAME WHERE $ID = :taskId")
     suspend fun delete(taskId: Long)
 
+    @Query("DELETE FROM $TABLE_NAME")
+    suspend fun clearTable()
+
     @Query("SELECT * FROM $TABLE_NAME WHERE $TASK_SCOPE IS :scope AND $SCOPE_VALUE IS :date")
     fun getAllTaskForScopeInstance(scope: DScope?, date: Date?): Flow<List<BujoTaskEntity>>
 

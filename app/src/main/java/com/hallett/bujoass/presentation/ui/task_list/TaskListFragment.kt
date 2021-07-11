@@ -11,12 +11,14 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.hallett.bujoass.R
+import com.hallett.bujoass.database.TaskGenerator
 import com.hallett.bujoass.databinding.FragmentTaskListBinding
 import com.hallett.bujoass.domain.model.TaskStatus
 import com.hallett.bujoass.presentation.ui.BujoAssFragment
 import com.hallett.bujoass.presentation.ui.view_task.ViewTaskFragment
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import org.kodein.di.generic.instance
 import timber.log.Timber
 
 class TaskListFragment: BujoAssFragment() {
@@ -31,6 +33,8 @@ class TaskListFragment: BujoAssFragment() {
     private val viewModel: TaskListFragmentViewModel by lazy {
         ViewModelProvider(this, vmpfactory).get(TaskListFragmentViewModel::class.java)
     }
+
+    private val taskGenerator: TaskGenerator by instance()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -85,6 +89,12 @@ class TaskListFragment: BujoAssFragment() {
             scopeSelector.setOnScopeSelectedListener { viewModel.onNewScopeSelected(it) }
             newTaskBtn.setOnClickListener {
                 findNavController().navigate(R.id.action_taskListFragment_to_newFragment)
+            }
+            generateTasks.setOnClickListener {
+                lifecycleScope.launch {
+                    Timber.i("Generating some tasks")
+                    taskGenerator.generateTasks()
+                }
             }
         }
     }

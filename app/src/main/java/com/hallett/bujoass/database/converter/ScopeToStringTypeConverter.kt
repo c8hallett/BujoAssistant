@@ -1,4 +1,4 @@
-package com.hallett.bujoass.database
+package com.hallett.bujoass.database.converter
 
 import androidx.room.TypeConverter
 import com.hallett.bujoass.domain.model.DScope

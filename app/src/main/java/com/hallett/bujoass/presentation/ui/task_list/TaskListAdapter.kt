@@ -3,6 +3,7 @@ package com.hallett.bujoass.presentation.ui.task_list
 import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.view.ViewGroup.MarginLayoutParams
 import androidx.recyclerview.widget.RecyclerView
 import com.hallett.bujoass.R
 import com.hallett.bujoass.databinding.ListItemTaskBinding
@@ -23,6 +24,12 @@ class TaskListAdapter(val onTaskClicked: (Task) -> Unit): RecyclerView.Adapter<T
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = ListItemTaskBinding.inflate(LayoutInflater.from(parent.context))
+        binding.root.apply {
+            layoutParams = MarginLayoutParams(MarginLayoutParams.MATCH_PARENT, MarginLayoutParams.WRAP_CONTENT).apply {
+                val m = context.resources.getDimensionPixelSize(R.dimen.dp12)
+                setMargins(0, 0, 0, m)
+            }
+        }
         return ViewHolder(binding)
     }
 

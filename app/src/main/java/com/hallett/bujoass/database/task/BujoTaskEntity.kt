@@ -16,7 +16,7 @@ data class BujoTaskEntity(
     @ColumnInfo(name = TASK_NAME)
     val taskName: String,
     @ColumnInfo(name = TASK_STATUS)
-    val status: TaskStatus,
+    val status: TaskStatus = TaskStatus.INCOMPLETE,
     @Embedded
     val scopeInfo: ScopeInfo? = null,
     @ColumnInfo(name = CREATED_AT)

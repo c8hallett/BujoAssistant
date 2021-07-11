@@ -1,6 +1,7 @@
 package com.hallett.bujoass.di
 
 import androidx.lifecycle.ViewModelProvider
+import com.hallett.bujoass.database.TaskGenerator
 import com.hallett.bujoass.domain.model.DScope
 import com.hallett.bujoass.domain.model.DScopeInstance
 import com.hallett.bujoass.domain.usecase.mapper.*
@@ -17,4 +18,5 @@ import java.util.*
 val utilModule = Kodein.Module("util_module") {
     bind<ViewModelProvider.Factory>() with singleton { KodeinViewModelProviderFactory(kodein) }
     bind<IScopeOperatorFactory>() with singleton { ScopeOperatorFactory() }
+    bind<TaskGenerator>() with singleton { TaskGenerator(instance(), instance()) }
 }
