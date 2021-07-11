@@ -17,6 +17,7 @@ val useCaseModule = Kodein.Module("use_case_module") {
     bind<ISaveNewTaskUseCase>() with singleton { SaveNewTaskUseCase(instance(), instance()) }
     bind<IObserveTaskListUseCase>() with singleton { ObserveTaskListUseCase(instance(), instance(), instance()) }
     bind<IObserveTaskListFlowableUseCase>() with singleton { ObserveTaskListFlowableUseCase(instance()) }
+    bind<IObserveCurrentTasksFlowableUseCase>() with singleton { ObserveCurrentTasksFlowableUseCase(instance(), instance(), instance()) }
     bind<IObserveSingleTaskUseCase>() with singleton { ObserveSingleTaskUseCase(instance(), instance()) }
     bind<IDeleteTaskUseCase>() with singleton { DeleteTaskUseCase(instance()) }
     bind<IModifyTaskStatusUseCase>() with singleton { ModifyTaskStatusUseCase(instance()) }
