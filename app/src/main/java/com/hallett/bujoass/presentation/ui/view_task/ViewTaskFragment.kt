@@ -12,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.chip.ChipGroup
 import com.hallett.bujoass.databinding.FragmentViewTaskBinding
 import com.hallett.bujoass.domain.model.TaskStatus
+import com.hallett.bujoass.presentation.PresentationMessage
 import com.hallett.bujoass.presentation.gone
 import com.hallett.bujoass.presentation.model.PScope
 import com.hallett.bujoass.presentation.model.PScopeInstance
@@ -47,32 +48,12 @@ class ViewTaskFragment: BujoAssFragment() {
 
     private fun hookupViewModelObservers(){
         val taskId = arguments?.getLong(ArgumentConstants.ARGS_SELECTED)
-            ?: throw IllegalStateException(
-                "Launched ViewTaskDialogFragment without passing in task id. " +
-                "Use ViewTaskDialogFragment.newInstance() instead."
-            )
+            ?: throw IllegalStateException("Launched ViewTaskDialogFragment without passing in task id.")
         lifecycleScope.launch {
             viewModel.observeTask(taskId).collect {
                 when(it) {
                     is PresentationResult.Loading -> {}
-                    is PresentationResult.Error -> {
-                        when(val e = it.error) {
-                            is ViewTaskFragmentViewModel.PresentationException -> when(e){
-                                is ViewTaskFragmentViewModel.PresentationException.TaskNoLongerExists -> findNavController().popBackStack()
-                                is ViewTaskFragmentViewModel.PresentationException.TaskIsNotScheduled -> showError("Could not reschedule--task is currently not scheduled")
-                                is ViewTaskFragmentViewModel.PresentationException.UnknownFailure ->{
-                                    val text = when(e.request) {
-                                        ViewTaskFragmentViewModel.Request.OBSERVE -> "Failed to update task properly."
-                                        ViewTaskFragmentViewModel.Request.UPDATE_STATUS -> "Could not update status of task"
-                                        ViewTaskFragmentViewModel.Request.RESCHEDULE -> "Could not schedule task"
-                                        ViewTaskFragmentViewModel.Request.DELETE -> "Failed to delete task"
-                                    }
-                                    showError(text)
-                                    Timber.w(e.cause)
-                                }
-                            }
-                        }
-                    }
+                    is PresentationResult.Error -> showError(it.error.message ?: "Unknown error")
                     is PresentationResult.Success -> binding.run {
                         val task = it.data
                         taskName.text = task.taskName
@@ -104,6 +85,16 @@ class ViewTaskFragment: BujoAssFragment() {
                         }
                     }
                 }
+            }
+        }
+        lifecycleScope.launch {
+            viewModel.observeDismiss().collect {
+                findNavController().popBackStack()
+            }
+        }
+        lifecycleScope.launch {
+            viewModel.observeMessages().collect {
+                showError(it.message)
             }
         }
     }

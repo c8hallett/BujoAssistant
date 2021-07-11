@@ -4,16 +4,20 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.hallett.bujoass.R
 import com.hallett.bujoass.databinding.FragmentTaskListBinding
+import com.hallett.bujoass.domain.model.TaskStatus
 import com.hallett.bujoass.presentation.ui.BujoAssFragment
 import com.hallett.bujoass.presentation.ui.view_task.ViewTaskFragment
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class TaskListFragment: BujoAssFragment() {
 
@@ -41,6 +45,15 @@ class TaskListFragment: BujoAssFragment() {
         binding.taskList.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = taskAdapter
+            val taskSwiper = TaskSwipeHelper{ position, swipe ->
+                Timber.i("Swiped $swipe at position $position")
+                val task = taskAdapter.getTaskAtPosition(position)
+                when(swipe){
+                    TaskSwipeHelper.Swipe.LEFT -> viewModel.deferTask(task)
+                    TaskSwipeHelper.Swipe.RIGHT -> viewModel.updateStatus(task)
+                }
+            }
+            ItemTouchHelper(taskSwiper).attachToRecyclerView(this)
         }
         hookupViewModelObservers()
         setOnClickListeners()
@@ -55,6 +68,13 @@ class TaskListFragment: BujoAssFragment() {
         lifecycleScope.launch {
             viewModel.observeTaskList().collect {
                 taskAdapter.setItems(it)
+            }
+        }
+        lifecycleScope.launch {
+            viewModel.observeMessages().collect {
+                context?.let { ctx ->
+                    Toast.makeText(ctx, it.message, Toast.LENGTH_LONG).show()
+                }
             }
         }
     }

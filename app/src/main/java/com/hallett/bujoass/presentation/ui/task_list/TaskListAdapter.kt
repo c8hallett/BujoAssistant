@@ -15,6 +15,8 @@ class TaskListAdapter(val onTaskClicked: (Task) -> Unit): RecyclerView.Adapter<T
         notifyDataSetChanged()
     }
 
+    fun getTaskAtPosition(position: Int): Task? = itemList.getOrNull(position)
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = ListItemTaskBinding.inflate(LayoutInflater.from(parent.context))
         return ViewHolder(binding)

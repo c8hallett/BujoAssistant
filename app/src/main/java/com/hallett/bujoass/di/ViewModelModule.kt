@@ -12,6 +12,6 @@ import org.kodein.di.generic.singleton
 
 val viewModelModule = Kodein.Module("view_model_module") {
     bind<ViewModel>(tag = AddNewTaskFragmentViewModel::class.java) with provider { AddNewTaskFragmentViewModel(instance()) }
-    bind<ViewModel>(tag = TaskListFragmentViewModel::class.java) with singleton { TaskListFragmentViewModel(instance()) }
+    bind<ViewModel>(tag = TaskListFragmentViewModel::class.java) with singleton { TaskListFragmentViewModel(instance(), instance(), instance(), instance(), instance()) }
     bind<ViewModel>(tag = ViewTaskFragmentViewModel::class.java) with provider { ViewTaskFragmentViewModel(instance(), instance(), instance(), instance(), instance(), instance()) }
 }
