@@ -27,13 +27,6 @@ class ViewTaskFragmentViewModel(
     private val scopeFormatter: Formatter<PScopeInstance>,
 ): BujoAssViewModel() {
 
-    enum class Request {
-        OBSERVE,
-        UPDATE_STATUS,
-        RESCHEDULE,
-        DELETE,
-    }
-
     private val taskFlow = MutableSharedFlow<PresentationResult<ViewableTask>>()
     private val messageFlow = MutableSharedFlow<PresentationMessage>()
     private val dismissFlow = MutableSharedFlow<Unit>()
@@ -71,7 +64,6 @@ class ViewTaskFragmentViewModel(
                     when(status) {
                         TaskStatus.COMPLETE -> "Marked task as complete!"
                         TaskStatus.INCOMPLETE -> "Reset task."
-                        TaskStatus.CANCELLED -> "Cancelled task."
                     }
                 },
                 onFailure = {
@@ -79,7 +71,6 @@ class ViewTaskFragmentViewModel(
                     when(status) {
                         TaskStatus.COMPLETE -> "Couldn't mark task as complete. Please try again."
                         TaskStatus.INCOMPLETE -> "Couldn't reset task status. Please try again."
-                        TaskStatus.CANCELLED -> "Couldn't cancel task. Please try again."
                     }
                 }
             )
@@ -144,7 +135,7 @@ class ViewTaskFragmentViewModel(
                     val pScope = PScopeInstance(scope, Date())
                     rescheduleTaskUseCase.execute(taskId, pScope)
                     when(scope) {
-                        PScope.NONE -> ""
+                        PScope.NONE -> "Couldn't unschedule task"
                         PScope.DAY -> "Task moved to today"
                         PScope.WEEK -> "Task moved to this week"
                         PScope.MONTH -> "Task moved to this month"

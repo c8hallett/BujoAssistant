@@ -12,8 +12,6 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.chip.ChipGroup
 import com.hallett.bujoass.databinding.FragmentViewTaskBinding
 import com.hallett.bujoass.domain.model.TaskStatus
-import com.hallett.bujoass.presentation.PresentationMessage
-import com.hallett.bujoass.presentation.gone
 import com.hallett.bujoass.presentation.model.PScope
 import com.hallett.bujoass.presentation.model.PScopeInstance
 import com.hallett.bujoass.presentation.model.PresentationResult
@@ -62,24 +60,18 @@ class ViewTaskFragment: BujoAssFragment() {
                             TaskStatus.INCOMPLETE -> {
                                 scheduleBlock.visible()
                                 statusBlock.visible()
-                                val options = populateButtons(task.scope, task.isCurrent)
+                                val scheduleOptions = populateButtons(task.scope, task.isCurrent)
                                 val statusOptions = arrayOf(
                                     newButton("complete"){ viewModel.updateStatus(TaskStatus.COMPLETE) },
-                                    newButton("cancel"){ viewModel.updateStatus(TaskStatus.CANCELLED) }
                                 )
-                                scheduleBlock.replaceViews(*options)
+                                scheduleBlock.replaceViews(*scheduleOptions)
                                 statusBlock.replaceViews(*statusOptions)
                             }
-                            TaskStatus.CANCELLED -> {
-                                scheduleBlock.gone()
-                                statusBlock.visible()
-
-                                val statusButton = newButton("uncancel") { viewModel.updateStatus(TaskStatus.INCOMPLETE) }
-                                statusBlock.replaceViews(statusButton)
-                            }
                             TaskStatus.COMPLETE -> {
-                                scheduleBlock.gone()
-                                statusBlock.gone()
+                                val scheduleOptions = arrayOf<Button>()
+                                val statusOptions = arrayOf<Button>()
+                                scheduleBlock.replaceViews(*scheduleOptions)
+                                statusBlock.replaceViews(*statusOptions)
                                 // Nothing can be modified about the task--only for viewing (or deleting)
                             }
                         }
@@ -99,18 +91,18 @@ class ViewTaskFragment: BujoAssFragment() {
         }
     }
 
-    private fun populateButtons(scopeInstance: PScopeInstance, isCurrent: Boolean): Array<Button> = when(scopeInstance.scope){
+    private fun populateButtons(scopeInstance: PScopeInstance, isCurrent: Boolean): Array<Button> = when (scopeInstance.scope) {
         PScope.NONE -> arrayOf(
-            newButton("schedule"){ scheduleTask(scopeInstance) }
+            newButton("schedule") { scheduleTask(scopeInstance) }
         )
         PScope.DAY -> when {
             isCurrent -> arrayOf(
-                newButton("do tomorrow"){ viewModel.deferTask() },
-                newButton("reschedule"){ scheduleTask(scopeInstance) }
+                newButton("do tomorrow") { viewModel.deferTask() },
+                newButton("reschedule") { scheduleTask(scopeInstance) }
             )
             else -> arrayOf(
                 newButton("do today") { viewModel.moveTaskToCurrentScope(PScope.DAY) },
-                newButton("reschedule"){ scheduleTask(scopeInstance) }
+                newButton("reschedule") { scheduleTask(scopeInstance) }
             )
         }
         PScope.WEEK -> when {
@@ -128,13 +120,13 @@ class ViewTaskFragment: BujoAssFragment() {
         PScope.MONTH -> when {
             isCurrent -> arrayOf(
                 newButton("do today") { viewModel.moveTaskToCurrentScope(PScope.DAY) },
-                newButton("do next month"){ viewModel.deferTask() },
-                newButton("reschedule"){ scheduleTask(scopeInstance) }
+                newButton("do next month") { viewModel.deferTask() },
+                newButton("reschedule") { scheduleTask(scopeInstance) }
             )
             else -> arrayOf(
                 newButton("do today") { viewModel.moveTaskToCurrentScope(PScope.DAY) },
-                newButton("do this month"){ viewModel.moveTaskToCurrentScope(PScope.MONTH) },
-                newButton("reschedule"){ scheduleTask(scopeInstance) }
+                newButton("do this month") { viewModel.moveTaskToCurrentScope(PScope.MONTH) },
+                newButton("reschedule") { scheduleTask(scopeInstance) }
             )
         }
         PScope.YEAR -> when {
@@ -171,14 +163,10 @@ class ViewTaskFragment: BujoAssFragment() {
 
     private fun scheduleTask(currentScope: PScopeInstance) {
         findNavController().run {
-            getDialogResult<SelectScopeDialogFragment> {
-                Timber.i("Scope selected in dialog: $it")
-            }
             getNavigationResult<PScopeInstance?>(SelectScopeDialogFragment.RETURN_VALUE_SELECTED_SCOPE) {
                 Timber.i("Received new scope: $it")
                 viewModel.rescheduleTask(it)
             }
-            Timber.i("Selecting new scope")
             navigate(
                 ViewTaskFragmentDirections.actionViewTaskDialogFragmentToSelectScopeDialogFragment(currentScope)
             )
@@ -190,4 +178,4 @@ class ViewTaskFragment: BujoAssFragment() {
             Toast.makeText(it, text, Toast.LENGTH_LONG).show()
         }
     }
-}
+    }

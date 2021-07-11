@@ -67,6 +67,7 @@ class TaskListFragment: BujoAssFragment() {
         }
         lifecycleScope.launch {
             viewModel.observeTaskList().collect {
+                Timber.i("Task list updated: $it")
                 taskAdapter.setItems(it)
             }
         }

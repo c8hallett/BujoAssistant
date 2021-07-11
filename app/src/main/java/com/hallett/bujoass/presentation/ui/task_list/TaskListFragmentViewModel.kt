@@ -55,10 +55,6 @@ class TaskListFragmentViewModel(
                                 modifyTaskStatusUseCase.execute(task.id, TaskStatus.COMPLETE)
                                 "Task completed."
                             }
-                            TaskStatus.CANCELLED -> {
-                                modifyTaskStatusUseCase.execute(task.id, TaskStatus.INCOMPLETE)
-                                "Task reset."
-                            }
                         }
                     },
                     onFailure = {
