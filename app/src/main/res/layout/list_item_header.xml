@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingHorizontal="@dimen/dp12"
-    android:paddingTop="@dimen/dp24">
+    android:paddingTop="@dimen/dp24"
+    android:paddingBottom="@dimen/dp12">
     <TextView
         android:id="@+id/label"
         android:layout_width="wrap_content"
