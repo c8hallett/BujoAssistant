@@ -1,43 +1,35 @@
 package com.hallett.bujoass.presentation.ui.task_list
 
 import androidx.lifecycle.viewModelScope
+import com.hallett.bujoass.domain.Scope
 import com.hallett.bujoass.domain.model.TaskStatus
 import com.hallett.bujoass.domain.usecase.modify_task.IDeferTaskUseCase
-import com.hallett.bujoass.domain.usecase.modify_task.IDeleteTaskUseCase
 import com.hallett.bujoass.domain.usecase.modify_task.IModifyTaskStatusUseCase
-import com.hallett.bujoass.domain.usecase.modify_task.IRescheduleTaskUseCase
 import com.hallett.bujoass.domain.usecase.observe_task.IObserveTaskListFlowableUseCase
 import com.hallett.bujoass.presentation.PresentationMessage
-import com.hallett.bujoass.presentation.model.PScope
-import com.hallett.bujoass.presentation.model.PScopeInstance
-import com.hallett.bujoass.presentation.model.PresentationResult
 import com.hallett.bujoass.presentation.model.Task
 import com.hallett.bujoass.presentation.ui.BujoAssViewModel
-import com.hallett.bujoass.presentation.ui.view_task.ViewTaskFragmentViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.util.*
 
 class TaskListFragmentViewModel(
     private val observeTaskListFlowableUseCase: IObserveTaskListFlowableUseCase,
     private val modifyTaskStatusUseCase: IModifyTaskStatusUseCase,
-    private val rescheduleTaskUseCase: IRescheduleTaskUseCase,
     private val deferTaskUseCase: IDeferTaskUseCase,
-    private val deleteTaskUseCase: IDeleteTaskUseCase,
 ): BujoAssViewModel() {
 
     private val messageFlow = MutableSharedFlow<PresentationMessage>()
 
-    private var selectedScopeFlow = MutableStateFlow(PScopeInstance(PScope.NONE, Date()))
-    fun onNewScopeSelected(pScopeInstance: PScopeInstance) {
+    private var selectedScopeFlow = MutableStateFlow<Scope?>(null)
+    fun onNewScopeSelected(scope: Scope?) {
         viewModelScope.launch {
-            selectedScopeFlow.emit(pScopeInstance)
+            selectedScopeFlow.emit(scope)
         }
     }
 
     fun observeTaskList(): Flow<List<Task>> = observeTaskListFlowableUseCase.execute(selectedScopeFlow)
-    fun observeNewScopeSelected(): Flow<PScopeInstance> = selectedScopeFlow
+    fun observeNewScopeSelected(): Flow<Scope?> = selectedScopeFlow
     fun observeMessages(): Flow<PresentationMessage> = messageFlow
 
     fun updateStatus(task: Task?) {

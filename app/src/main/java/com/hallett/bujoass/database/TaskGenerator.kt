@@ -2,8 +2,7 @@ package com.hallett.bujoass.database
 
 import com.hallett.bujoass.database.task.BujoTaskDao
 import com.hallett.bujoass.database.task.BujoTaskEntity
-import com.hallett.bujoass.domain.model.DScope
-import com.hallett.bujoass.domain.usecase.scope_operations.INormalizeDateForScopeUseCase
+import com.hallett.bujoass.domain.Scope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.*
@@ -11,7 +10,6 @@ import kotlin.math.max
 
 class TaskGenerator(
     private val taskDao: BujoTaskDao,
-    private val normalizeDateForScopeUseCase: INormalizeDateForScopeUseCase
 ) {
 
     private companion object {
@@ -26,16 +24,15 @@ class TaskGenerator(
     private val mutableCalendar: Calendar
         get() = Calendar.getInstance()
 
-    private fun getTaskForScope(scope: DScope): BujoTaskEntity {
+    private fun getTaskForScope(getScope: (Date) -> Scope): BujoTaskEntity {
         val dayOffset = (0..DAYS_SPREAD).random()
         val date = mutableCalendar.apply {
             add(Calendar.DAY_OF_YEAR, dayOffset)
         }.time
-        val normalizedDate = normalizeDateForScopeUseCase.execute(scope, date)
 
         return BujoTaskEntity(
             taskName = sampleTasks.random(),
-            scopeInfo = BujoTaskEntity.ScopeInfo(scope, normalizedDate)
+            scope = getScope(date)
         )
     }
 
@@ -51,17 +48,17 @@ class TaskGenerator(
         }
         repeat((NUM_TASKS * PERCENT_DAY_SCOPE).toInt()) {
             entityList.add(
-                getTaskForScope(DScope.DAY)
+                getTaskForScope{ Scope.Day(it) }
             )
         }
         repeat((NUM_TASKS * PERCENT_WEEK_SCOPE).toInt()) {
             entityList.add(
-                getTaskForScope(DScope.WEEK)
+                getTaskForScope{ Scope.Week(it) }
             )
         }
         repeat((NUM_TASKS * PERCENT_MONTH_SCOPE).toInt()) {
             entityList.add(
-                getTaskForScope(DScope.MONTH)
+                getTaskForScope{ Scope.Month(it) }
             )
         }
 

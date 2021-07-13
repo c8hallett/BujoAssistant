@@ -58,7 +58,7 @@ class AddNewTaskFragment: BujoAssFragment() {
 
     private fun hookupClickListeners() {
         binding.run {
-            scopeSelector.setOnScopeSelectedListener{ viewModel.onNewScopeSelected(it) }
+            scopeSelector.setOnScopeSelectedListener { viewModel.onNewScopeSelected(it) }
             saveBtn.setOnClickListener {
                 viewModel.saveTask(taskName.text.toString())
             }

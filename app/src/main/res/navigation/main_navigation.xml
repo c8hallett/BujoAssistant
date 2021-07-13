@@ -49,10 +49,9 @@
         android:name="com.hallett.bujoass.presentation.ui.SelectScopeDialogFragment"
         android:label="SelectScopeDialogFragment"
         tools:layout="@layout/dialog_select_scope" >
-
         <argument
             android:name="args_selected"
-            app:argType="com.hallett.bujoass.presentation.model.PScopeInstance"
+            app:argType="com.hallett.bujoass.domain.Scope"
             app:nullable="true" />
     </dialog>
 </navigation>

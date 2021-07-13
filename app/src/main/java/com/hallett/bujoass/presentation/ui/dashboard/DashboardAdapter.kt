@@ -5,20 +5,23 @@ import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.hallett.bujoass.R
 import com.hallett.bujoass.databinding.ListItemHeaderBinding
 import com.hallett.bujoass.databinding.ListItemTaskBinding
 import com.hallett.bujoass.domain.model.TaskStatus
 import com.hallett.bujoass.presentation.model.Task
-import org.kodein.di.weakReference
-import timber.log.Timber
+import com.hallett.bujoass.presentation.ui.task_list.TaskSwipeHelper
 import java.lang.ref.WeakReference
 
 class DashboardAdapter(
     private val context: WeakReference<Context>,
-    private val onTaskClicked: (Task) -> Unit): RecyclerView.Adapter<DashboardAdapter.ViewHolder>(), StickyHeaderDecoration.StickyHeaderGetter {
+    private val onTaskClicked: (Task) -> Unit,
+    private val onTaskSwiped: (Task, TaskSwipeHelper.Swipe) -> Unit,
+): RecyclerView.Adapter<DashboardAdapter.ViewHolder>(),
+    StickyHeaderDecoration.StickyHeaderGetter,
+    TaskSwipeHelper.SwipeCallbacks
+{
 
     private var itemList: List<DashboardItem> = listOf()
 
@@ -32,7 +35,14 @@ class DashboardAdapter(
         const val ITEM_TASK_HEADER = 1
     }
 
+    override fun canPositionBeSwiped(position: Int): Boolean = !isHeaderAtPosition(position)
 
+    override fun getTaskAtPosition(position: Int): Task = when(val item = itemList[position]) {
+        is DashboardItem.TaskItem -> item.task
+        else -> throw IllegalStateException("Swiped task at invalid position: $position")
+    }
+
+    override fun onTaskSwipe(task: Task, swipe: TaskSwipeHelper.Swipe) = onTaskSwiped(task, swipe)
     override fun getItemCount(): Int = itemList.size
 
     override fun getItemViewType(position: Int): Int = when(itemList[position]){
@@ -111,7 +121,7 @@ class DashboardAdapter(
 
     private fun getHeaderPositionForItem(itemPosition: Int): Int {
         itemPosition.downTo(0).forEach {
-            if(isHeader(it)) return it
+            if(isHeaderAtPosition(it)) return it
         }
         return RecyclerView.NO_POSITION
     }
@@ -131,5 +141,5 @@ class DashboardAdapter(
         return currentHeader
     }
 
-    override fun isHeader(position: Int): Boolean = itemList.getOrNull(position) is DashboardItem.HeaderItem
+    override fun isHeaderAtPosition(position: Int): Boolean = itemList.getOrNull(position) is DashboardItem.HeaderItem
 }

@@ -5,7 +5,6 @@ import android.graphics.Rect
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import timber.log.Timber
 
 
 class StickyHeaderDecoration(private val getter: StickyHeaderGetter): RecyclerView.ItemDecoration() {
@@ -28,7 +27,7 @@ class StickyHeaderDecoration(private val getter: StickyHeaderGetter): RecyclerVi
                 val overlappedPosition = parent.getChildAdapterPosition(overlappedView)
                 when{
                     overlappedPosition == headerPosition -> return
-                    getter.isHeader(overlappedPosition) -> c.moveHeader(currentHeader, overlappedView, parent.top)
+                    getter.isHeaderAtPosition(overlappedPosition) -> c.moveHeader(currentHeader, overlappedView, parent.top)
                     else -> c.drawHeader(currentHeader, parent.top.toFloat())
                 }
             }
@@ -106,6 +105,6 @@ class StickyHeaderDecoration(private val getter: StickyHeaderGetter): RecyclerVi
          */
         fun getCurrentHeader(position: Int): Pair<Int, View>?
 
-        fun isHeader(position: Int): Boolean
+        fun isHeaderAtPosition(position: Int): Boolean
     }
 }

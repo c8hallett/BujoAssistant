@@ -4,7 +4,7 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.hallett.bujoass.database.converter.DateToLongConverter
-import com.hallett.bujoass.database.converter.ScopeToStringTypeConverter
+import com.hallett.bujoass.database.converter.ScopeToStringConverter
 import com.hallett.bujoass.database.task.BujoTaskDao
 import com.hallett.bujoass.database.task.BujoTaskEntity
 
@@ -14,7 +14,7 @@ import com.hallett.bujoass.database.task.BujoTaskEntity
 )
 @TypeConverters(
     DateToLongConverter::class,
-    ScopeToStringTypeConverter::class
+    ScopeToStringConverter::class
 )
 abstract class BujoAssDatabase: RoomDatabase() {
     abstract fun bujoTaskDao(): BujoTaskDao

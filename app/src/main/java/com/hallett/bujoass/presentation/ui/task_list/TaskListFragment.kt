@@ -13,26 +13,24 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.hallett.bujoass.R
 import com.hallett.bujoass.database.TaskGenerator
 import com.hallett.bujoass.databinding.FragmentTaskListBinding
-import com.hallett.bujoass.domain.model.TaskStatus
+import com.hallett.bujoass.presentation.PresentationMessage
+import com.hallett.bujoass.presentation.model.Task
 import com.hallett.bujoass.presentation.ui.BujoAssFragment
-import com.hallett.bujoass.presentation.ui.view_task.ViewTaskFragment
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.kodein.di.generic.instance
 import timber.log.Timber
+import java.lang.Error
 
 class TaskListFragment: BujoAssFragment() {
 
     private lateinit var binding: FragmentTaskListBinding
-    private val taskAdapter: TaskListAdapter = TaskListAdapter{
-        findNavController().navigate(
-            TaskListFragmentDirections.actionTaskListFragmentToViewTaskDialogFragment(it.id)
-        )
-    }
+    private val taskAdapter: TaskListAdapter = TaskListAdapter(::clickTask, ::swipeTask)
 
     private val viewModel: TaskListFragmentViewModel by lazy {
         ViewModelProvider(this, vmpfactory).get(TaskListFragmentViewModel::class.java)
     }
+
 
     private val taskGenerator: TaskGenerator by instance()
 
@@ -49,15 +47,7 @@ class TaskListFragment: BujoAssFragment() {
         binding.taskList.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = taskAdapter
-            val taskSwiper = TaskSwipeHelper{ position, swipe ->
-                Timber.i("Swiped $swipe at position $position")
-                val task = taskAdapter.getTaskAtPosition(position)
-                when(swipe){
-                    TaskSwipeHelper.Swipe.LEFT -> viewModel.deferTask(task)
-                    TaskSwipeHelper.Swipe.RIGHT -> viewModel.updateStatus(task)
-                }
-            }
-            ItemTouchHelper(taskSwiper).attachToRecyclerView(this)
+            ItemTouchHelper(TaskSwipeHelper(taskAdapter)).attachToRecyclerView(this)
         }
         hookupViewModelObservers()
         setOnClickListeners()
@@ -77,6 +67,11 @@ class TaskListFragment: BujoAssFragment() {
         }
         lifecycleScope.launch {
             viewModel.observeMessages().collect {
+                Timber.i("New message: $it")
+                if(it is PresentationMessage.Error){
+                    Timber.i("should be resetting ui")
+                    taskAdapter.notifyDataSetChanged()
+                }
                 context?.let { ctx ->
                     Toast.makeText(ctx, it.message, Toast.LENGTH_LONG).show()
                 }
@@ -96,6 +91,19 @@ class TaskListFragment: BujoAssFragment() {
                     taskGenerator.generateTasks()
                 }
             }
+        }
+    }
+
+    private fun clickTask(task: Task) {
+        findNavController().navigate(
+            TaskListFragmentDirections.actionTaskListFragmentToViewTaskDialogFragment(task.id)
+        )
+    }
+
+    private fun swipeTask(task: Task, swipe: TaskSwipeHelper.Swipe) {
+        when(swipe){
+            TaskSwipeHelper.Swipe.LEFT -> viewModel.deferTask(task)
+            TaskSwipeHelper.Swipe.RIGHT -> viewModel.updateStatus(task)
         }
     }
 }
