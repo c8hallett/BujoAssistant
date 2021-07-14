@@ -2,6 +2,7 @@ package com.hallett.bujoass.presentation.ui.view_task
 
 import androidx.lifecycle.viewModelScope
 import com.hallett.bujoass.domain.Scope
+import com.hallett.bujoass.domain.ScopeType
 import com.hallett.bujoass.domain.model.TaskStatus
 import com.hallett.bujoass.domain.usecase.modify_task.IDeferTaskUseCase
 import com.hallett.bujoass.domain.usecase.modify_task.IDeleteTaskUseCase
@@ -123,25 +124,26 @@ class ViewTaskFragmentViewModel(
         }
     }
 
-    fun moveTaskToCurrentScope(scope: Scope) {
+    fun moveTaskToCurrentScope(scopeType: ScopeType) {
         viewModelScope.launch {
             messageFlow.emitMessage(
                 operation = {
-                    rescheduleTaskUseCase.execute(taskId, scope.getCurrent())
-                    when(scope) {
-                        is Scope.Day -> "Task moved to today"
-                        is Scope.Week -> "Task moved to this week"
-                        is Scope.Month -> "Task moved to this month"
-                        is Scope.Year -> "Task moved to this year"
+                    // TODO: maybe this could be moved to own use case. . .
+                    rescheduleTaskUseCase.execute(taskId, Scope.getCurrent(scopeType))
+                    when(scopeType) {
+                        ScopeType.DAY-> "Task moved to today"
+                        ScopeType.WEEK -> "Task moved to this week"
+                        ScopeType.MONTH -> "Task moved to this month"
+                        ScopeType.YEAR -> "Task moved to this year"
                     }
                 },
                 onFailure = {
-                    Timber.w(it, "Couldn't move task to current scope ($scope)")
-                    when(scope) {
-                        is Scope.Day -> "Couldn't move task to today."
-                        is Scope.Week -> "Couldn't move task to this week."
-                        is Scope.Month -> "Couldn't move task to this month."
-                        is Scope.Year -> "Couldn't move task to this year."
+                    Timber.w(it, "Couldn't move task to current scope ($scopeType)")
+                    when(scopeType) {
+                        ScopeType.DAY -> "Couldn't move task to today."
+                        ScopeType.WEEK -> "Couldn't move task to this week."
+                        ScopeType.MONTH -> "Couldn't move task to this month."
+                        ScopeType.YEAR -> "Couldn't move task to this year."
                     }.plus(" Please try again.")
                 }
             )

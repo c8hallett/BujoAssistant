@@ -12,39 +12,22 @@ import androidx.annotation.StringRes
 import com.hallett.bujoass.R
 import com.hallett.bujoass.databinding.WidgetScopeSelectorBinding
 import com.hallett.bujoass.domain.Scope
+import com.hallett.bujoass.domain.ScopeType
 import com.hallett.bujoass.presentation.gone
 import com.hallett.bujoass.presentation.visible
 import java.util.*
 
 class ScopeSelectorView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) : LinearLayout(context, attrs) {
 
-    private enum class DisplayScope(@StringRes val displayName: Int) {
-        NONE(R.string.display_scope_none),
-        DAY(R.string.display_scope_day),
-        WEEK(R.string.display_scope_week),
-        MONTH(R.string.display_scope_month),
-        YEAR(R.string.display_scope_year);
-        companion object{
-            fun fromScope(scope: Scope?): DisplayScope = when(scope) {
-                null -> NONE
-                is Scope.Day -> DAY
-                is Scope.Week -> WEEK
-                is Scope.Month -> MONTH
-                is Scope.Year -> YEAR
-            }
+    private val labelMap: List<Pair<String, ScopeType?>> = listOf(
+        Pair(context.getString(R.string.display_scope_none), null),
+        Pair(context.getString(R.string.display_scope_day), ScopeType.DAY),
+        Pair(context.getString(R.string.display_scope_week), ScopeType.WEEK),
+        Pair(context.getString(R.string.display_scope_month), ScopeType.MONTH),
+        Pair(context.getString(R.string.display_scope_year), ScopeType.YEAR),
 
-            fun toScope(position: Int, date: Date): Scope? = when(values()[position]){
-                NONE -> null
-                DAY -> Scope.Day(date)
-                WEEK -> Scope.Week(date)
-                MONTH -> Scope.Month(date)
-                YEAR -> Scope.Year(date)
-            }
-        }
-    }
-
+    )
     private val binding = WidgetScopeSelectorBinding.inflate(LayoutInflater.from(context), this)
-    private val scopeOptions = DisplayScope.values().map { context.getString(it.displayName) }
 
     private var calendar: Calendar = Calendar.getInstance()
     private var onScopeSelected: ((Scope?) -> Unit)? = null
@@ -55,7 +38,7 @@ class ScopeSelectorView @JvmOverloads constructor(context: Context, attrs: Attri
 
         binding.run {
             scopeSpinner.apply {
-                adapter = ArrayAdapter(context, android.R.layout.simple_spinner_item, scopeOptions)
+                adapter = ArrayAdapter(context, android.R.layout.simple_spinner_item, labelMap.map { it.first })
                 onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
                     override fun onItemSelected(
                         parent: AdapterView<*>?,
@@ -73,7 +56,11 @@ class ScopeSelectorView @JvmOverloads constructor(context: Context, attrs: Attri
                     set(Calendar.MONTH, month)
                     set(Calendar.DATE, dayOfMonth)
                 }
-                val scope = DisplayScope.toScope(scopeSpinner.selectedItemPosition, calendar.time)
+                val scope = when(val scopeType = labelMap[scopeSpinner.selectedItemPosition].second) {
+                    null -> null
+                    else -> Scope.newInstance(scopeType, calendar.time)
+                }
+
                 onScopeSelected?.invoke(scope)
                 dateSelector.setDefaultDate(scope?.value ?: Date())
             }
@@ -81,9 +68,12 @@ class ScopeSelectorView @JvmOverloads constructor(context: Context, attrs: Attri
     }
 
     private fun setScopeToPosition(position: Int) {
-        val scope = DisplayScope.toScope(position, calendar.time)
-        onScopeSelected?.invoke(scope)
         binding.run {
+            val scope = when(val scopeType = labelMap[position].second) {
+                null -> null
+                else -> Scope.newInstance(scopeType, calendar.time)
+            }
+            onScopeSelected?.invoke(scope)
             when(scope) {
                 null -> {
                     scopePreLabel.gone()
@@ -104,7 +94,7 @@ class ScopeSelectorView @JvmOverloads constructor(context: Context, attrs: Attri
     }
 
     fun displayScope(scope: Scope?) = binding.run{
-        val selectedPosition = DisplayScope.values().indexOf(DisplayScope.fromScope(scope))
+        val selectedPosition = labelMap.indexOfFirst { it.second == scope?.type }
         scopeSpinner.setSelection(selectedPosition)
         dateSelector.setDefaultDate(scope?.value ?: Date())
     }

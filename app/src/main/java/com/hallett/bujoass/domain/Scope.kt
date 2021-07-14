@@ -5,25 +5,46 @@ import java.time.temporal.ChronoUnit
 import java.util.Date
 import java.util.Calendar
 
-sealed class Scope(val value: Date): Serializable{
-    abstract val chronoUnit: ChronoUnit
-    abstract fun add(unit: Int): Scope
-    abstract fun getCurrent(): Scope
+class Scope private constructor(
+    val type: ScopeType,
+    val value: Date,
+    private val chronoUnit: ChronoUnit,
+    private val calendarField: Int
+    ): Serializable {
+
+    fun add(unit: Int): Scope {
+        val forwardedDate = Calendar.getInstance().apply {
+            time = value
+            add(calendarField, unit)
+        }.time
+
+        return Scope(ScopeType.DAY, forwardedDate, chronoUnit, calendarField)
+    }
 
     fun subtract(unit: Int): Scope = add(-unit)
     fun next(): Scope = add(1)
     fun previous(): Scope = add(-1)
-    fun isCurrent(): Boolean {
-        return getCurrent() == this
-    }
     fun getPosition(startDate: Date): Int =
         chronoUnit.between(
             value.toInstant(),
             startDate.toInstant()
         ).toInt()
+    fun isCurrent(): Boolean = (this == getCurrent(type)) // todo: compare this to just
+
+    override fun equals(other: Any?): Boolean = when(other){
+        is Scope -> other.value == this.value && other.type == this.type
+        else -> false
+    }
+
+    override fun hashCode(): Int {
+        var result = type.hashCode()
+        result = 31 * result + value.hashCode()
+        return result
+    }
 
     companion object {
-        private fun truncateDate(date: Date, modify: (Calendar.() -> Unit)? = null): Date = Calendar.getInstance().apply {
+
+        private fun truncateToDate(date: Date, modify: (Calendar.() -> Unit)? = null): Date = Calendar.getInstance().apply {
             time = date
             set(Calendar.HOUR_OF_DAY, 0)
             set(Calendar.MINUTE, 0)
@@ -32,87 +53,42 @@ sealed class Scope(val value: Date): Serializable{
             modify?.invoke(this)
         }.time
 
-        fun fromString(value: String): Scope {
-            val splitValues = value.split(".")
-            if(splitValues.size != 2) throw IllegalArgumentException("Could not parse \"$value\" into Scope, invalid format.")
-            val date = try {
-                Date(splitValues[2].toLong())
-            } catch (e: NumberFormatException) {
-                throw IllegalArgumentException("\"$value\" does not contain valid date", e)
+        fun newInstance(scopeType: ScopeType, date: Date): Scope {
+            return when(scopeType) {
+                ScopeType.DAY -> Scope(
+                    type = ScopeType.DAY,
+                    value = truncateToDate(date),
+                    chronoUnit = ChronoUnit.DAYS,
+                    calendarField = Calendar.DAY_OF_YEAR,
+                )
+                ScopeType.WEEK -> Scope(
+                    type = ScopeType.WEEK,
+                    value = truncateToDate(date){ add(Calendar.DAY_OF_WEEK, 1 - get(Calendar.DAY_OF_WEEK)) },
+                    chronoUnit = ChronoUnit.WEEKS,
+                    calendarField = Calendar.WEEK_OF_YEAR,
+                )
+                ScopeType.MONTH -> Scope(
+                    type = ScopeType.MONTH,
+                    value = truncateToDate(date) { add(Calendar.DAY_OF_MONTH, 1 - get(Calendar.DAY_OF_MONTH)) },
+                    chronoUnit = ChronoUnit.MONTHS,
+                    calendarField = Calendar.MONTH,
+                )
+                ScopeType.YEAR -> Scope(
+                    type = ScopeType.YEAR,
+                    value = truncateToDate(date) { add(Calendar.DAY_OF_YEAR, 1 - get(Calendar.DAY_OF_YEAR)) },
+                    chronoUnit = ChronoUnit.YEARS,
+                    calendarField = Calendar.YEAR,
+                )
             }
-            return when(splitValues.first()) {
-                Day::class.java.simpleName -> Day(date)
-                Week::class.java.simpleName -> Week(date)
-                Month::class.java.simpleName -> Month(date)
-                Year::class.java.simpleName -> Year(date)
-                else -> throw IllegalArgumentException("\"$value\" does not contain valid scope type \"${splitValues.first()}\"")
-            }
-        }
-    }
-
-    override fun toString(): String {
-        return "${this::class.java.simpleName}.${value.time}"
-    }
-
-    class Day(value: Date = Date()): Scope(truncateDate(value)) {
-        override val chronoUnit: ChronoUnit = ChronoUnit.DAYS
-
-        override fun add(unit: Int): Day {
-            val forwardedDate = Calendar.getInstance().apply {
-                time = value
-                add(Calendar.DAY_OF_YEAR, unit)
-            }.time
-            return Day(forwardedDate)
         }
 
-        override fun getCurrent(): Scope = Day((Date()))
+        fun getCurrent(scopeType: ScopeType) = newInstance(scopeType, Date())
     }
+}
 
-    class Week(value: Date = Date()): Scope(truncateDate(value) {
-        add(Calendar.DAY_OF_WEEK, 1 - get(Calendar.DAY_OF_WEEK))
-    }) {
-        override val chronoUnit: ChronoUnit = ChronoUnit.WEEKS
-
-        override fun add(unit: Int): Day {
-            val forwardedDate = Calendar.getInstance().apply {
-                time = value
-                add(Calendar.WEEK_OF_YEAR, unit)
-            }.time
-            return Day(forwardedDate)
-        }
-
-        override fun getCurrent(): Scope = Week(Date())
-    }
-
-    class Month(value: Date = Date()): Scope(truncateDate(value) {
-        add(Calendar.DAY_OF_MONTH, 1 - get(Calendar.DAY_OF_MONTH))
-    }) {
-        override val chronoUnit: ChronoUnit = ChronoUnit.MONTHS
-
-        override fun add(unit: Int): Day {
-            val forwardedDate = Calendar.getInstance().apply {
-                time = value
-                add(Calendar.MONTH, unit)
-            }.time
-            return Day(forwardedDate)
-        }
-
-        override fun getCurrent(): Scope = Month(Date())
-    }
-
-    class Year(value: Date = Date()): Scope(truncateDate(value) {
-        add(Calendar.DAY_OF_YEAR, 1 - get(Calendar.DAY_OF_YEAR))
-    }) {
-        override val chronoUnit: ChronoUnit = ChronoUnit.MONTHS
-
-        override fun add(unit: Int): Day {
-            val forwardedDate = Calendar.getInstance().apply {
-                time = value
-                add(Calendar.YEAR, unit)
-            }.time
-            return Day(forwardedDate)
-        }
-
-        override fun getCurrent(): Scope = Year(Date())
-    }
+enum class ScopeType {
+    DAY,
+    WEEK,
+    MONTH,
+    YEAR
 }

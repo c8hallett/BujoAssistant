@@ -2,6 +2,7 @@ package com.hallett.bujoass.presentation.format
 
 import android.annotation.SuppressLint
 import com.hallett.bujoass.domain.Scope
+import com.hallett.bujoass.domain.ScopeType
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -9,12 +10,12 @@ import java.util.*
 @SuppressLint("SimpleDateFormat")
 class MediumDateFormatter: Formatter<Scope?> {
     override fun format(input: Scope?): String {
-        return when(input){
+        return when(input?.type){
             null -> "Sometime"
-            is Scope.Day -> formatDayString(input.value)
-            is Scope.Week -> formatWeekString(input.value)
-            is Scope.Month -> formatMonthString(input.value)
-            is Scope.Year -> formatYearString(input.value)
+            ScopeType.DAY -> formatDayString(input.value)
+            ScopeType.WEEK -> formatWeekString(input.value)
+            ScopeType.MONTH -> formatMonthString(input.value)
+            ScopeType.YEAR -> formatYearString(input.value)
         }
     }
 

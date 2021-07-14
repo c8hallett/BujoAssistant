@@ -37,7 +37,7 @@ interface BujoTaskDao {
     suspend fun clearTable()
 
     @Query("SELECT * FROM $TABLE_NAME WHERE $TASK_SCOPE IS :scope")
-    fun getAllTaskForScopeInstance(scope: String?): Flow<List<BujoTaskEntity>>
+    fun getAllTaskForScopeInstance(scope: Scope?): Flow<List<BujoTaskEntity>>
 
     @Query("SELECT * FROM $TABLE_NAME WHERE $ID = :taskId")
     fun observeTask(taskId: Long): Flow<BujoTaskEntity?>

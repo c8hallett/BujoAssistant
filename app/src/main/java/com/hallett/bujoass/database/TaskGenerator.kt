@@ -3,8 +3,10 @@ package com.hallett.bujoass.database
 import com.hallett.bujoass.database.task.BujoTaskDao
 import com.hallett.bujoass.database.task.BujoTaskEntity
 import com.hallett.bujoass.domain.Scope
+import com.hallett.bujoass.domain.ScopeType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import java.util.*
 import kotlin.math.max
 
@@ -24,7 +26,7 @@ class TaskGenerator(
     private val mutableCalendar: Calendar
         get() = Calendar.getInstance()
 
-    private fun getTaskForScope(getScope: (Date) -> Scope): BujoTaskEntity {
+    private fun getTaskForScope(type: ScopeType): BujoTaskEntity {
         val dayOffset = (0..DAYS_SPREAD).random()
         val date = mutableCalendar.apply {
             add(Calendar.DAY_OF_YEAR, dayOffset)
@@ -32,7 +34,7 @@ class TaskGenerator(
 
         return BujoTaskEntity(
             taskName = sampleTasks.random(),
-            scope = getScope(date)
+            scope = Scope.newInstance(type, date)
         )
     }
 
@@ -48,17 +50,17 @@ class TaskGenerator(
         }
         repeat((NUM_TASKS * PERCENT_DAY_SCOPE).toInt()) {
             entityList.add(
-                getTaskForScope{ Scope.Day(it) }
+                getTaskForScope(ScopeType.DAY)
             )
         }
         repeat((NUM_TASKS * PERCENT_WEEK_SCOPE).toInt()) {
             entityList.add(
-                getTaskForScope{ Scope.Week(it) }
+                getTaskForScope(ScopeType.WEEK)
             )
         }
         repeat((NUM_TASKS * PERCENT_MONTH_SCOPE).toInt()) {
             entityList.add(
-                getTaskForScope{ Scope.Month(it) }
+                getTaskForScope(ScopeType.MONTH)
             )
         }
 

@@ -2,6 +2,7 @@ package com.hallett.bujoass.presentation.ui.dashboard
 
 import androidx.lifecycle.viewModelScope
 import com.hallett.bujoass.domain.Scope
+import com.hallett.bujoass.domain.ScopeType
 import com.hallett.bujoass.domain.model.TaskStatus
 import com.hallett.bujoass.domain.usecase.modify_task.IDeferTaskUseCase
 import com.hallett.bujoass.domain.usecase.modify_task.IModifyTaskStatusUseCase
@@ -30,7 +31,7 @@ class DashboardFragmentViewModel(
             }.map { list ->
                 val (day, week) = list
                     .map { DashboardItem.TaskItem(it) }
-                    .partition { it.task.scope is Scope.Day }
+                    .partition { it.task.scope?.type == ScopeType.DAY }
 
                 val todayHeader = listOf(DashboardItem.HeaderItem("TODAY"))
                 val thisWeekHeader = listOf(DashboardItem.HeaderItem("THIS WEEK"))
