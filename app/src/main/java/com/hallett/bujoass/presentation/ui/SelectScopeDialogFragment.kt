@@ -6,14 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.hallett.bujoass.databinding.DialogSelectScopeBinding
-import com.hallett.bujoass.presentation.model.PScopeInstance
+import com.hallett.bujoass.domain.Scope
 import timber.log.Timber
 
 class SelectScopeDialogFragment: BujoAssDialogFragment() {
 
+    // todo: add confirm buttons
     override val isFullScreen: Boolean = false
     private lateinit var binding: DialogSelectScopeBinding
-    private var selectedScope: PScopeInstance? = null
+    private var selectedScope: Scope? = null
 
     companion object {
         const val RETURN_VALUE_SELECTED_SCOPE = "return_value_selected_scope"
@@ -31,10 +32,7 @@ class SelectScopeDialogFragment: BujoAssDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.scopeSelectorView.run {
-            when(val scope = arguments?.getParcelable<PScopeInstance>(ArgumentConstants.ARGS_SELECTED)) {
-                null -> displayScope(PScopeInstance.NONE)
-                else -> displayScope(scope)
-            }
+            displayScope(arguments?.getSerializable(ArgumentConstants.ARGS_SELECTED) as? Scope?)
             setOnScopeSelectedListener {
                 selectedScope = it
             }

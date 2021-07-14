@@ -2,12 +2,10 @@ package com.hallett.bujoass.database.task
 
 import androidx.room.*
 import com.hallett.bujoass.database.task.BujoTaskEntity.Companion.ID
-import com.hallett.bujoass.database.task.BujoTaskEntity.Companion.SCOPE_VALUE
 import com.hallett.bujoass.database.task.BujoTaskEntity.Companion.TABLE_NAME
 import com.hallett.bujoass.database.task.BujoTaskEntity.Companion.TASK_SCOPE
-import com.hallett.bujoass.domain.model.DScope
+import com.hallett.bujoass.domain.Scope
 import kotlinx.coroutines.flow.Flow
-import java.util.*
 
 @Dao
 interface BujoTaskDao {
@@ -38,8 +36,8 @@ interface BujoTaskDao {
     @Query("DELETE FROM $TABLE_NAME")
     suspend fun clearTable()
 
-    @Query("SELECT * FROM $TABLE_NAME WHERE $TASK_SCOPE IS :scope AND $SCOPE_VALUE IS :date")
-    fun getAllTaskForScopeInstance(scope: DScope?, date: Date?): Flow<List<BujoTaskEntity>>
+    @Query("SELECT * FROM $TABLE_NAME WHERE $TASK_SCOPE IS :scope")
+    fun getAllTaskForScopeInstance(scope: Scope?): Flow<List<BujoTaskEntity>>
 
     @Query("SELECT * FROM $TABLE_NAME WHERE $ID = :taskId")
     fun observeTask(taskId: Long): Flow<BujoTaskEntity?>

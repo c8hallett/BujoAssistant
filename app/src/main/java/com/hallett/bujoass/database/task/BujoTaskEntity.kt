@@ -1,12 +1,9 @@
 package com.hallett.bujoass.database.task
 
-import androidx.room.ColumnInfo
-import androidx.room.Embedded
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-import com.hallett.bujoass.domain.model.DScope
+import androidx.room.*
+import com.hallett.bujoass.domain.Scope
 import com.hallett.bujoass.domain.model.TaskStatus
-import java.util.*
+import java.util.Date
 
 @Entity(tableName = BujoTaskEntity.TABLE_NAME)
 data class BujoTaskEntity(
@@ -17,20 +14,13 @@ data class BujoTaskEntity(
     val taskName: String,
     @ColumnInfo(name = TASK_STATUS)
     val status: TaskStatus = TaskStatus.INCOMPLETE,
-    @Embedded
-    val scopeInfo: ScopeInfo? = null,
+    @ColumnInfo(name = TASK_SCOPE)
+    val scope: Scope? = null,
     @ColumnInfo(name = CREATED_AT)
     val createdAt: Date = Date(),
     @ColumnInfo(name = UPDATED_AT)
     val updatedAt: Date = Date()
 ) {
-
-    data class ScopeInfo(
-        @ColumnInfo(name = TASK_SCOPE)
-        val taskScope: DScope = DScope.DAY,
-        @ColumnInfo(name = SCOPE_VALUE)
-        val scopeValue: Date = Date(),
-    )
 
     data class StatusUpdate(
         @ColumnInfo(name = ID)
@@ -44,8 +34,8 @@ data class BujoTaskEntity(
     data class NewScopeUpdate(
         @ColumnInfo(name = ID)
         val taskId: Long,
-        @Embedded
-        val scopeInfo: ScopeInfo?,
+        @ColumnInfo(name = TASK_SCOPE)
+        val scope: Scope?,
         @ColumnInfo(name = UPDATED_AT)
         val updatedAt: Date = Date()
     // TODO: might set status to "RESCHEDULED"
@@ -57,7 +47,6 @@ data class BujoTaskEntity(
         const val TASK_NAME = "task_name"
         const val TASK_SCOPE = "task_scope"
         const val TASK_STATUS = "task_status"
-        const val SCOPE_VALUE = "scope_value"
         const val CREATED_AT = "created_at"
         const val UPDATED_AT = "updated_at"
     }

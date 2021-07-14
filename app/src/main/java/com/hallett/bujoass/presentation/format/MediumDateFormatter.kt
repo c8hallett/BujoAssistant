@@ -1,23 +1,24 @@
 package com.hallett.bujoass.presentation.format
 
 import android.annotation.SuppressLint
-import com.hallett.bujoass.presentation.model.PScope
-import com.hallett.bujoass.presentation.model.PScopeInstance
+import com.hallett.bujoass.domain.Scope
+import com.hallett.bujoass.domain.ScopeType
 import java.text.SimpleDateFormat
 import java.util.*
 
 
 @SuppressLint("SimpleDateFormat")
-class MediumDateFormatter: Formatter<PScopeInstance> {
-    override fun format(input: PScopeInstance): String {
-        return when(input.scope){
-            PScope.NONE -> "Sometime"
-            PScope.DAY -> formatDayString(input.date)
-            PScope.WEEK -> formatWeekString(input.date)
-            PScope.MONTH -> formatMonthString(input.date)
-            PScope.YEAR -> formatYearString(input.date)
+class MediumDateFormatter: Formatter<Scope?> {
+    override fun format(input: Scope?): String {
+        return when(input?.type){
+            null -> "Sometime"
+            ScopeType.DAY -> formatDayString(input.value)
+            ScopeType.WEEK -> formatWeekString(input.value)
+            ScopeType.MONTH -> formatMonthString(input.value)
+            ScopeType.YEAR -> formatYearString(input.value)
         }
     }
+
     private fun formatDayString(date: Date): String {
         return SimpleDateFormat("MMM dd, yyyy").format(date)
     }

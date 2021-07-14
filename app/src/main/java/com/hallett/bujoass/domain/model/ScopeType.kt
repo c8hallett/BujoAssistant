@@ -1,6 +1,6 @@
 package com.hallett.bujoass.domain.model
 
-enum class DScope {
+enum class ScopeType {
     DAY,
     WEEK,
     MONTH,

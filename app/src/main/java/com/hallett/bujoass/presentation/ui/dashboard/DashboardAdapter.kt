@@ -11,13 +11,17 @@ import com.hallett.bujoass.databinding.ListItemHeaderBinding
 import com.hallett.bujoass.databinding.ListItemTaskBinding
 import com.hallett.bujoass.domain.model.TaskStatus
 import com.hallett.bujoass.presentation.model.Task
-import org.kodein.di.weakReference
-import timber.log.Timber
+import com.hallett.bujoass.presentation.ui.task_list.TaskSwipeHelper
 import java.lang.ref.WeakReference
 
 class DashboardAdapter(
     private val context: WeakReference<Context>,
-    private val onTaskClicked: (Task) -> Unit): RecyclerView.Adapter<DashboardAdapter.ViewHolder>(), StickyHeaderDecoration.StickyHeaderGetter {
+    private val onTaskClicked: (Task) -> Unit,
+    private val onTaskSwiped: (Task, TaskSwipeHelper.Swipe) -> Unit,
+): RecyclerView.Adapter<DashboardAdapter.ViewHolder>(),
+    StickyHeaderDecoration.StickyHeaderGetter,
+    TaskSwipeHelper.SwipeCallbacks
+{
 
     private var itemList: List<DashboardItem> = listOf()
 
@@ -31,7 +35,14 @@ class DashboardAdapter(
         const val ITEM_TASK_HEADER = 1
     }
 
+    override fun canPositionBeSwiped(position: Int): Boolean = !isHeaderAtPosition(position)
 
+    override fun getTaskAtPosition(position: Int): Task = when(val item = itemList[position]) {
+        is DashboardItem.TaskItem -> item.task
+        else -> throw IllegalStateException("Swiped task at invalid position: $position")
+    }
+
+    override fun onTaskSwipe(task: Task, swipe: TaskSwipeHelper.Swipe) = onTaskSwiped(task, swipe)
     override fun getItemCount(): Int = itemList.size
 
     override fun getItemViewType(position: Int): Int = when(itemList[position]){
@@ -50,35 +61,31 @@ class DashboardAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         when(val item = itemList[position]) {
-            is DashboardItem.TaskItem -> (holder as ViewHolder.TaskItem).display(item.task, onTaskClicked)
+            is DashboardItem.TaskItem -> {
+                (holder as ViewHolder.TaskItem).display(item.task, onTaskClicked)
+                when(position){
+                    itemList.lastIndex -> holder.itemView.apply{
+                        setPadding(paddingLeft, paddingTop, paddingRight, paddingTop * 2)
+                    }
+                    else -> holder.itemView.apply {
+                        setPadding(paddingLeft, paddingTop, paddingRight, paddingTop)
+                    }
+                }
+            }
             is DashboardItem.HeaderItem -> (holder as ViewHolder.HeaderItem).display(item.headerText)
         }
     }
 
     private fun createTaskViewHolder(inflater: LayoutInflater): ViewHolder.TaskItem {
-        val binding = ListItemTaskBinding.inflate(inflater)
-        binding.root.apply {
-            layoutParams = ViewGroup.MarginLayoutParams(
-                ViewGroup.MarginLayoutParams.MATCH_PARENT,
-                ViewGroup.MarginLayoutParams.WRAP_CONTENT
-            ).apply {
-                val m = context.resources.getDimensionPixelSize(R.dimen.dp12)
-                setMargins(m, m, m, 0)
-            }
+        val binding = ListItemTaskBinding.inflate(inflater).apply {
+            root.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         }
         return ViewHolder.TaskItem(binding)
     }
 
     private fun createHeaderViewHolder(inflater: LayoutInflater): ViewHolder.HeaderItem {
-        val binding = ListItemHeaderBinding.inflate(inflater)
-        binding.root.apply {
-            layoutParams = ViewGroup.MarginLayoutParams(
-                ViewGroup.MarginLayoutParams.MATCH_PARENT,
-                ViewGroup.MarginLayoutParams.WRAP_CONTENT
-            ).apply {
-                val m = context.resources.getDimensionPixelSize(R.dimen.dp12)
-                setMargins(m, m, m, 0)
-            }
+        val binding = ListItemHeaderBinding.inflate(inflater).apply {
+            root.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         }
         return ViewHolder.HeaderItem(binding)
     }
@@ -87,7 +94,6 @@ class DashboardAdapter(
         class TaskItem(private val binding: ListItemTaskBinding): ViewHolder(binding.root) {
             fun display(task: Task, onTaskClicked: (Task) -> Unit) {
                 binding.taskValue.apply {
-                    Timber.i("displaying task $task with status ${task.status}")
                     when (task.status) {
                         TaskStatus.INCOMPLETE -> {
                             paintFlags = paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
@@ -114,25 +120,26 @@ class DashboardAdapter(
     private var currentHeader: Pair<Int, View>? = null
 
     private fun getHeaderPositionForItem(itemPosition: Int): Int {
-        (itemPosition..0).forEach {
-            if(isHeader(it)) return it
+        itemPosition.downTo(0).forEach {
+            if(isHeaderAtPosition(it)) return it
         }
         return RecyclerView.NO_POSITION
     }
 
     override fun getCurrentHeader(position: Int): Pair<Int, View>? {
-        return when(val headerPosition = getHeaderPositionForItem(position)) {
+        currentHeader = when(val headerPosition = getHeaderPositionForItem(position)) {
             RecyclerView.NO_POSITION -> null
             currentHeader?.first -> currentHeader
             else -> {
                 context.get()?.let {
                     val viewHolder = createHeaderViewHolder(LayoutInflater.from(context.get()))
                     bindViewHolder(viewHolder, headerPosition)
-                    Pair(headerPosition, viewHolder.itemView).also { currentHeader = it }
+                    Pair(headerPosition, viewHolder.itemView)
                 } ?: throw IllegalStateException("No longer attached to context")
             }
         }
+        return currentHeader
     }
 
-    override fun isHeader(position: Int): Boolean = itemList.getOrNull(position) is DashboardItem.HeaderItem
+    override fun isHeaderAtPosition(position: Int): Boolean = itemList.getOrNull(position) is DashboardItem.HeaderItem
 }

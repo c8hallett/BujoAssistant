@@ -11,7 +11,7 @@ import com.hallett.bujoass.domain.model.TaskStatus
 import com.hallett.bujoass.presentation.model.Task
 import timber.log.Timber
 
-class TaskListAdapter(val onTaskClicked: (Task) -> Unit): RecyclerView.Adapter<TaskListAdapter.ViewHolder>() {
+class TaskListAdapter(val onTaskClicked: (Task) -> Unit, val onTaskSwiped: (Task, TaskSwipeHelper.Swipe) -> Unit): RecyclerView.Adapter<TaskListAdapter.ViewHolder>(), TaskSwipeHelper.SwipeCallbacks {
 
     private var itemList: List<Task> = listOf()
 
@@ -20,7 +20,9 @@ class TaskListAdapter(val onTaskClicked: (Task) -> Unit): RecyclerView.Adapter<T
         notifyDataSetChanged()
     }
 
-    fun getTaskAtPosition(position: Int): Task? = itemList.getOrNull(position)
+    override fun getTaskAtPosition(position: Int): Task = itemList[position]
+    override fun canPositionBeSwiped(position: Int): Boolean = true
+    override fun onTaskSwipe(task: Task, swipe: TaskSwipeHelper.Swipe) = onTaskSwiped(task, swipe)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = ListItemTaskBinding.inflate(LayoutInflater.from(parent.context))

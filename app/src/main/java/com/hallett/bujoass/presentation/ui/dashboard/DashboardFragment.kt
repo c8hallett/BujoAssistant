@@ -4,11 +4,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.hallett.bujoass.databinding.FragmentDashboardBinding
+import com.hallett.bujoass.presentation.PresentationMessage
+import com.hallett.bujoass.presentation.model.Task
 import com.hallett.bujoass.presentation.ui.BujoAssFragment
+import com.hallett.bujoass.presentation.ui.task_list.TaskSwipeHelper
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -31,19 +36,38 @@ class DashboardFragment(): BujoAssFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val dashboardAdapter = DashboardAdapter(WeakReference(view.context)){
-            Timber.i("Clicked task: $it")
-        }
+        val dashboardAdapter = DashboardAdapter(WeakReference(view.context), ::clickTask, ::swipeTask)
         binding.dashboardList.run {
             adapter = dashboardAdapter
             layoutManager = LinearLayoutManager(context)
             addItemDecoration(StickyHeaderDecoration(dashboardAdapter))
+            ItemTouchHelper(TaskSwipeHelper(dashboardAdapter)).attachToRecyclerView(this)
         }
 
         lifecycleScope.launch {
             viewModel.observeDashboardItems().collect {
                 dashboardAdapter.setItems(it)
             }
+        }
+        lifecycleScope.launch {
+            viewModel.observeMessages().collect {
+                Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
+                if(it is PresentationMessage.Error){
+                    Timber.i("should be resetting ui")
+                    dashboardAdapter.notifyDataSetChanged()
+                }
+            }
+        }
+    }
+
+    private fun clickTask(task: Task) {
+        Timber.i("Task $task clicked")
+    }
+
+    private fun swipeTask(task: Task, swipe: TaskSwipeHelper.Swipe) {
+        when(swipe){
+            TaskSwipeHelper.Swipe.LEFT -> viewModel.deferTask(task)
+            TaskSwipeHelper.Swipe.RIGHT -> viewModel.updateStatus(task)
         }
     }
 }

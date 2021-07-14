@@ -1,6 +1,7 @@
 package com.hallett.bujoass.presentation.ui.dashboard
 
 import android.graphics.Canvas
+import android.graphics.Rect
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -9,40 +10,47 @@ import androidx.recyclerview.widget.RecyclerView
 class StickyHeaderDecoration(private val getter: StickyHeaderGetter): RecyclerView.ItemDecoration() {
     private var stickyHeaderHeight: Int = 0
 
+
     override fun onDrawOver(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
         super.onDrawOver(c, parent, state)
         val firstVisibleChild = parent.getChildAt(0) ?: return
         val firstVisiblePosition = parent.getChildAdapterPosition(firstVisibleChild)
-        if(firstVisiblePosition == RecyclerView.NO_POSITION) return
+        if(firstVisiblePosition == RecyclerView.NO_POSITION) return // child not found in adapter, ignore
 
-        val (headerPos, currentHeader) = getter.getCurrentHeader(firstVisiblePosition) ?: return
+        val (headerPosition, currentHeader) = getter.getCurrentHeader(firstVisiblePosition) ?: return // no header found, ignore
         currentHeader.fixLayoutSize(parent)
-        val overlappedView = getOverlappedView(parent, currentHeader.bottom, headerPos)
-        when {
-            overlappedView == null -> c.drawHeader(currentHeader)
-            getter.isHeader(parent.getChildAdapterPosition(overlappedView)) -> c.moveHeader(currentHeader, overlappedView)
-            else -> c.drawHeader(currentHeader)
+
+        val headerHeight = with(currentHeader) { bottom } //- marginBottom
+        when(val overlappedView = getOverlappedView(parent, headerHeight)) {
+            null -> return
+            else -> {
+                val overlappedPosition = parent.getChildAdapterPosition(overlappedView)
+                when{
+                    overlappedPosition == headerPosition -> return
+                    getter.isHeaderAtPosition(overlappedPosition) -> c.moveHeader(currentHeader, overlappedView, parent.top)
+                    else -> c.drawHeader(currentHeader, parent.top.toFloat())
+                }
+            }
         }
     }
 
-    private fun Canvas.drawHeader(header: View) {
+    private fun Canvas.drawHeader(header: View, paddingTop: Float) {
         save()
-        translate(0f, 0f)
+        // dx = marginLeft, dy += marginTop
+        translate(0f, paddingTop)
         header.draw(this)
         restore()
     }
 
-    private fun Canvas.moveHeader(currentHeader: View, nextHeader: View) {
+    private fun Canvas.moveHeader(currentHeader: View, nextHeader: View, paddingTop: Int) {
         save()
-        // next header pushes currentHeader upwards
+        // dx = marginLeft
         translate(0f, (nextHeader.top - currentHeader.height).toFloat())
         currentHeader.draw(this)
         restore()
     }
 
     private fun View.fixLayoutSize(parent: ViewGroup) {
-
-
         // Specs for parent (RecyclerView)
         val widthSpec = View.MeasureSpec.makeMeasureSpec(parent.width, View.MeasureSpec.EXACTLY)
         val heightSpec = View.MeasureSpec.makeMeasureSpec(parent.height, View.MeasureSpec.UNSPECIFIED)
@@ -66,33 +74,12 @@ class StickyHeaderDecoration(private val getter: StickyHeaderGetter): RecyclerVi
 
     private fun getOverlappedView(
         parent: RecyclerView,
-        headerBottom: Int,
-        currentHeaderPos: Int
+        contactPoint: Int,
     ): View? {
         // go through each visible child
         repeat(parent.childCount) { index ->
             val child = parent.getChildAt(index)
-            val childAdapterPosition = parent.getChildAdapterPosition(child)
-
-            /*
-           If child view is a header (which is not the sticky header),
-           it should be shifted to be below the sticky header.
-           As the child view scrolls up/off screen,
-           - the height becomes smaller
-           - headerOffset becomes larger
-           - more the view is adjusted downwards to accommodate the sticky header
-             */
-            val headerOffset = when {
-                currentHeaderPos != index && getter.isHeader(childAdapterPosition) -> stickyHeaderHeight - child.height
-                else -> 0
-            }
-
-            val childBottomPosition = when {
-                // if top of view is being displayed, should be sifted by offset
-                // otherwise, let it scroll off screen
-                child.top > 0 -> child.bottom + headerOffset
-                else -> child.bottom
-            }
+            val bounds = Rect().apply { parent.getDecoratedBoundsWithMargins(child, this) }
 
             // if bottom of header is in the middle of view, then it is the overlapped view
             /*   ______________________________  top of header
@@ -100,10 +87,13 @@ class StickyHeaderDecoration(private val getter: StickyHeaderGetter): RecyclerVi
                  |                            |
                 ||============================|| top of child
                 ||         (overlap)          ||
-                |------------------------------| bottom of header
+                |------------------------------| bottom of header (contact point)
                 |                              |
                 |==============================| bottom of child */
-            if(childBottomPosition > headerBottom && child.top <= headerBottom) return child
+            if (bounds.bottom > contactPoint && bounds.top <= contactPoint) {
+                // This child overlaps the contactPoint
+                return child
+            }
         }
 
         return null
@@ -115,6 +105,6 @@ class StickyHeaderDecoration(private val getter: StickyHeaderGetter): RecyclerVi
          */
         fun getCurrentHeader(position: Int): Pair<Int, View>?
 
-        fun isHeader(position: Int): Boolean
+        fun isHeaderAtPosition(position: Int): Boolean
     }
 }

@@ -1,28 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:cardBackgroundColor="@color/gray_dark"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="12dp">
-
-    <RelativeLayout
+    android:paddingVertical="@dimen/dp6"
+    android:paddingHorizontal="@dimen/dp12">
+    <androidx.cardview.widget.CardView
+        app:cardBackgroundColor="@color/gray_dark"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="12dp">
-        <TextView
-            android:id="@+id/task_value"
-            android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="4dp"
-            android:layout_centerVertical="true"
-            tools:text="Do some laundry"
-            android:textSize="16sp"
-            android:textStyle="bold"/>
-    </RelativeLayout>
+            android:padding="12dp">
+            <TextView
+                android:id="@+id/task_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="4dp"
+                android:layout_centerVertical="true"
+                tools:text="Do some laundry"
+                android:textSize="16sp"
+                android:textStyle="bold"/>
+        </RelativeLayout>
 
+    </androidx.cardview.widget.CardView>
 
-
-</androidx.cardview.widget.CardView>
+</FrameLayout>
