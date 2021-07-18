@@ -10,18 +10,19 @@ import androidx.recyclerview.widget.RecyclerView
 import com.hallett.bujoass.R
 import com.hallett.bujoass.presentation.model.Task
 import timber.log.Timber
+import kotlin.math.min
 
 class TaskSwipeHelper(private val callbacks: SwipeCallbacks):
     ItemTouchHelper.SimpleCallback(ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
 
     private val completeDrawable = ContextCompat.getDrawable(callbacks.getContext(), R.drawable.ic_check_round)
     private val deferDrawable = ContextCompat.getDrawable(callbacks.getContext(), R.drawable.ic_arrow)
+    private val defaultIconMargin = callbacks.getContext().resources.getDimensionPixelSize(R.dimen.dp12)
 
     interface SwipeCallbacks {
         fun getContext(): Context
         fun canPositionBeSwiped(position: Int): Boolean
         fun getTaskAtPosition(position: Int): Task
-//        fun getIconForSwipe(swipe: Swipe): Drawable
         fun onTaskSwipe(task: Task, swipe: Swipe)
     }
 
@@ -71,22 +72,27 @@ class TaskSwipeHelper(private val callbacks: SwipeCallbacks):
     }
 
     private fun Drawable.setBoundsForRightSwipe(itemView: View) {
-        val iconMargin: Int = (itemView.height - intrinsicHeight) / 2
-        val iconLeft = itemView.left + iconMargin
+        val iconSize = min(intrinsicHeight, itemView.height - defaultIconMargin * 2)
+        val iconMargin: Int = (itemView.height - iconSize) / 2
+
         val iconTop: Int = itemView.top + iconMargin
-        val iconRight = iconLeft + intrinsicWidth
-        val iconBottom: Int = iconTop + intrinsicHeight
+        val iconBottom: Int = iconTop + iconSize
+
+        val iconLeft = itemView.left + defaultIconMargin
+        val iconRight = iconLeft + iconSize
 
         setBounds(iconLeft, iconTop, iconRight, iconBottom)
     }
 
     private fun Drawable.setBoundsForLeftSwipe(itemView: View) {
+        val iconSize = min(intrinsicHeight, itemView.height - defaultIconMargin * 2)
+        val iconMargin: Int = (itemView.height - iconSize) / 2
 
-        val iconMargin: Int = (itemView.height - intrinsicHeight) / 2
-        val iconLeft = itemView.right - iconMargin - intrinsicWidth
         val iconTop: Int = itemView.top + iconMargin
-        val iconBottom: Int = iconTop + intrinsicHeight
-        val iconRight = iconLeft + intrinsicWidth
+        val iconBottom: Int = iconTop + iconSize
+
+        val iconRight = itemView.right - defaultIconMargin
+        val iconLeft = iconRight - iconSize
 
         setBounds(iconLeft, iconTop, iconRight, iconBottom)
     }

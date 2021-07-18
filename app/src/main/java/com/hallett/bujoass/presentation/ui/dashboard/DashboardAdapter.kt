@@ -11,6 +11,7 @@ import com.hallett.bujoass.databinding.ListItemHeaderBinding
 import com.hallett.bujoass.databinding.ListItemTaskBinding
 import com.hallett.bujoass.domain.model.TaskStatus
 import com.hallett.bujoass.presentation.model.Task
+import com.hallett.bujoass.presentation.require
 import com.hallett.bujoass.presentation.ui.task_list.TaskSwipeHelper
 import java.lang.ref.WeakReference
 
@@ -111,12 +112,8 @@ class DashboardAdapter(
         }
     }
 
-    private fun WeakReference<Context>.require(): Context {
-        return get() ?: throw IllegalStateException("No longer attached to context")
-    }
-
     // ===== TASK SWIPE HELPER CALLBACKS =====
-    override fun getContext(): Context = contextRef.require()
+    override fun getContext(): Context = contextRef.require("No longer attached to context")
     override fun canPositionBeSwiped(position: Int): Boolean = !isHeaderAtPosition(position)
     override fun getTaskAtPosition(position: Int): Task = when(val item = itemList[position]) {
         is DashboardItem.TaskItem -> item.task

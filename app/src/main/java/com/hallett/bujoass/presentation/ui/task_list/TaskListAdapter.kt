@@ -2,6 +2,7 @@ package com.hallett.bujoass.presentation.ui.task_list
 
 import android.content.Context
 import android.graphics.Paint
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.ViewGroup.MarginLayoutParams
@@ -10,6 +11,7 @@ import com.hallett.bujoass.R
 import com.hallett.bujoass.databinding.ListItemTaskBinding
 import com.hallett.bujoass.domain.model.TaskStatus
 import com.hallett.bujoass.presentation.model.Task
+import com.hallett.bujoass.presentation.require
 import timber.log.Timber
 import java.lang.ref.WeakReference
 
@@ -66,10 +68,7 @@ class TaskListAdapter(
     class ViewHolder(val binding: ListItemTaskBinding): RecyclerView.ViewHolder(binding.root)
 
     // ===== TASK SWIPE HELPER CALLBACKS =====
-    override fun getContext(): Context {
-        TODO("Not yet implemented")
-    }
-
+    override fun getContext(): Context = contextRef.require("No longer attached to context")
     override fun getTaskAtPosition(position: Int): Task = itemList[position]
     override fun canPositionBeSwiped(position: Int): Boolean = true
     override fun onTaskSwipe(task: Task, swipe: TaskSwipeHelper.Swipe) = onTaskSwiped(task, swipe)
