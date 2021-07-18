@@ -41,7 +41,7 @@ class DashboardFragment(): BujoAssFragment() {
             adapter = dashboardAdapter
             layoutManager = LinearLayoutManager(context)
             addItemDecoration(StickyHeaderDecoration(dashboardAdapter))
-            ItemTouchHelper(TaskSwipeHelper(dashboardAdapter)).attachToRecyclerView(this)
+            ItemTouchHelper(TaskSwipeHelper(lifecycleScope, dashboardAdapter)).attachToRecyclerView(this)
         }
 
         lifecycleScope.launch {

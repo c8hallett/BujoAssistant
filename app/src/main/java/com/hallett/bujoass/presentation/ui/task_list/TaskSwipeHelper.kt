@@ -9,18 +9,24 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.hallett.bujoass.R
 import com.hallett.bujoass.presentation.model.Task
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import kotlin.math.min
 
-class TaskSwipeHelper(private val callbacks: SwipeCallbacks):
+class TaskSwipeHelper(private val scope: CoroutineScope,  private val callbacks: SwipeCallbacks):
     ItemTouchHelper.SimpleCallback(ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
 
-    private val completeDrawable = ContextCompat.getDrawable(callbacks.getContext(), R.drawable.ic_check_round)
-    private val deferDrawable = ContextCompat.getDrawable(callbacks.getContext(), R.drawable.ic_arrow)
     private val defaultIconMargin = callbacks.getContext().resources.getDimensionPixelSize(R.dimen.dp12)
+
+    private var currentSwipe: Swipe? = null
+    private var longHoldJob: Job? = null
 
     interface SwipeCallbacks {
         fun getContext(): Context
+        // fun getDrawableFor(position: Int, swipe: Swipe): Drawable
         fun canPositionBeSwiped(position: Int): Boolean
         fun getTaskAtPosition(position: Int): Task
         fun onTaskSwipe(task: Task, swipe: Swipe)
@@ -28,7 +34,9 @@ class TaskSwipeHelper(private val callbacks: SwipeCallbacks):
 
     enum class Swipe {
         LEFT,
-        RIGHT
+        RIGHT,
+        HOLD_LEFT,
+        HOLD_RIGHT,
     }
 
     override fun onMove(
@@ -38,11 +46,12 @@ class TaskSwipeHelper(private val callbacks: SwipeCallbacks):
     ): Boolean = false
 
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-        when(direction) {
-            ItemTouchHelper.RIGHT -> callbacks.onTaskSwipe(callbacks.getTaskAtPosition(viewHolder.adapterPosition), Swipe.RIGHT)
-            ItemTouchHelper.LEFT -> callbacks.onTaskSwipe(callbacks.getTaskAtPosition(viewHolder.adapterPosition), Swipe.LEFT)
-            else -> Timber.i("Received swipe for direction $direction (${viewHolder.adapterPosition})")
+        when(val swipe = currentSwipe) {
+            null -> Timber.i("Received swipe for direction $direction (${viewHolder.adapterPosition})")
+            else -> callbacks.onTaskSwipe(callbacks.getTaskAtPosition(viewHolder.adapterPosition), swipe)
         }
+        currentSwipe = null
+        resetJob()
     }
 
     override fun onChildDraw(
@@ -59,19 +68,53 @@ class TaskSwipeHelper(private val callbacks: SwipeCallbacks):
 
         when {
             // right swipe
-            dX > 0 -> completeDrawable?.run{
-                setBoundsForRightSwipe(itemView)
-                draw(c)
+            dX > 0 -> {
+                when(currentSwipe) {
+                    Swipe.RIGHT, Swipe.HOLD_RIGHT -> {} // nothing to do
+                    else -> {
+                        resetJob()
+                        currentSwipe = Swipe.RIGHT
+                        longHoldJob = scope.launch {
+                            delay(1500)
+                            currentSwipe = Swipe.HOLD_RIGHT
+                        }
+                    }
+                }
             }
             // left swipe
-            dX < 0 -> deferDrawable?.run{
-                setBoundsForLeftSwipe(itemView)
-                draw(c)
+            dX < 0 ->{
+                when(currentSwipe) {
+                    Swipe.LEFT, Swipe.HOLD_LEFT -> {}
+                    else -> {
+                        resetJob()
+                        currentSwipe = Swipe.LEFT
+                        longHoldJob = scope.launch {
+                            delay(1500)
+                            currentSwipe = Swipe.HOLD_LEFT
+                        }
+                    }
+                }
+            }
+            else -> {
+                resetJob()
+                currentSwipe = null
             }
         }
+        when(currentSwipe) {
+            null -> return
+            Swipe.RIGHT -> completeDrawable?.setBoundsForRightSwipe(itemView)
+            Swipe.HOLD_RIGHT -> deleteDrawable?.setBoundsForRightSwipe(itemView)
+            Swipe.LEFT -> deferDrawable?.setBoundsForLeftSwipe(itemView)
+            Swipe.HOLD_LEFT -> rescheduleDrawable?.setBoundsForLeftSwipe(itemView)
+        }?.draw(c)
     }
 
-    private fun Drawable.setBoundsForRightSwipe(itemView: View) {
+    private val completeDrawable = ContextCompat.getDrawable(callbacks.getContext(), R.drawable.ic_check_round)
+    private val deleteDrawable = ContextCompat.getDrawable(callbacks.getContext(), R.drawable.ic_remove_round)
+    private val deferDrawable = ContextCompat.getDrawable(callbacks.getContext(), R.drawable.ic_arrow)
+    private val rescheduleDrawable = ContextCompat.getDrawable(callbacks.getContext(), R.drawable.ic_double_arrow)
+
+    private fun Drawable.setBoundsForRightSwipe(itemView: View): Drawable = apply {
         val iconSize = min(intrinsicHeight, itemView.height - defaultIconMargin * 2)
         val iconMargin: Int = (itemView.height - iconSize) / 2
 
@@ -84,7 +127,7 @@ class TaskSwipeHelper(private val callbacks: SwipeCallbacks):
         setBounds(iconLeft, iconTop, iconRight, iconBottom)
     }
 
-    private fun Drawable.setBoundsForLeftSwipe(itemView: View) {
+    private fun Drawable.setBoundsForLeftSwipe(itemView: View): Drawable = apply {
         val iconSize = min(intrinsicHeight, itemView.height - defaultIconMargin * 2)
         val iconMargin: Int = (itemView.height - iconSize) / 2
 
@@ -105,5 +148,10 @@ class TaskSwipeHelper(private val callbacks: SwipeCallbacks):
             callbacks.canPositionBeSwiped(viewHolder.adapterPosition) -> ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
             else -> 0
         }
+    }
+
+    private fun resetJob(){
+        longHoldJob?.cancel()
+        longHoldJob = null
     }
 }
