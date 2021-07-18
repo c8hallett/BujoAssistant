@@ -47,7 +47,7 @@ class TaskListFragment: BujoAssFragment() {
         binding.taskList.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = taskAdapter
-            ItemTouchHelper(TaskSwipeHelper(lifecycleScope, taskAdapter)).attachToRecyclerView(this)
+            ItemTouchHelper(TaskSwipeHelper(taskAdapter)).attachToRecyclerView(this)
         }
         hookupViewModelObservers()
         setOnClickListeners()

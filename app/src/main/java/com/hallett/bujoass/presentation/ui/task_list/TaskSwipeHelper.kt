@@ -16,14 +16,10 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import kotlin.math.min
 
-class TaskSwipeHelper(private val scope: CoroutineScope,  private val callbacks: SwipeCallbacks):
+class TaskSwipeHelper(private val callbacks: SwipeCallbacks):
     ItemTouchHelper.Callback() {
 
     private val defaultIconMargin = callbacks.getContext().resources.getDimensionPixelSize(R.dimen.dp12)
-    private val longPressTimeout = 500L
-
-    private var currentSwipe: Swipe? = null
-    private var longHoldJob: Job? = null
 
     interface SwipeCallbacks {
         fun getContext(): Context
@@ -36,8 +32,6 @@ class TaskSwipeHelper(private val scope: CoroutineScope,  private val callbacks:
     enum class Swipe {
         LEFT,
         RIGHT,
-        HOLD_LEFT,
-        HOLD_RIGHT,
     }
 
     override fun onMove(
@@ -47,29 +41,22 @@ class TaskSwipeHelper(private val scope: CoroutineScope,  private val callbacks:
     ): Boolean = false
 
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-        
-        when(val swipe = currentSwipe) {
-            null -> Timber.i("Received swipe for direction $direction (${viewHolder.adapterPosition})")
-            else -> callbacks.onTaskSwipe(callbacks.getTaskAtPosition(viewHolder.adapterPosition), swipe)
+        when(direction){
+            ItemTouchHelper.LEFT -> callbacks.onTaskSwipe(callbacks.getTaskAtPosition(viewHolder.adapterPosition), Swipe.LEFT)
+            ItemTouchHelper.RIGHT -> callbacks.onTaskSwipe(callbacks.getTaskAtPosition(viewHolder.adapterPosition), Swipe.RIGHT)
         }
-        currentSwipe = null
-        resetJob()
     }
 
     override fun getMovementFlags(
         recyclerView: RecyclerView,
         viewHolder: RecyclerView.ViewHolder
     ): Int {
-
         val swipeFlags = when {
             callbacks.canPositionBeSwiped(viewHolder.adapterPosition) -> ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
             else -> 0
         }
-
         return makeMovementFlags(0, swipeFlags)
     }
-
-
 
     override fun onChildDraw(
         c: Canvas,
@@ -85,51 +72,17 @@ class TaskSwipeHelper(private val scope: CoroutineScope,  private val callbacks:
 
         when {
             // right swipe
-            dX > 0 -> {
-                when(currentSwipe) {
-                    Swipe.RIGHT, Swipe.HOLD_RIGHT -> {} // nothing to do
-                    else -> {
-                        resetJob()
-                        currentSwipe = Swipe.RIGHT
-                        longHoldJob = scope.launch {
-                            delay(longPressTimeout)
-                            currentSwipe = Swipe.HOLD_RIGHT
-                        }
-                    }
-                }
-            }
+            dX > 0 -> completeDrawable?.setBoundsForRightSwipe(itemView)
             // left swipe
-            dX < 0 ->{
-                when(currentSwipe) {
-                    Swipe.LEFT, Swipe.HOLD_LEFT -> {}
-                    else -> {
-                        resetJob()
-                        currentSwipe = Swipe.LEFT
-                        longHoldJob = scope.launch {
-                            delay(longPressTimeout)
-                            currentSwipe = Swipe.HOLD_LEFT
-                        }
-                    }
-                }
-            }
-            else -> {
-                resetJob()
-                currentSwipe = null
-            }
-        }
-        when(currentSwipe) {
-            null -> return
-            Swipe.RIGHT -> completeDrawable?.setBoundsForRightSwipe(itemView)
-            Swipe.HOLD_RIGHT -> deleteDrawable?.setBoundsForRightSwipe(itemView)
-            Swipe.LEFT -> deferDrawable?.setBoundsForLeftSwipe(itemView)
-            Swipe.HOLD_LEFT -> rescheduleDrawable?.setBoundsForLeftSwipe(itemView)
+            dX < 0 -> deferDrawable?.setBoundsForLeftSwipe(itemView)
+            else -> null
         }?.draw(c)
     }
 
     private val completeDrawable = ContextCompat.getDrawable(callbacks.getContext(), R.drawable.ic_check_round)
-    private val deleteDrawable = ContextCompat.getDrawable(callbacks.getContext(), R.drawable.ic_remove_round)
     private val deferDrawable = ContextCompat.getDrawable(callbacks.getContext(), R.drawable.ic_arrow)
-    private val rescheduleDrawable = ContextCompat.getDrawable(callbacks.getContext(), R.drawable.ic_double_arrow)
+//    private val deleteDrawable = ContextCompat.getDrawable(callbacks.getContext(), R.drawable.ic_remove_round)
+//    private val rescheduleDrawable = ContextCompat.getDrawable(callbacks.getContext(), R.drawable.ic_double_arrow)
 
     private fun Drawable.setBoundsForRightSwipe(itemView: View): Drawable = apply {
         val iconSize = min(intrinsicHeight, itemView.height - defaultIconMargin * 2)
@@ -155,11 +108,5 @@ class TaskSwipeHelper(private val scope: CoroutineScope,  private val callbacks:
         val iconLeft = iconRight - iconSize
 
         setBounds(iconLeft, iconTop, iconRight, iconBottom)
-    }
-
-
-    private fun resetJob(){
-        longHoldJob?.cancel()
-        longHoldJob = null
     }
 }

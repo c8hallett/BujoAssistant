@@ -42,7 +42,7 @@ class DashboardFragment(): BujoAssFragment() {
             adapter = dashboardAdapter
             layoutManager = LinearLayoutManager(context)
             addItemDecoration(StickyHeaderDecoration(dashboardAdapter))
-            ItemTouchHelper(TaskSwipeHelper(lifecycleScope, dashboardAdapter)).attachToRecyclerView(this)
+            ItemTouchHelper(TaskSwipeHelper(dashboardAdapter)).attachToRecyclerView(this)
         }
 
         lifecycleScope.launch {
@@ -70,9 +70,7 @@ class DashboardFragment(): BujoAssFragment() {
     private fun swipeTask(task: Task, swipe: Swipe) {
         when(swipe){
             Swipe.LEFT -> viewModel.deferTask(task)
-            Swipe.HOLD_LEFT -> viewModel.rescheduleTask(task)
             Swipe.RIGHT -> viewModel.updateStatus(task)
-            Swipe.HOLD_RIGHT -> viewModel.deleteTask(task)
         }
     }
 }
