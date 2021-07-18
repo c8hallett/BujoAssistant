@@ -12,7 +12,7 @@ import timber.log.Timber
 class SelectScopeDialogFragment: BujoAssDialogFragment() {
 
     // todo: add confirm buttons
-    override val isFullScreen: Boolean = false
+    override val dialogType = DialogType.Floating(true)
     private lateinit var binding: DialogSelectScopeBinding
     private var selectedScope: Scope? = null
 
@@ -37,11 +37,29 @@ class SelectScopeDialogFragment: BujoAssDialogFragment() {
                 selectedScope = it
             }
         }
+        setClickListeners()
+    }
+
+    private fun setClickListeners() {
+        binding.run {
+            btnCancel.setOnClickListener {
+                selectedScope = null
+                dismissAllowingStateLoss()
+            }
+            btnConfirm.setOnClickListener {
+                dismissAllowingStateLoss()
+            }
+        }
     }
 
     override fun notifyOnDismissed() {
         Timber.i("Notifying dismiss")
-        findNavController().setNavigationResult(RETURN_VALUE_SELECTED_SCOPE, selectedScope)
-        onCompleted(selectedScope != null)
+        when(selectedScope) {
+            null -> onCompleted(false)
+            else -> {
+                findNavController().setNavigationResult(RETURN_VALUE_SELECTED_SCOPE, selectedScope)
+                onCompleted(true)
+            }
+        }
     }
 }

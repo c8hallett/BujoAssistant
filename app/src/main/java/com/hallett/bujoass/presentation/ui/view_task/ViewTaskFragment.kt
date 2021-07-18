@@ -163,7 +163,7 @@ class ViewTaskFragment: BujoAssFragment() {
 
     private fun scheduleTask(scope: Scope?) {
         findNavController().run {
-            getNavigationResult<Scope?>(SelectScopeDialogFragment.RETURN_VALUE_SELECTED_SCOPE) {
+            getNavigationResult<Scope>(SelectScopeDialogFragment.RETURN_VALUE_SELECTED_SCOPE) {
                 Timber.i("Received new scope: $it")
                 viewModel.rescheduleTask(it)
             }

@@ -1,22 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/dp12"
     tools:background="@color/cardview_dark_background">
 
     <androidx.cardview.widget.CardView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-        <com.hallett.bujoass.presentation.widget.ScopeSelectorView
-            android:id="@+id/scopeSelectorView"
-            android:paddingVertical="12dp"
-            android:paddingHorizontal="16dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
+            <com.hallett.bujoass.presentation.widget.ScopeSelectorView
+                android:id="@+id/scopeSelectorView"
+                android:paddingVertical="12dp"
+                android:paddingHorizontal="16dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                />
+
+            <Button
+                android:id="@+id/btn_cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="cancel"
+                android:layout_marginEnd="@dimen/dp8"
+                app:layout_constraintTop_toTopOf="@id/btn_confirm"
+                app:layout_constraintBottom_toBottomOf="@id/btn_confirm"
+                app:layout_constraintEnd_toStartOf="@+id/btn_confirm" />
+
+            <Button
+                android:id="@+id/btn_confirm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ok"
+                android:layout_marginEnd="@dimen/dp24"
+                android:layout_marginBottom="@dimen/dp12"
+                app:layout_constraintTop_toBottomOf="@id/scopeSelectorView"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
-
-</RelativeLayout>
+</FrameLayout>
