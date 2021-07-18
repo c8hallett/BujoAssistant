@@ -15,7 +15,6 @@ import com.hallett.bujoass.presentation.ui.task_list.TaskSwipeHelper
 import java.lang.ref.WeakReference
 
 class DashboardAdapter(
-    private val context: WeakReference<Context>,
     private val onTaskClicked: (Task) -> Unit,
     private val onTaskSwiped: (Task, TaskSwipeHelper.Swipe) -> Unit,
 ): RecyclerView.Adapter<DashboardAdapter.ViewHolder>(),
@@ -23,6 +22,7 @@ class DashboardAdapter(
     TaskSwipeHelper.SwipeCallbacks
 {
 
+    private lateinit var contextRef: WeakReference<Context>
     private var itemList: List<DashboardItem> = listOf()
 
     fun setItems(newItems: List<DashboardItem>) {
@@ -35,15 +35,10 @@ class DashboardAdapter(
         const val ITEM_TASK_HEADER = 1
     }
 
-    override fun canPositionBeSwiped(position: Int): Boolean = !isHeaderAtPosition(position)
-
-    override fun getTaskAtPosition(position: Int): Task = when(val item = itemList[position]) {
-        is DashboardItem.TaskItem -> item.task
-        else -> throw IllegalStateException("Swiped task at invalid position: $position")
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+        super.onAttachedToRecyclerView(recyclerView)
+        contextRef = WeakReference(recyclerView.context)
     }
-
-    override fun onTaskSwipe(task: Task, swipe: TaskSwipeHelper.Swipe) = onTaskSwiped(task, swipe)
-    override fun getItemCount(): Int = itemList.size
 
     override fun getItemViewType(position: Int): Int = when(itemList[position]){
         is DashboardItem.TaskItem -> ITEM_TYPE_TASK
@@ -116,6 +111,21 @@ class DashboardAdapter(
         }
     }
 
+    private fun WeakReference<Context>.require(): Context {
+        return get() ?: throw IllegalStateException("No longer attached to context")
+    }
+
+    // ===== TASK SWIPE HELPER CALLBACKS =====
+    override fun getContext(): Context = contextRef.require()
+    override fun canPositionBeSwiped(position: Int): Boolean = !isHeaderAtPosition(position)
+    override fun getTaskAtPosition(position: Int): Task = when(val item = itemList[position]) {
+        is DashboardItem.TaskItem -> item.task
+        else -> throw IllegalStateException("Swiped task at invalid position: $position")
+    }
+
+    override fun onTaskSwipe(task: Task, swipe: TaskSwipeHelper.Swipe) = onTaskSwiped(task, swipe)
+    override fun getItemCount(): Int = itemList.size
+
     // ===== STICKY HEADER GETTER =====
     private var currentHeader: Pair<Int, View>? = null
 
@@ -131,11 +141,9 @@ class DashboardAdapter(
             RecyclerView.NO_POSITION -> null
             currentHeader?.first -> currentHeader
             else -> {
-                context.get()?.let {
-                    val viewHolder = createHeaderViewHolder(LayoutInflater.from(context.get()))
-                    bindViewHolder(viewHolder, headerPosition)
-                    Pair(headerPosition, viewHolder.itemView)
-                } ?: throw IllegalStateException("No longer attached to context")
+                val viewHolder = createHeaderViewHolder(LayoutInflater.from(contextRef.get()))
+                bindViewHolder(viewHolder, headerPosition)
+                Pair(headerPosition, viewHolder.itemView)
             }
         }
         return currentHeader

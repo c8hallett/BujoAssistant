@@ -36,7 +36,7 @@ class DashboardFragment(): BujoAssFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val dashboardAdapter = DashboardAdapter(WeakReference(view.context), ::clickTask, ::swipeTask)
+        val dashboardAdapter = DashboardAdapter(::clickTask, ::swipeTask)
         binding.dashboardList.run {
             adapter = dashboardAdapter
             layoutManager = LinearLayoutManager(context)
