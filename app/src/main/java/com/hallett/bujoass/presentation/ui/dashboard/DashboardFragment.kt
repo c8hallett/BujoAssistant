@@ -14,6 +14,7 @@ import com.hallett.bujoass.presentation.PresentationMessage
 import com.hallett.bujoass.presentation.model.Task
 import com.hallett.bujoass.presentation.ui.BujoAssFragment
 import com.hallett.bujoass.presentation.ui.task_list.TaskSwipeHelper
+import com.hallett.bujoass.presentation.ui.task_list.TaskSwipeHelper.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -49,8 +50,10 @@ class DashboardFragment(): BujoAssFragment() {
                 dashboardAdapter.setItems(it)
             }
         }
+
         lifecycleScope.launch {
             viewModel.observeMessages().collect {
+                Timber.i("Received message: $it")
                 Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
                 if(it is PresentationMessage.Error){
                     Timber.i("should be resetting ui")
@@ -64,10 +67,12 @@ class DashboardFragment(): BujoAssFragment() {
         Timber.i("Task $task clicked")
     }
 
-    private fun swipeTask(task: Task, swipe: TaskSwipeHelper.Swipe) {
+    private fun swipeTask(task: Task, swipe: Swipe) {
         when(swipe){
-            TaskSwipeHelper.Swipe.LEFT -> viewModel.deferTask(task)
-            TaskSwipeHelper.Swipe.RIGHT -> viewModel.updateStatus(task)
+            Swipe.LEFT -> viewModel.deferTask(task)
+            Swipe.HOLD_LEFT -> viewModel.rescheduleTask(task)
+            Swipe.RIGHT -> viewModel.updateStatus(task)
+            Swipe.HOLD_RIGHT -> viewModel.deleteTask(task)
         }
     }
 }

@@ -1,11 +1,12 @@
 package com.hallett.bujoass.presentation.ui.dashboard
 
 import androidx.lifecycle.viewModelScope
-import com.hallett.bujoass.domain.Scope
 import com.hallett.bujoass.domain.ScopeType
 import com.hallett.bujoass.domain.model.TaskStatus
 import com.hallett.bujoass.domain.usecase.modify_task.IDeferTaskUseCase
+import com.hallett.bujoass.domain.usecase.modify_task.IDeleteTaskUseCase
 import com.hallett.bujoass.domain.usecase.modify_task.IModifyTaskStatusUseCase
+import com.hallett.bujoass.domain.usecase.modify_task.IRescheduleTaskUseCase
 import com.hallett.bujoass.domain.usecase.observe_task.IObserveCurrentTasksFlowableUseCase
 import com.hallett.bujoass.presentation.PresentationMessage
 import com.hallett.bujoass.presentation.model.Task
@@ -21,6 +22,8 @@ class DashboardFragmentViewModel(
     private val observeCurrentTasksFlowableUseCase: IObserveCurrentTasksFlowableUseCase,
     private val modifyTaskStatusUseCase: IModifyTaskStatusUseCase,
     private val deferTaskUseCase: IDeferTaskUseCase,
+    private val deleteTaskUseCase: IDeleteTaskUseCase,
+    private val rescheduleTaskUseCase: IRescheduleTaskUseCase,
 ): BujoAssViewModel() {
     private val messageFlow = MutableSharedFlow<PresentationMessage>()
 
@@ -69,8 +72,9 @@ class DashboardFragmentViewModel(
 
     fun deferTask(task: Task?) {
         viewModelScope.launch {
-            when(task) {
-                null -> messageFlow.errorMessage("Invalid task.")
+            when {
+                task == null -> messageFlow.errorMessage("Invalid task.")
+                task.status == TaskStatus.COMPLETE -> messageFlow.errorMessage("Task is already complete. Cannot be rescheduled")
                 else -> messageFlow.emitMessage(
                     operation = {
                         deferTaskUseCase.execute(task.id)
@@ -85,6 +89,34 @@ class DashboardFragmentViewModel(
                         }
                     }
                 )
+            }
+        }
+    }
+
+    fun deleteTask(task: Task?) {
+        viewModelScope.launch {
+            when(task) {
+                null -> messageFlow.errorMessage("Invalid task")
+                else -> messageFlow.emitMessage(
+                    operation = {
+                        deleteTaskUseCase.execute(task.id)
+                        "Task deleted"
+                    },
+                    onFailure = {
+                        Timber.w(it, "Couldn't delete task")
+                        "Failed to delete task. Please try again."
+                    }
+                )
+            }
+        }
+    }
+
+    fun rescheduleTask(task: Task?){
+        viewModelScope.launch {
+            when {
+                task == null -> messageFlow.errorMessage("Invalid task.")
+                task.status == TaskStatus.COMPLETE -> messageFlow.errorMessage("Task is already complete. Cannot be rescheduled")
+                else -> messageFlow.infoMessage("Coming soon")
             }
         }
     }

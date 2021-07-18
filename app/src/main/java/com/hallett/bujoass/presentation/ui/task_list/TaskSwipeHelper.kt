@@ -17,9 +17,10 @@ import timber.log.Timber
 import kotlin.math.min
 
 class TaskSwipeHelper(private val scope: CoroutineScope,  private val callbacks: SwipeCallbacks):
-    ItemTouchHelper.SimpleCallback(ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+    ItemTouchHelper.Callback() {
 
     private val defaultIconMargin = callbacks.getContext().resources.getDimensionPixelSize(R.dimen.dp12)
+    private val longPressTimeout = 500L
 
     private var currentSwipe: Swipe? = null
     private var longHoldJob: Job? = null
@@ -46,6 +47,7 @@ class TaskSwipeHelper(private val scope: CoroutineScope,  private val callbacks:
     ): Boolean = false
 
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+        
         when(val swipe = currentSwipe) {
             null -> Timber.i("Received swipe for direction $direction (${viewHolder.adapterPosition})")
             else -> callbacks.onTaskSwipe(callbacks.getTaskAtPosition(viewHolder.adapterPosition), swipe)
@@ -53,6 +55,21 @@ class TaskSwipeHelper(private val scope: CoroutineScope,  private val callbacks:
         currentSwipe = null
         resetJob()
     }
+
+    override fun getMovementFlags(
+        recyclerView: RecyclerView,
+        viewHolder: RecyclerView.ViewHolder
+    ): Int {
+
+        val swipeFlags = when {
+            callbacks.canPositionBeSwiped(viewHolder.adapterPosition) -> ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
+            else -> 0
+        }
+
+        return makeMovementFlags(0, swipeFlags)
+    }
+
+
 
     override fun onChildDraw(
         c: Canvas,
@@ -75,7 +92,7 @@ class TaskSwipeHelper(private val scope: CoroutineScope,  private val callbacks:
                         resetJob()
                         currentSwipe = Swipe.RIGHT
                         longHoldJob = scope.launch {
-                            delay(1500)
+                            delay(longPressTimeout)
                             currentSwipe = Swipe.HOLD_RIGHT
                         }
                     }
@@ -89,7 +106,7 @@ class TaskSwipeHelper(private val scope: CoroutineScope,  private val callbacks:
                         resetJob()
                         currentSwipe = Swipe.LEFT
                         longHoldJob = scope.launch {
-                            delay(1500)
+                            delay(longPressTimeout)
                             currentSwipe = Swipe.HOLD_LEFT
                         }
                     }
@@ -140,15 +157,6 @@ class TaskSwipeHelper(private val scope: CoroutineScope,  private val callbacks:
         setBounds(iconLeft, iconTop, iconRight, iconBottom)
     }
 
-    override fun getSwipeDirs(
-        recyclerView: RecyclerView,
-        viewHolder: RecyclerView.ViewHolder
-    ): Int {
-        return when {
-            callbacks.canPositionBeSwiped(viewHolder.adapterPosition) -> ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
-            else -> 0
-        }
-    }
 
     private fun resetJob(){
         longHoldJob?.cancel()

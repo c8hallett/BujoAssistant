@@ -15,5 +15,5 @@ val viewModelModule = Kodein.Module("view_model_module") {
     bind<ViewModel>(tag = AddNewTaskFragmentViewModel::class.java) with provider { AddNewTaskFragmentViewModel(instance()) }
     bind<ViewModel>(tag = TaskListFragmentViewModel::class.java) with provider { TaskListFragmentViewModel(instance(), instance(), instance()) }
     bind<ViewModel>(tag = ViewTaskFragmentViewModel::class.java) with provider { ViewTaskFragmentViewModel(instance(), instance(), instance(), instance(), instance(), instance()) }
-    bind<ViewModel>(tag = DashboardFragmentViewModel::class.java) with provider { DashboardFragmentViewModel(instance(), instance(), instance()) }
+    bind<ViewModel>(tag = DashboardFragmentViewModel::class.java) with provider { DashboardFragmentViewModel(instance(), instance(), instance(), instance(), instance()) }
 }
