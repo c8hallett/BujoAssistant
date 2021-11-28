@@ -1,8 +1,8 @@
-package com.hallett.bujoass.domain.model
+package com.hallett.scopes
 
 enum class ScopeType {
     DAY,
     WEEK,
     MONTH,
-    YEAR,
+    YEAR
 }

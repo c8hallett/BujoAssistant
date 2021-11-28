@@ -1,6 +1,5 @@
 package com.hallett.bujoass.di
 
-import com.hallett.bujoass.domain.Scope
 import com.hallett.bujoass.presentation.format.Formatter
 import com.hallett.bujoass.presentation.format.MediumDateFormatter
 import org.kodein.di.Kodein

@@ -11,6 +11,7 @@ import com.hallett.bujoass.domain.usecase.observe_task.IObserveCurrentTasksFlowa
 import com.hallett.bujoass.presentation.PresentationMessage
 import com.hallett.bujoass.presentation.model.Task
 import com.hallett.bujoass.presentation.ui.BujoAssViewModel
+import com.hallett.scopes.ScopeType
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.catch

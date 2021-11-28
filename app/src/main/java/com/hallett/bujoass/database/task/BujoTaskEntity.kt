@@ -1,8 +1,8 @@
 package com.hallett.bujoass.database.task
 
 import androidx.room.*
-import com.hallett.bujoass.domain.Scope
 import com.hallett.bujoass.domain.model.TaskStatus
+import com.hallett.scopes.Scope
 import java.util.Date
 
 @Entity(tableName = BujoTaskEntity.TABLE_NAME)

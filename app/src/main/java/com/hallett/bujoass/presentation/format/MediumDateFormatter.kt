@@ -1,10 +1,10 @@
 package com.hallett.bujoass.presentation.format
 
 import android.annotation.SuppressLint
-import com.hallett.bujoass.domain.Scope
-import com.hallett.bujoass.domain.ScopeType
+import com.hallett.scopes.Scope
+import com.hallett.scopes.ScopeType
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
 
 
 @SuppressLint("SimpleDateFormat")

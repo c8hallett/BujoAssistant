@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.hallett.bujoass.databinding.DialogSelectScopeBinding
-import com.hallett.bujoass.domain.Scope
 import timber.log.Timber
 
 class SelectScopeDialogFragment: BujoAssDialogFragment() {

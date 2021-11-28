@@ -8,13 +8,12 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.LinearLayout
-import androidx.annotation.StringRes
 import com.hallett.bujoass.R
 import com.hallett.bujoass.databinding.WidgetScopeSelectorBinding
-import com.hallett.bujoass.domain.Scope
-import com.hallett.bujoass.domain.ScopeType
 import com.hallett.bujoass.presentation.gone
 import com.hallett.bujoass.presentation.visible
+import com.hallett.scopes.Scope
+import com.hallett.scopes.ScopeType
 import java.util.*
 
 class ScopeSelectorView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) : LinearLayout(context, attrs) {

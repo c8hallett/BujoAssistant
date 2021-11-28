@@ -1,6 +1,5 @@
 package com.hallett.bujoass.presentation.ui.view_task
 
-import com.hallett.bujoass.domain.Scope
 import com.hallett.bujoass.domain.model.TaskStatus
 
 data class ViewableTask(

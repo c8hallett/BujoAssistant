@@ -1,7 +1,6 @@
 package com.hallett.bujoass.presentation.ui.task_list
 
 import androidx.lifecycle.viewModelScope
-import com.hallett.bujoass.domain.Scope
 import com.hallett.bujoass.domain.model.TaskStatus
 import com.hallett.bujoass.domain.usecase.modify_task.IDeferTaskUseCase
 import com.hallett.bujoass.domain.usecase.modify_task.IModifyTaskStatusUseCase

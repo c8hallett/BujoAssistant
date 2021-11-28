@@ -2,16 +2,16 @@ package com.hallett.bujoass.database
 
 import com.hallett.bujoass.database.task.BujoTaskDao
 import com.hallett.bujoass.database.task.BujoTaskEntity
-import com.hallett.bujoass.domain.Scope
-import com.hallett.bujoass.domain.ScopeType
+import com.hallett.scopes.IScopeGenerator
+import com.hallett.scopes.ScopeType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 import java.util.*
 import kotlin.math.max
 
 class TaskGenerator(
     private val taskDao: BujoTaskDao,
+    private val generator: IScopeGenerator,
 ) {
 
     private companion object {
@@ -34,7 +34,7 @@ class TaskGenerator(
 
         return BujoTaskEntity(
             taskName = sampleTasks.random(),
-            scope = Scope.newInstance(type, date)
+            scope = generator.generateScope(type, date)
         )
     }
 

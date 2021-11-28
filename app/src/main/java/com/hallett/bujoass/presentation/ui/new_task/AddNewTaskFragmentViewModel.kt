@@ -1,10 +1,10 @@
 package com.hallett.bujoass.presentation.ui.new_task
 
 import androidx.lifecycle.viewModelScope
-import com.hallett.bujoass.domain.Scope
 import com.hallett.bujoass.domain.usecase.modify_task.ISaveNewTaskUseCase
 import com.hallett.bujoass.presentation.model.PresentationResult
 import com.hallett.bujoass.presentation.ui.BujoAssViewModel
+import com.hallett.scopes.Scope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch

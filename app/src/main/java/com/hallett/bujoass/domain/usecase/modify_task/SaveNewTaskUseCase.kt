@@ -2,7 +2,7 @@ package com.hallett.bujoass.domain.usecase.modify_task
 
 import com.hallett.bujoass.database.task.BujoTaskDao
 import com.hallett.bujoass.database.task.BujoTaskEntity
-import com.hallett.bujoass.domain.Scope
+import com.hallett.scopes.Scope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.lang.IllegalArgumentException
