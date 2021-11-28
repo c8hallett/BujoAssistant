@@ -4,14 +4,14 @@
         android:enabled="true"
         android:icon="@drawable/ic_dashboard"
         android:title="dashboard"/>
-    <item
-        android:id="@+id/taskListFragment"
-        android:enabled="true"
-        android:icon="@drawable/ic_home"
+<!--    <item-->
+<!--        android:id="@+id/taskListFragment"-->
+<!--        android:enabled="true"-->
+<!--        android:icon="@drawable/ic_home"-->
         android:title="todo"/>
-    <item
-        android:id="@+id/addNewTaskFragment"
-        android:enabled="true"
-        android:icon="@drawable/ic_plus_round"
-        android:title="new"/>
+<!--    <item-->
+<!--        android:id="@+id/addNewTaskFragment"-->
+<!--        android:enabled="true"-->
+<!--        android:icon="@drawable/ic_plus_round"-->
+<!--        android:title="new"/>-->
 </menu>

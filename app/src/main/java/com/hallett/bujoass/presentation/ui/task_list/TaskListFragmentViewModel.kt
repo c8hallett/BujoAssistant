@@ -8,6 +8,7 @@ import com.hallett.bujoass.domain.usecase.observe_task.IObserveTaskListFlowableU
 import com.hallett.bujoass.presentation.PresentationMessage
 import com.hallett.bujoass.presentation.model.Task
 import com.hallett.bujoass.presentation.ui.BujoAssViewModel
+import com.hallett.scopes.Scope
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import timber.log.Timber

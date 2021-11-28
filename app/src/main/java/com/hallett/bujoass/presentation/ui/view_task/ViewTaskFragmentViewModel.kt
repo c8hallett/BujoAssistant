@@ -1,7 +1,6 @@
 package com.hallett.bujoass.presentation.ui.view_task
 
 import androidx.lifecycle.viewModelScope
-import com.hallett.bujoass.domain.ScopeType
 import com.hallett.bujoass.domain.model.TaskStatus
 import com.hallett.bujoass.domain.usecase.modify_task.IDeferTaskUseCase
 import com.hallett.bujoass.domain.usecase.modify_task.IDeleteTaskUseCase
@@ -12,6 +11,9 @@ import com.hallett.bujoass.presentation.PresentationMessage
 import com.hallett.bujoass.presentation.ui.BujoAssViewModel
 import com.hallett.bujoass.presentation.format.Formatter
 import com.hallett.bujoass.presentation.model.PresentationResult
+import com.hallett.scopes.IScopeGenerator
+import com.hallett.scopes.Scope
+import com.hallett.scopes.ScopeType
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -24,6 +26,7 @@ class ViewTaskFragmentViewModel(
     private val deferTaskUseCase: IDeferTaskUseCase,
     private val deleteTaskUseCase: IDeleteTaskUseCase,
     private val scopeFormatter: Formatter<Scope?>,
+    private val scopeGenerator: IScopeGenerator,
 ): BujoAssViewModel() {
 
     private val taskFlow = MutableSharedFlow<PresentationResult<ViewableTask>>()
@@ -128,7 +131,7 @@ class ViewTaskFragmentViewModel(
             messageFlow.emitMessage(
                 operation = {
                     // TODO: maybe this could be moved to own use case. . .
-                    rescheduleTaskUseCase.execute(taskId, Scope.getCurrent(scopeType))
+                    rescheduleTaskUseCase.execute(taskId, scopeGenerator.generateScope(scopeType))
                     when(scopeType) {
                         ScopeType.DAY-> "Task moved to today"
                         ScopeType.WEEK -> "Task moved to this week"

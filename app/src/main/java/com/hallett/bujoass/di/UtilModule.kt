@@ -9,5 +9,5 @@ import org.kodein.di.generic.singleton
 
 val utilModule = Kodein.Module("util_module") {
     bind<ViewModelProvider.Factory>() with singleton { KodeinViewModelProviderFactory(kodein) }
-    bind<TaskGenerator>() with singleton { TaskGenerator(instance()) }
+    bind<TaskGenerator>() with singleton { TaskGenerator(instance(), instance()) }
 }

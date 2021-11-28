@@ -11,15 +11,18 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.chip.ChipGroup
 import com.hallett.bujoass.databinding.FragmentViewTaskBinding
-import com.hallett.bujoass.domain.ScopeType
 import com.hallett.bujoass.domain.model.TaskStatus
 import com.hallett.bujoass.presentation.model.PresentationResult
 import com.hallett.bujoass.presentation.ui.ArgumentConstants
 import com.hallett.bujoass.presentation.ui.BujoAssFragment
 import com.hallett.bujoass.presentation.ui.SelectScopeDialogFragment
 import com.hallett.bujoass.presentation.visible
+import com.hallett.scopes.IScopeGenerator
+import com.hallett.scopes.Scope
+import com.hallett.scopes.ScopeType
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import org.kodein.di.generic.instance
 import timber.log.Timber
 
 class ViewTaskFragment: BujoAssFragment() {
@@ -27,6 +30,7 @@ class ViewTaskFragment: BujoAssFragment() {
     private val viewModel: ViewTaskFragmentViewModel by lazy {
         ViewModelProvider(this, vmpfactory).get(ViewTaskFragmentViewModel::class.java)
     }
+    private val scopeGenerator: IScopeGenerator by instance()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -95,7 +99,7 @@ class ViewTaskFragment: BujoAssFragment() {
             newButton("schedule") { scheduleTask(scope) }
         )
         ScopeType.DAY -> when {
-            scope.isCurrent() -> arrayOf(
+            scopeGenerator.isCurrentScope(scope) -> arrayOf(
                 newButton("do tomorrow") { viewModel.deferTask() },
                 newButton("reschedule") { scheduleTask(scope) }
             )
@@ -105,7 +109,7 @@ class ViewTaskFragment: BujoAssFragment() {
             )
         }
         ScopeType.WEEK -> when {
-            scope.isCurrent() -> arrayOf(
+            scopeGenerator.isCurrentScope(scope) -> arrayOf(
                 newButton("do today") { viewModel.moveTaskToCurrentScope(ScopeType.DAY) },
                 newButton("do next week") { viewModel.deferTask() },
                 newButton("reschedule") { scheduleTask(scope) }
@@ -117,7 +121,7 @@ class ViewTaskFragment: BujoAssFragment() {
             )
         }
         ScopeType.MONTH -> when {
-            scope.isCurrent() -> arrayOf(
+            scopeGenerator.isCurrentScope(scope) -> arrayOf(
                 newButton("do today") { viewModel.moveTaskToCurrentScope(ScopeType.DAY) },
                 newButton("do next month") { viewModel.deferTask() },
                 newButton("reschedule") { scheduleTask(scope) }
@@ -129,7 +133,7 @@ class ViewTaskFragment: BujoAssFragment() {
             )
         }
         ScopeType.YEAR -> when {
-            scope.isCurrent() -> arrayOf(
+            scopeGenerator.isCurrentScope(scope) -> arrayOf(
                 newButton("do today") { viewModel.moveTaskToCurrentScope(ScopeType.DAY) },
                 newButton("do next year") { viewModel.deferTask() },
                 newButton("reschedule") { scheduleTask(scope) }

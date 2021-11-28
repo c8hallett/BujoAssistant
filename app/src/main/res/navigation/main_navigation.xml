@@ -51,7 +51,7 @@
         tools:layout="@layout/dialog_select_scope" >
         <argument
             android:name="args_selected"
-            app:argType="com.hallett.bujoass.domain.Scope"
+            app:argType="com.hallett.scopes.Scope"
             app:nullable="true" />
     </dialog>
 </navigation>

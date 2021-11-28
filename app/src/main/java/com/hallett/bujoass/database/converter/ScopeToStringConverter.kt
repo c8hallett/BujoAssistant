@@ -2,6 +2,7 @@ package com.hallett.bujoass.database.converter
 
 import androidx.room.TypeConverter
 import com.google.gson.Gson
+import com.hallett.scopes.Scope
 
 class ScopeToStringConverter {
     @TypeConverter

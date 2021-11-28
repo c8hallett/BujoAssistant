@@ -51,6 +51,10 @@ internal class ScopeGenerator: IScopeGenerator {
         }
     }
 
+    override fun isCurrentOrFutureScope(scope: Scope): Boolean {
+        return scope.value >= Date()
+    }
+
     override fun isCurrentScope(scope: Scope): Boolean {
         return scope == generateScope(scope.type)
     }

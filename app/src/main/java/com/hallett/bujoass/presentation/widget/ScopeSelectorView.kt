@@ -55,10 +55,16 @@ class ScopeSelectorView @JvmOverloads constructor(context: Context, attrs: Attri
                     set(Calendar.MONTH, month)
                     set(Calendar.DATE, dayOfMonth)
                 }
-                val scope = when(val scopeType = labelMap[scopeSpinner.selectedItemPosition].second) {
-                    null -> null
-                    else -> Scope.newInstance(scopeType, calendar.time)
-                }
+//                val scope = when(val scopeType = labelMap[scopeSpinner.selectedItemPosition].second) {
+//                    null -> null
+//                    else -> Scope.newInstance(scopeType, calendar.time)
+//                }
+//
+//                onScopeSelected?.invoke(scope)
+//                dateSelector.setDefaultDate(scope?.value ?: Date())
+            }
+        }
+    }
 
                 onScopeSelected?.invoke(scope)
                 dateSelector.setDefaultDate(scope?.value ?: Date())
@@ -68,23 +74,23 @@ class ScopeSelectorView @JvmOverloads constructor(context: Context, attrs: Attri
 
     private fun setScopeToPosition(position: Int) {
         binding.run {
-            val scope = when(val scopeType = labelMap[position].second) {
-                null -> null
-                else -> Scope.newInstance(scopeType, calendar.time)
-            }
-            onScopeSelected?.invoke(scope)
-            when(scope) {
-                null -> {
-                    scopePreLabel.gone()
-                    scopePostLabel.gone()
-                    dateSelector.gone()
-                }
-                else -> {
-                    scopePreLabel.visible()
-                    scopePostLabel.visible()
-                    dateSelector.visible()
-                }
-            }
+//            val scope = when(val scopeType = labelMap[position].second) {
+//                null -> null
+//                else -> Scope.newInstance(scopeType, calendar.time)
+//            }
+//            onScopeSelected?.invoke(scope)
+//            when(scope) {
+//                null -> {
+//                    scopePreLabel.gone()
+//                    scopePostLabel.gone()
+//                    dateSelector.gone()
+//                }
+//                else -> {
+//                    scopePreLabel.visible()
+//                    scopePostLabel.visible()
+//                    dateSelector.visible()
+//                }
+//            }
         }
     }
 
