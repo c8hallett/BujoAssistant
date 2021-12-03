@@ -66,12 +66,6 @@ class ScopeSelectorView @JvmOverloads constructor(context: Context, attrs: Attri
         }
     }
 
-                onScopeSelected?.invoke(scope)
-                dateSelector.setDefaultDate(scope?.value ?: Date())
-            }
-        }
-    }
-
     private fun setScopeToPosition(position: Int) {
         binding.run {
 //            val scope = when(val scopeType = labelMap[position].second) {

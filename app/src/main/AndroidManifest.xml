@@ -11,7 +11,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BujoAssistant">
 
-        <activity android:name=".presentation.ui.BujoAssActivity">
+        <activity android:name=".presentation.ui.BujoAssActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
