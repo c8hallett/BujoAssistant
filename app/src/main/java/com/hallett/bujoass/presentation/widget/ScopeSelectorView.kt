@@ -8,12 +8,19 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.LinearLayout
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.runtime.Composable
+import androidx.paging.PagingData
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.items
 import com.hallett.bujoass.R
 import com.hallett.bujoass.databinding.WidgetScopeSelectorBinding
 import com.hallett.bujoass.presentation.gone
 import com.hallett.bujoass.presentation.visible
 import com.hallett.scopes.Scope
 import com.hallett.scopes.ScopeType
+import kotlinx.coroutines.flow.Flow
 import java.util.*
 
 class ScopeSelectorView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) : LinearLayout(context, attrs) {
@@ -64,6 +71,22 @@ class ScopeSelectorView @JvmOverloads constructor(context: Context, attrs: Attri
 //                dateSelector.setDefaultDate(scope?.value ?: Date())
             }
         }
+    }
+
+    @Composable
+    private fun ScopeList(scopes: Flow<PagingData<Scope>>) {
+        val lazyScopeItems: LazyPagingItems<Scope> = scopes.collectAsLazyPagingItems()
+
+        LazyColumn {
+            items(lazyScopeItems) { lazyScope ->
+                ScopeItem(lazyScope)
+            }
+        }
+    }
+
+    @Composable
+    private fun ScopeItem(scope: Scope?) {
+
     }
 
     private fun setScopeToPosition(position: Int) {

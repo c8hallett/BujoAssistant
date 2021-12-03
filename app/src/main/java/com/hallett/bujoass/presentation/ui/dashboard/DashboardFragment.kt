@@ -5,6 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -47,6 +53,7 @@ class DashboardFragment(): BujoAssFragment() {
 
         lifecycleScope.launch {
             viewModel.observeDashboardItems().collect {
+                val dashboardItems = v
                 dashboardAdapter.setItems(it)
             }
         }
@@ -62,6 +69,37 @@ class DashboardFragment(): BujoAssFragment() {
             }
         }
     }
+
+    @Composable
+    fun TaskList() {
+        val dashboardItems = viewModel.observeDashboardItems().collectAsState(listOf())
+
+        LazyColumn {
+            items(dashboardItems.value) { dashboardItem ->
+                when(dashboardItem) {
+                    is DashboardItem.TaskItem -> TaskItem(task = dashboardItem)
+                    is DashboardItem.HeaderItem -> HeaderItem(header = dashboardItem)
+                }
+            }
+        }
+    }
+
+    @Composable
+    fun TaskItem(task: DashboardItem.TaskItem) {
+        Row{
+            Text()
+        }
+        Row{
+
+        }
+
+    }
+
+    @Composable
+    fun HeaderItem(header: DashboardItem.HeaderItem) {
+
+    }
+
 
     private fun clickTask(task: Task) {
         Timber.i("Task $task clicked")
