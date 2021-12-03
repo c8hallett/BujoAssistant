@@ -7,13 +7,22 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CornerSize
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -63,13 +72,24 @@ class DashboardFragment(): BujoAssFragment() {
 
     @Composable
     fun TaskItem(task: DashboardItem.TaskItem) {
-        Text(task.task.taskName, style = MaterialTheme.typography.h6)
-        Text(task.task.status.toString(), style = MaterialTheme.typography.caption)
+        Card(
+          modifier = Modifier
+            .padding(horizontal = 8.dp, vertical = 8.dp)
+            .fillMaxWidth(),
+          elevation = 2.dp,
+          backgroundColor = Color.White,
+          shape = RoundedCornerShape(corner = CornerSize(4.dp))
+        ) {
+            Column(modifier =  Modifier.padding(horizontal = 8.dp, vertical = 8.dp)) {
+                Text(task.task.taskName, style = MaterialTheme.typography.h6)
+                Text(task.task.status.toString(), style = MaterialTheme.typography.caption)
+            }
+        }
     }
 
     @Composable
     fun HeaderItem(header: DashboardItem.HeaderItem) {
-        Text(header.headerText, style = MaterialTheme.typography.h3)
+        Text(header.headerText, style = MaterialTheme.typography.h4, color = Color.White)
     }
 
 
