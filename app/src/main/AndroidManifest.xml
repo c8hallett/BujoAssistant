@@ -12,6 +12,7 @@
         android:theme="@style/Theme.BujoAssistant">
 
         <activity android:name=".presentation.ui.BujoAssActivity"
+            android:theme="@style/Theme.Design.NoActionBar"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

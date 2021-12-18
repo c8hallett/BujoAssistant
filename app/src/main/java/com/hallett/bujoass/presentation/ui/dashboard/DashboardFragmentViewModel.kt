@@ -13,6 +13,7 @@ import com.hallett.bujoass.presentation.ui.BujoAssViewModel
 import com.hallett.scopes.ScopeType
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -26,6 +27,8 @@ class DashboardFragmentViewModel(
     private val rescheduleTaskUseCase: IRescheduleTaskUseCase,
 ): BujoAssViewModel() {
     private val messageFlow = MutableSharedFlow<PresentationMessage>()
+
+    private val expandedTaskFlow = MutableStateFlow<Task?>(null)
 
     fun observeDashboardItems(): Flow<List<DashboardItem>> {
         return observeCurrentTasksFlowableUseCase.execute()
@@ -41,6 +44,14 @@ class DashboardFragmentViewModel(
 
                 todayHeader + day + thisWeekHeader + week
             }
+    }
+
+    fun observeExpandedTask(): Flow<Task?> = expandedTaskFlow
+
+    fun expandTask(task: Task?) {
+        viewModelScope.launch {
+            expandedTaskFlow.value = task
+        }
     }
 
     fun updateStatus(task: Task?) {
