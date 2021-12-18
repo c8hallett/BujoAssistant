@@ -42,7 +42,6 @@ class DashboardFragmentViewModel(
                 todayHeader + day + thisWeekHeader + week
             }
     }
-    fun observeMessages(): Flow<PresentationMessage> = messageFlow
 
     fun updateStatus(task: Task?) {
         viewModelScope.launch {
