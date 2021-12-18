@@ -12,6 +12,7 @@ import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
@@ -95,8 +96,8 @@ class DashboardFragment(): BujoAssFragment() {
         task = taskItem,
         isRevealed = taskItem.task == revealedTask.value,
         cardOffset = REVEALED_OFFSET,
-        onExpandRight = { viewModel.expandTaskRight(taskItem.task) },
-        onCollapse = { viewModel.expandTaskRight(null) }
+        onExpand = { viewModel.expandTask(taskItem.task) },
+        onCollapse = { viewModel.expandTask(null) }
       )
     }
   }
@@ -107,8 +108,7 @@ class DashboardFragment(): BujoAssFragment() {
     task: DashboardItem.TaskItem,
     isRevealed: Boolean,
     cardOffset: Float,
-    onExpandRight: () -> Unit,
-    onExpandLeft: () -> Unit,
+    onExpand: () -> Unit,
     onCollapse: () -> Unit,
   ) {
     val offsetX = remember { mutableStateOf(0f) }
@@ -156,6 +156,17 @@ class DashboardFragment(): BujoAssFragment() {
         Text(task.task.taskName, style = MaterialTheme.typography.h6)
         Text(task.task.status.toString(), style = MaterialTheme.typography.caption)
       }
+    }
+  }
+
+  @Composable
+  fun TaskActions(
+    onComplete: () -> Unit,
+    onDefer: () -> Unit,
+    onDelete: () -> Unit
+  ) {
+    Row{
+
     }
   }
 
