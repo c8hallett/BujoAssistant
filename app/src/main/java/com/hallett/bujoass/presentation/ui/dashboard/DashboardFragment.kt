@@ -9,6 +9,8 @@ import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,6 +19,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CornerSize
@@ -27,6 +30,8 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowRight
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
@@ -41,6 +46,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.consumePositionChange
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
@@ -54,7 +60,8 @@ import kotlinx.coroutines.flow.Flow
 class DashboardFragment(): BujoAssFragment() {
   private companion object {
     const val ANIMATION_DURATION: Int = 300
-    const val REVEALED_OFFSET: Float = 100f
+    const val REVEALED_OFFSET: Float = 300f
+    const val ICON_SIZE = REVEALED_OFFSET / (3 * 3)
   }
 
   private val viewModel: DashboardFragmentViewModel by lazy {
@@ -88,10 +95,11 @@ class DashboardFragment(): BujoAssFragment() {
   @Composable
   fun TaskItem(taskItem: DashboardItem.TaskItem, revealedTask: State<Task?>) {
     Box(modifier = Modifier.fillMaxWidth()) {
-      Icon(
-        Icons.Default.Delete,
-        contentDescription = "Localized description",
-        modifier = Modifier.fillMaxHeight().align(Alignment.CenterStart))
+      TaskActions(
+        onComplete = { viewModel.updateStatus(taskItem.task) },
+        onDefer = { viewModel.deferTask(taskItem.task) },
+        onDelete = { viewModel.deleteTask(taskItem.task) },
+      )
       DraggableTaskCard(
         task = taskItem,
         isRevealed = taskItem.task == revealedTask.value,
@@ -165,8 +173,34 @@ class DashboardFragment(): BujoAssFragment() {
     onDefer: () -> Unit,
     onDelete: () -> Unit
   ) {
-    Row{
-
+    Row(modifier = Modifier.fillMaxHeight().background(Color.Green)){
+      Icon(
+        Icons.Default.Check,
+        contentDescription = "Localized description",
+        modifier = Modifier
+          .fillMaxHeight()
+          .align(Alignment.CenterVertically)
+          .clickable { onComplete() }
+          .size(Dp(ICON_SIZE))
+      )
+      Icon(
+        Icons.Default.ArrowRight,
+        contentDescription = "Localized description",
+        modifier = Modifier
+          .fillMaxHeight()
+          .align(Alignment.CenterVertically)
+          .clickable { onDefer() }
+          .size(Dp(ICON_SIZE))
+      )
+      Icon(
+        Icons.Default.Delete,
+        contentDescription = "Localized description",
+        modifier = Modifier
+          .fillMaxHeight()
+          .align(Alignment.CenterVertically)
+          .clickable { onDelete() }
+          .size(Dp(ICON_SIZE))
+      )
     }
   }
 

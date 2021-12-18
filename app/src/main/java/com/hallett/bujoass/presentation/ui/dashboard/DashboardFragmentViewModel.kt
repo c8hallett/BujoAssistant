@@ -77,6 +77,7 @@ class DashboardFragmentViewModel(
                     }
                 )
             }
+            expandedTaskFlow.value = task
         }
     }
 
@@ -100,6 +101,7 @@ class DashboardFragmentViewModel(
                     }
                 )
             }
+            expandedTaskFlow.value = task
         }
     }
 
@@ -118,6 +120,7 @@ class DashboardFragmentViewModel(
                     }
                 )
             }
+            expandedTaskFlow.value = task
         }
     }
 
