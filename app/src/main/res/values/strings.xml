@@ -1,8 +1,27 @@
 <resources>
-    <string name="app_name">BujoAssistant</string>
-    <string name="display_scope_none">Sometime</string>
-    <string name="display_scope_day">Day</string>
-    <string name="display_scope_week">Week</string>
-    <string name="display_scope_month">Month</string>
-    <string name="display_scope_year">Year</string>
+    <string name="app_name">TaskAssistant</string>
+
+    <plurals name="selectable_scope_day">
+        <item quantity="zero">Today</item>
+        <item quantity="one">"Tomorrow</item>
+        <item quantity="other">%d days from now</item>
+    </plurals>
+
+    <plurals name="selectable_scope_week">
+        <item quantity="zero">This week</item>
+        <item quantity="one">"Next week</item>
+        <item quantity="other">%d weeks from now</item>
+    </plurals>
+
+    <plurals name="selectable_scope_month">
+        <item quantity="zero">This month</item>
+        <item quantity="one">"Next month</item>
+        <item quantity="other">%d months from now</item>
+    </plurals>
+
+    <plurals name="selectable_scope_year">
+        <item quantity="zero">This year</item>
+        <item quantity="one">"Next year</item>
+        <item quantity="other">%d years from now</item>
+    </plurals>
 </resources>
