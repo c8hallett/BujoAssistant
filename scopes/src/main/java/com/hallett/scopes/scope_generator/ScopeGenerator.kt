@@ -1,11 +1,12 @@
-package com.hallett.scopes
+package com.hallett.scopes.scope_generator
 
+import com.hallett.scopes.model.Scope
+import com.hallett.scopes.model.ScopeType
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 import java.util.*
 
 internal class ScopeGenerator: IScopeGenerator {
-
 
     override fun generateScope(type: ScopeType, date: LocalDate): Scope = when(type) {
         ScopeType.DAY -> Scope(
@@ -40,17 +41,4 @@ internal class ScopeGenerator: IScopeGenerator {
             Scope(type, forwardedDate, chronoUnit, calendarField)
         }
     }
-
-    override fun isCurrentOrFutureScope(scope: Scope): Boolean {
-        return !scope.value.isBefore(LocalDate.now())
-    }
-
-    override fun isCurrentScope(scope: Scope): Boolean {
-        return scope == generateScope(scope.type)
-    }
-
-    override fun getOffset(scope: Scope, startDate: LocalDate): Int = scope.chronoUnit.between(
-        startDate,
-        scope.value,
-    ).toInt()
 }

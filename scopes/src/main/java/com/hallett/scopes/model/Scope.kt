@@ -1,4 +1,4 @@
-package com.hallett.scopes
+package com.hallett.scopes.model
 
 import java.io.Serializable
 import java.time.LocalDate

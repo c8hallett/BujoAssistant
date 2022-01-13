@@ -1,4 +1,4 @@
-package com.hallett.scopes
+package com.hallett.scopes.model
 
 enum class ScopeType {
     DAY,
