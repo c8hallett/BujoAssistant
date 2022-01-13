@@ -14,33 +14,38 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
-import com.hallett.scopes.Scope
-import com.hallett.scopes.ScopeType
-import com.hallett.taskassistant.ui.model.SelectableScope
+import com.hallett.scopes.model.Scope
+import com.hallett.scopes.model.ScopeType
+import com.hallett.taskassistant.ui.model.scope.SelectableScope
 import kotlinx.coroutines.flow.Flow
 
 @ExperimentalMaterialApi
 @Composable
-fun ScopeSelector(
+fun ScopeSelectorScreen(
     scopes: Flow<PagingData<SelectableScope>>,
     modalState: ModalBottomSheetState,
     onScopeTypeSelected: (ScopeType) -> Unit,
     onScopeSelected: (Scope?) -> Unit,
+    onFullyExpandedContent: @Composable () -> Unit,
     content: @Composable () -> Unit
 ) {
+    val expandedContent: @Composable () -> Unit = when(modalState.currentValue) {
+        ModalBottomSheetValue.Expanded -> onFullyExpandedContent
+        else -> {{ }}
+    }
     ModalBottomSheetLayout(
         sheetState = modalState,
         sheetContent = {
             ScopeSelectorContent(
                 scopes = scopes,
                 onScopeTypeSelected = onScopeTypeSelected,
-                onScopeSelected = onScopeSelected
+                onScopeSelected = onScopeSelected,
+                extraContent = expandedContent
             )
         },
         content = content
@@ -51,10 +56,14 @@ fun ScopeSelector(
 fun ScopeSelectorContent(
     scopes: Flow<PagingData<SelectableScope>>,
     onScopeTypeSelected: (ScopeType) -> Unit,
-    onScopeSelected: (Scope?) -> Unit) {
+    onScopeSelected: (Scope?) -> Unit,
+    extraContent: @Composable () -> Unit
+) {
     val (isExpanded, setIsExpanded) = remember { mutableStateOf(false) }
 
     Column(modifier = Modifier.fillMaxWidth()){
+        extraContent()
+
         Box(modifier = Modifier
             .fillMaxWidth()
             .wrapContentSize(Alignment.TopStart)) {
@@ -143,7 +152,7 @@ fun ScopeListItem(onSelectableScope: SelectableScope, onScopeSelected: (Scope) -
         Row(
             horizontalArrangement = SpaceBetween,
             modifier = Modifier
-                .padding(start = 12.dp, top = 12.dp, end = 12.dp, bottom = 12.dp + extraPadding.dp )
+                .padding(vertical = 12.dp + extraPadding.dp, horizontal = 12.dp,)
         ){
             Text(
                 label,
