@@ -2,49 +2,32 @@ package com.hallett.taskassistant.ui.formatters
 
 import android.annotation.SuppressLint
 import android.util.Log
-import com.hallett.scopes.IScopeGenerator
-import com.hallett.scopes.Scope
-import com.hallett.scopes.ScopeType
-import com.hallett.taskassistant.R
-import com.hallett.taskassistant.ui.model.SelectableScope
-import java.text.SimpleDateFormat
-import java.time.format.DateTimeFormatter
+import com.hallett.scopes.model.Scope
+import com.hallett.scopes.model.ScopeType
+import com.hallett.scopes.scope_evaluator.IScopeEvaluator
+import com.hallett.taskassistant.ui.model.scope.SelectableScope
 
 @SuppressLint("SimpleDateFormat")
-class SelectableScopeFormatter(private val scopeGenerator: IScopeGenerator): IFormatter<Scope, SelectableScope> {
+class SelectableScopeFormatter(
+    private val scopeEvaluator: IScopeEvaluator,
+    ): IFormatter<Scope, SelectableScope> {
 
-    private val dayFormatter = DateTimeFormatter.ofPattern("MMM dd, yyyy")
-    private val weekFormatter = DateTimeFormatter.ofPattern("MMM dd, yyyy")
-    private val monthFormatter = DateTimeFormatter.ofPattern("MMMM yyyy")
-    private val yearFormatter = DateTimeFormatter.ofPattern("yyyy")
+    private val scopeTypeMap: Map<ScopeType, Pair<Float, (Int) -> String>> = mapOf(
+        ScopeType.DAY to Pair(0f, ::formatOffsetLabelDay),
+        ScopeType.WEEK to Pair(1.945f, ::formatOffsetLabelWeek),
+        ScopeType.MONTH to Pair(3.434f, ::formatOffsetLabelMonth),
+        ScopeType.YEAR to Pair(5.900f, ::formatOffsetLabelYear),
+    )
 
     override fun format(input: Scope): SelectableScope = with(input){
-        when(type) {
-            ScopeType.DAY -> SelectableScope(
-                dayFormatter.format(value),
-                formatOffsetLabelDay(scopeGenerator.getOffset(this)),
-                this,
-                0f
-            )
-            ScopeType.WEEK -> SelectableScope(
-                weekFormatter.format(value),
-                formatOffsetLabelWeek(scopeGenerator.getOffset(this)),
-                this,
-                1.945f * 4
-            )
-            ScopeType.MONTH -> SelectableScope(
-                monthFormatter.format(value),
-                formatOffsetLabelMonth(scopeGenerator.getOffset(this)),
-                this,
-                3.434f * 4
-            )
-            ScopeType.YEAR -> SelectableScope(
-                yearFormatter.format(value),
-                formatOffsetLabelYear(scopeGenerator.getOffset(this)),
-                this,
-                5.900f * 4
-            )
-        }
+        val offset = scopeEvaluator.getOffset(this)
+        val (paddingScale, offsetFormatter) = scopeTypeMap.getValue(type)
+        SelectableScope(
+            ScopeDateFormat.STANDARD.format(this),
+            offsetFormatter(offset),
+            this,
+            paddingScale * 8f
+        )
     }.also { Log.i("SelectableScopeFormatter", "New selectable: $it") }
 
     private fun formatOffsetLabelDay(offset: Int): String = when(offset) {

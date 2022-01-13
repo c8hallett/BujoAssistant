@@ -6,20 +6,26 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
-import com.hallett.scopes.IScopeGenerator
-import com.hallett.scopes.Scope
-import com.hallett.scopes.ScopeType
+import com.hallett.scopes.model.Scope
+import com.hallett.scopes.model.ScopeType
 import com.hallett.taskassistant.ui.formatters.IFormatter
-import com.hallett.taskassistant.ui.model.SelectableScope
-import com.hallett.taskassistant.ui.paging.ScopePagingSource
+import com.hallett.taskassistant.ui.model.scope.SelectableScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
+import org.kodein.di.Kodein
+import org.kodein.di.KodeinAware
+import org.kodein.di.generic.factory2
 
+
+@ExperimentalCoroutinesApi
+@FlowPreview
 class TaskAssistantViewModel(
-    private val scopeGenerator: IScopeGenerator,
-    private val scopeFormatter: IFormatter<Scope, SelectableScope>
-): ViewModel() {
+    private val scopeFormatter: IFormatter<Scope, SelectableScope>,
+    override val kodein: Kodein
+): ViewModel(), KodeinAware {
+    private val generatePager: (PagingConfig, ScopeType) -> Pager<Scope, Scope> by kodein.factory2()
 
     private val scopeTypeSelected = MutableStateFlow(ScopeType.DAY)
 
@@ -27,12 +33,10 @@ class TaskAssistantViewModel(
         scopeTypeSelected.value = scopeType
     }
 
-    @FlowPreview
     fun observeScopes(): Flow<PagingData<SelectableScope>> = scopeTypeSelected.flatMapLatest { scopeType ->
         Log.i("TaskAssistantViewModel", "new scope type selected: $scopeType")
-        Pager(
-            config = PagingConfig(pageSize = 10),
-            initialKey = scopeGenerator.generateScope(scopeType)
-        ){ ScopePagingSource(scopeGenerator) }.flow.flowOn(Dispatchers.Default)
+        generatePager(PagingConfig(pageSize = 10), scopeType)
+            .flow
+            .flowOn(Dispatchers.Default)
     }.map { pagingData -> pagingData.map { scopeFormatter.format(it) } }
 }

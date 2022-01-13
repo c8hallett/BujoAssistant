@@ -1,6 +1,6 @@
-package com.hallett.taskassistant.ui.model
+package com.hallett.taskassistant.ui.model.scope
 
-import com.hallett.scopes.Scope
+import com.hallett.scopes.model.Scope
 
 data class SelectableScope(
     val label: String,
