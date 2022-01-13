@@ -1,7 +1,7 @@
 package com.hallett.taskassistant.database
 
-import com.hallett.scopes.IScopeGenerator
-import com.hallett.scopes.ScopeType
+import com.hallett.scopes.scope_generator.IScopeGenerator
+import com.hallett.scopes.model.ScopeType
 import com.hallett.taskassistant.database.task.BujoTaskDao
 import com.hallett.taskassistant.database.task.BujoTaskEntity
 import kotlinx.coroutines.Dispatchers

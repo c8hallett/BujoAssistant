@@ -1,7 +1,7 @@
 package com.hallett.taskassistant.database.task
 
 import androidx.room.*
-import com.hallett.scopes.Scope
+import com.hallett.scopes.model.Scope
 import com.hallett.taskassistant.domain.TaskStatus
 import java.util.Date
 

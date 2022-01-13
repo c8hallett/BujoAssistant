@@ -1,12 +1,16 @@
 package com.hallett.taskassistant.ui.paging
 
-import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.hallett.scopes.IScopeGenerator
-import com.hallett.scopes.Scope
+import com.hallett.scopes.model.Scope
+import com.hallett.scopes.scope_evaluator.IScopeEvaluator
+import com.hallett.scopes.scope_generator.IScopeGenerator
 
-class ScopePagingSource(private val scopeGenerator: IScopeGenerator, val includePastScopes: Boolean = false): PagingSource<Scope, Scope>() {
+class ScopePagingSource(
+    private val scopeGenerator: IScopeGenerator,
+    private val scopeEvaluator: IScopeEvaluator,
+    val includePastScopes: Boolean = false
+): PagingSource<Scope, Scope>() {
     override fun getRefreshKey(state: PagingState<Scope, Scope>): Scope? = when(val anchor = state.anchorPosition){
         null -> null
         else -> state.closestItemToPosition(anchor)
@@ -33,12 +37,12 @@ class ScopePagingSource(private val scopeGenerator: IScopeGenerator, val include
                     add(scopeGenerator.add(scope, offset))
                 }
             }
-        }.filter { scopeGenerator.isCurrentOrFutureScope(it) }
+        }.filter { scopeEvaluator.isCurrentOrFutureScope(it) }
 
         val firstItem = items.firstOrNull()
         val prevKey = when {
             firstItem == null -> null
-            scopeGenerator.isCurrentScope(firstItem) -> null
+            scopeEvaluator.isCurrentScope(firstItem) -> null
             else -> scopeGenerator.add(firstItem, -1)
         }
 

@@ -2,7 +2,7 @@ package com.hallett.taskassistant.database.converter
 
 import androidx.room.TypeConverter
 import com.google.gson.Gson
-import com.hallett.scopes.Scope
+import com.hallett.scopes.model.Scope
 
 class ScopeToStringConverter {
     @TypeConverter

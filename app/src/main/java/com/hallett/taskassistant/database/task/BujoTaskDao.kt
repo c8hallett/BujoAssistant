@@ -4,7 +4,7 @@ import androidx.room.*
 import com.hallett.taskassistant.database.task.BujoTaskEntity.Companion.ID
 import com.hallett.taskassistant.database.task.BujoTaskEntity.Companion.TABLE_NAME
 import com.hallett.taskassistant.database.task.BujoTaskEntity.Companion.TASK_SCOPE
-import com.hallett.scopes.Scope
+import com.hallett.scopes.model.Scope
 import kotlinx.coroutines.flow.Flow
 
 @Dao

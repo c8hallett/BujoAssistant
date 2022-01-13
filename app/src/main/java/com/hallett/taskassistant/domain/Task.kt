@@ -1,6 +1,6 @@
 package com.hallett.taskassistant.domain
 
-import com.hallett.scopes.Scope
+import com.hallett.scopes.model.Scope
 
 data class Task(
     val id: Long,
