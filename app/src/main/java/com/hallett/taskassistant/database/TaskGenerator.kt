@@ -2,8 +2,8 @@ package com.hallett.taskassistant.database
 
 import com.hallett.scopes.scope_generator.IScopeGenerator
 import com.hallett.scopes.model.ScopeType
-import com.hallett.taskassistant.database.task.BujoTaskDao
-import com.hallett.taskassistant.database.task.BujoTaskEntity
+import com.hallett.taskassistant.database.task.TaskDao
+import com.hallett.taskassistant.database.task.TaskEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
@@ -11,7 +11,7 @@ import java.util.*
 import kotlin.math.max
 
 class TaskGenerator(
-    private val taskDao: BujoTaskDao,
+    private val taskDao: TaskDao,
     private val generator: IScopeGenerator,
 ) {
 
@@ -27,7 +27,7 @@ class TaskGenerator(
     private val mutableCalendar: Calendar
         get() = Calendar.getInstance()
 
-    private fun getTaskForScope(type: ScopeType): BujoTaskEntity {
+    private fun getTaskForScope(type: ScopeType): TaskEntity {
         val dayOffset = (0..DAYS_SPREAD).random()
         mutableCalendar.apply {
             add(Calendar.DAY_OF_YEAR, dayOffset)
@@ -40,18 +40,18 @@ class TaskGenerator(
             )
         }
 
-        return BujoTaskEntity(
+        return TaskEntity(
             taskName = sampleTasks.random(),
             scope = generator.generateScope(type, date)
         )
     }
 
     suspend fun generateTasks() = withContext(Dispatchers.IO){
-        val entityList = mutableListOf<BujoTaskEntity>()
+        val entityList = mutableListOf<TaskEntity>()
 
         repeat((NUM_TASKS * PERCENT_NULL_SCOPE).toInt()) {
             entityList.add(
-                BujoTaskEntity(
+                TaskEntity(
                     taskName = sampleTasks.random(),
                 )
             )

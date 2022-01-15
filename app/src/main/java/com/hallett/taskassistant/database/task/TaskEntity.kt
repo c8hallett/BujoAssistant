@@ -5,8 +5,8 @@ import com.hallett.scopes.model.Scope
 import com.hallett.taskassistant.domain.TaskStatus
 import java.util.Date
 
-@Entity(tableName = BujoTaskEntity.TABLE_NAME)
-data class BujoTaskEntity(
+@Entity(tableName = TaskEntity.TABLE_NAME)
+data class TaskEntity(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = ID)
     val id: Long = 0L,
