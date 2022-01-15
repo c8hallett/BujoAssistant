@@ -5,11 +5,11 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.hallett.taskassistant.database.converter.DateToLongConverter
 import com.hallett.taskassistant.database.converter.ScopeToStringConverter
-import com.hallett.taskassistant.database.task.BujoTaskDao
-import com.hallett.taskassistant.database.task.BujoTaskEntity
+import com.hallett.taskassistant.database.task.TaskDao
+import com.hallett.taskassistant.database.task.TaskEntity
 
 @Database(
-    entities = [BujoTaskEntity::class],
+    entities = [TaskEntity::class],
     version = 1,
     exportSchema = false, // TODO: one day, export schema
 )
@@ -18,5 +18,5 @@ import com.hallett.taskassistant.database.task.BujoTaskEntity
     ScopeToStringConverter::class
 )
 abstract class BujoAssDatabase: RoomDatabase() {
-    abstract fun bujoTaskDao(): BujoTaskDao
+    abstract fun bujoTaskDao(): TaskDao
 }
