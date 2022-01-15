@@ -2,14 +2,12 @@ package com.hallett.taskassistant.di
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import org.kodein.di.Kodein
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.closestKodein
-import org.kodein.di.direct
-import org.kodein.di.generic.instanceOrNull
+import org.kodein.di.DirectDI
+import org.kodein.di.DirectDIAware
+import org.kodein.di.instanceOrNull
 
-class KodeinViewModelProviderFactory(override val kodein: Kodein): ViewModelProvider.Factory, KodeinAware {
+class KodeinViewModelProviderFactory(override val directDI: DirectDI): ViewModelProvider.Factory, DirectDIAware {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return kodein.direct.instanceOrNull<ViewModel>(tag = modelClass) as? T ?: modelClass.newInstance()
+        return directDI.instanceOrNull<ViewModel>(tag = modelClass) as? T ?: modelClass.newInstance()
     }
 }

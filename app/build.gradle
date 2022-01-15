@@ -66,8 +66,8 @@ dependencies {
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
 
     // kodein
-    implementation "org.kodein.di:kodein-di-generic-jvm:$kodein_version"
-    implementation "org.kodein.di:kodein-di-framework-android-x:$kodein_version"
+    implementation "org.kodein.di:kodein-di:$kodein_version"
+    implementation "org.kodein.di:kodein-di-framework-compose:$kodein_version"
 
     // room
     implementation "androidx.room:room-ktx:$room_version"
