@@ -8,31 +8,34 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.hallett.scopes.model.Scope
-import com.hallett.taskassistant.ui.model.task.WritableTask
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 
 @Composable
 fun TaskEditScreen(
+    taskNameFlow: Flow<String>,
     scope: Scope?,
-    onTaskSubmitted: (WritableTask?) -> Unit,
+    onTaskNameUpdated: (String) -> Unit,
+    onTaskSubmitted: () -> Unit,
     onScopeClicked: () -> Unit,
 ) {
-    val (text, setText) = remember{ mutableStateOf("") }
+    val taskName by taskNameFlow.collectAsState(initial = "")
+
     Column(verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically)) {
         Text(
             "I want to",
             style = MaterialTheme.typography.h4
         )
         TextField(
-            value = text,
-            onValueChange = setText,
-            label = { Text("Task name") },
+            value = taskName,
+            onValueChange = onTaskNameUpdated,
             modifier = Modifier.fillMaxWidth()
         )
         Row(modifier = Modifier.fillMaxWidth()){
@@ -41,9 +44,7 @@ fun TaskEditScreen(
                     style = MaterialTheme.typography.subtitle2
                 )
             }
-            IconButton(onClick = {
-                onTaskSubmitted(WritableTask(text, scope))
-            }) {
+            IconButton(onClick = onTaskSubmitted) {
                 Icon(Icons.Default.Send,
                     contentDescription = "save task"
                 )
@@ -56,8 +57,10 @@ fun TaskEditScreen(
 @Preview
 fun TaskCreationPreview() {
     TaskEditScreen(
+        taskNameFlow = flowOf("Do something"),
         scope = null,
+        onTaskNameUpdated = {},
         onTaskSubmitted = { },
-        onScopeClicked = { }
+        onScopeClicked = { },
     )
 }

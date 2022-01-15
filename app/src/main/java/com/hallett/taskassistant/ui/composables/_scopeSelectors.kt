@@ -15,19 +15,21 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.hallett.scopes.model.Scope
 import com.hallett.scopes.model.ScopeType
-import com.hallett.taskassistant.ui.model.scope.SelectableScope
+import com.hallett.taskassistant.ui.formatters.Formatter
 import kotlinx.coroutines.flow.Flow
+import org.kodein.di.compose.rememberInstance
 
 @ExperimentalMaterialApi
 @Composable
 fun ScopeSelectorScreen(
-    scopes: Flow<PagingData<SelectableScope>>,
+    scopes: Flow<PagingData<Scope>>,
     modalState: ModalBottomSheetState,
     onScopeTypeSelected: (ScopeType) -> Unit,
     onScopeSelected: (Scope?) -> Unit,
@@ -54,7 +56,7 @@ fun ScopeSelectorScreen(
 
 @Composable
 fun ScopeSelectorContent(
-    scopes: Flow<PagingData<SelectableScope>>,
+    scopes: Flow<PagingData<Scope>>,
     onScopeTypeSelected: (ScopeType) -> Unit,
     onScopeSelected: (Scope?) -> Unit,
     extraContent: @Composable () -> Unit
@@ -121,7 +123,7 @@ fun ScopeTypeSelector(
 }
 
 @Composable
-fun ScopeList(selectableScopes: Flow<PagingData<SelectableScope>>, onScopeSelected: (Scope) -> Unit) {
+fun ScopeList(selectableScopes: Flow<PagingData<Scope>>, onScopeSelected: (Scope) -> Unit) {
     val lazyScopes = selectableScopes.collectAsLazyPagingItems()
     LazyColumn(
         contentPadding = PaddingValues(12.dp),
@@ -135,14 +137,18 @@ fun ScopeList(selectableScopes: Flow<PagingData<SelectableScope>>, onScopeSelect
                         .height(4.dp)
                         .background(Color.Gray)
                 )
-                else -> ScopeListItem(onSelectableScope = selectableScope, onScopeSelected = onScopeSelected)
+                else -> ScopeListItem(scope = selectableScope, onScopeSelected = onScopeSelected)
             }
         }
     }
 }
 
 @Composable
-fun ScopeListItem(onSelectableScope: SelectableScope, onScopeSelected: (Scope) -> Unit) = with(onSelectableScope){
+fun ScopeListItem(scope: Scope, onScopeSelected: (Scope) -> Unit) {
+    val labelFormatter: Formatter<Scope?, String> by rememberInstance(tag = Formatter.SIMPLE_DATE)
+    val secondaryLabelFormatter: Formatter<Scope?, String> by rememberInstance(tag = Formatter.OFFSET_LABEL)
+    val extraPaddingFormatter: Formatter<Scope?, Dp> by rememberInstance(tag = Formatter.EXTRA_PADDING)
+
     Card(
         backgroundColor = Color.LightGray,
         modifier = Modifier
@@ -152,15 +158,15 @@ fun ScopeListItem(onSelectableScope: SelectableScope, onScopeSelected: (Scope) -
         Row(
             horizontalArrangement = SpaceBetween,
             modifier = Modifier
-                .padding(vertical = 12.dp + extraPadding.dp, horizontal = 12.dp,)
+                .padding(vertical = 12.dp + extraPaddingFormatter.format(scope), horizontal = 12.dp)
         ){
             Text(
-                label,
+                labelFormatter.format(scope),
                 modifier = Modifier.align(Alignment.CenterVertically),
                 style = MaterialTheme.typography.h5,
             )
             Text(
-                secondaryLabel,
+                secondaryLabelFormatter.format(scope),
                 modifier = Modifier.align(Alignment.CenterVertically),
                 style = MaterialTheme.typography.subtitle2,
             )
