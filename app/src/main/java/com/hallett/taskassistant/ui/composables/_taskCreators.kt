@@ -3,17 +3,31 @@ package com.hallett.taskassistant.ui.composables
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Send
+import androidx.compose.material.icons.filled.Done
+import androidx.compose.material.icons.filled.Launch
+import androidx.compose.material.icons.filled.Undo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.OffsetMapping
+import androidx.compose.ui.text.input.TransformedText
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.hallett.scopes.model.Scope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
@@ -29,25 +43,37 @@ fun TaskEditScreen(
     val taskName by taskNameFlow.collectAsState(initial = "")
 
     Column(verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically)) {
-        Text(
-            "I want to",
-            style = MaterialTheme.typography.h4
-        )
-        TextField(
-            value = taskName,
-            onValueChange = onTaskNameUpdated,
-            modifier = Modifier.fillMaxWidth()
-        )
-        Row(modifier = Modifier.fillMaxWidth()){
-            Button(onClick = { onScopeClicked() }) {
-                Text(scope?.toString() ?: "Sometime",
-                    style = MaterialTheme.typography.subtitle2
+        Card(backgroundColor = MaterialTheme.colors.onSurface){
+            Column(modifier = Modifier.padding(12.dp)) {
+                BasicTextField(
+                    value = taskName,
+                    onValueChange = { onTaskNameUpdated(it.trimStart().trimEndExtra()) } ,
+                    modifier = Modifier.fillMaxWidth(),
+                    visualTransformation = TaskNameVisualizer(),
                 )
+                Button(
+                    onClick = { onScopeClicked() },
+                    colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.secondary),
+                    modifier = Modifier.align(Alignment.End),
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(scope?.toString() ?: "Sometime", color = MaterialTheme.colors.onSecondary)
+                        Icon(Icons.Default.Launch, contentDescription = "select scope" )
+                    }
+                }
             }
-            IconButton(onClick = onTaskSubmitted) {
-                Icon(Icons.Default.Send,
-                    contentDescription = "save task"
-                )
+        }
+        
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier.fillMaxWidth().padding(top = 24.dp),
+        ){
+            Button(onClick = {}, colors =  ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.error)) {
+                Text("Nevermind", color = MaterialTheme.colors.onError)
+            }
+            Button(onClick = onTaskSubmitted, colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary)){
+                Text("Yeah, that's right", color = MaterialTheme.colors.onPrimary)
             }
         }
     }
@@ -63,4 +89,60 @@ fun TaskCreationPreview() {
         onTaskSubmitted = { },
         onScopeClicked = { },
     )
+}
+
+private class TaskNameVisualizer(): VisualTransformation {
+    private companion object {
+        const val PREFIX_STRING = "I want to "
+        const val DEFAULT_STRING = " ... "
+        val FONT_SIZE = 24.sp
+    }
+
+    private val transformedOffsetMapping = object: OffsetMapping {
+        override fun originalToTransformed(offset: Int): Int = offset + PREFIX_STRING.length
+        override fun transformedToOriginal(offset: Int): Int = offset - PREFIX_STRING.length
+    }
+
+    override fun filter(text: AnnotatedString): TransformedText {
+        val prefix = AnnotatedString(
+            PREFIX_STRING,
+            SpanStyle(fontSize = FONT_SIZE)
+        )
+
+        val nonNullText = when {
+            text.text.isBlank() -> DEFAULT_STRING
+            else -> text.text
+        }
+
+        val withBackground = AnnotatedString(
+            nonNullText,
+            SpanStyle(
+                background = Color.LightGray, // TODO: i really want to know how i can apply a themed color here
+                fontWeight = FontWeight.Bold,
+                fontSize = FONT_SIZE
+            )
+        )
+        return TransformedText(prefix + withBackground, transformedOffsetMapping)
+    }
+}
+
+private fun String.trimEndExtra(): String {
+    var foundChar = false
+    return this.foldRightIndexed(""){ index, character, acc ->
+        when{
+            foundChar -> character + acc
+            character.isWhitespace() -> when{
+                // current character is a double space
+                this.getOrNull(index - 1)?.isWhitespace() == true -> acc
+                else -> {
+                    foundChar = true
+                    character + acc
+                }
+            }
+            else -> {
+                foundChar = true
+                character + acc
+            }
+        }
+    }
 }
