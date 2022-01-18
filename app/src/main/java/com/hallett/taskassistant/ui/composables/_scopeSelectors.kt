@@ -8,8 +8,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
 import androidx.compose.material.Button
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -29,25 +31,21 @@ import org.kodein.di.compose.rememberInstance
 @ExperimentalMaterialApi
 @Composable
 fun ScopeSelectorScreen(
-    scopes: Flow<PagingData<Scope>>,
+    scopeList: Flow<PagingData<Scope>>,
     modalState: ModalBottomSheetState,
+    scopeType: ScopeType,
     onScopeTypeSelected: (ScopeType) -> Unit,
     onScopeSelected: (Scope?) -> Unit,
-    onFullyExpandedContent: @Composable () -> Unit,
     content: @Composable () -> Unit
 ) {
-    val expandedContent: @Composable () -> Unit = when(modalState.currentValue) {
-        ModalBottomSheetValue.Expanded -> onFullyExpandedContent
-        else -> {{ }}
-    }
     ModalBottomSheetLayout(
         sheetState = modalState,
         sheetContent = {
             ScopeSelectorContent(
-                scopes = scopes,
+                scopes = scopeList,
+                scopeType = scopeType,
                 onScopeTypeSelected = onScopeTypeSelected,
                 onScopeSelected = onScopeSelected,
-                extraContent = expandedContent
             )
         },
         content = content
@@ -56,32 +54,25 @@ fun ScopeSelectorScreen(
 
 @Composable
 fun ScopeSelectorContent(
+    scopeType: ScopeType,
     scopes: Flow<PagingData<Scope>>,
     onScopeTypeSelected: (ScopeType) -> Unit,
     onScopeSelected: (Scope?) -> Unit,
-    extraContent: @Composable () -> Unit
 ) {
     val (isExpanded, setIsExpanded) = remember { mutableStateOf(false) }
-
     Column(modifier = Modifier.fillMaxWidth()){
-        extraContent()
+
 
         Box(modifier = Modifier
             .fillMaxWidth()
             .wrapContentSize(Alignment.TopStart)) {
-            Row(
-                horizontalArrangement = SpaceBetween,
-                modifier = Modifier.fillMaxWidth()){
-                Button(
-                    onClick = { setIsExpanded(!isExpanded) }
-                ) {
-                    Text("Select New Scope")
-                }
-                IconButton(onClick = { onScopeSelected(null) }) {
-                    Icon(Icons.Default.Delete, contentDescription = "Remove scope")
-                }
-            }
-            ScopeTypeSelector(
+            ScopeTypeSelectorButtons(
+                scopeType = scopeType,
+                isExpanded = isExpanded,
+                setIsExpanded = setIsExpanded,
+                onScopeSelected = onScopeSelected
+            )
+            ScopeTypeDropDownMenu(
                 isExpanded = isExpanded,
                 onDismiss = { setIsExpanded(false) },
                 onScopeTypeSelected = onScopeTypeSelected
@@ -96,7 +87,36 @@ fun ScopeSelectorContent(
 }
 
 @Composable
-fun ScopeTypeSelector(
+fun ScopeTypeSelectorButtons(
+    scopeType: ScopeType,
+    isExpanded: Boolean,
+    setIsExpanded: (Boolean) -> Unit,
+    onScopeSelected: (Scope?) -> Unit,
+) {
+    Row(
+        horizontalArrangement = SpaceBetween,
+        modifier = Modifier.fillMaxWidth()){
+        Button(
+            onClick = { setIsExpanded(!isExpanded) },
+            colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.secondary),
+        ) {
+            Text("During the ${scopeType.name} of", color = MaterialTheme.colors.onSecondary)
+        }
+
+        Button(
+            onClick = { onScopeSelected(null) },
+            colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.secondary),
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text("Sometime", color = MaterialTheme.colors.onSecondary)
+                Icon(Icons.Default.Close, contentDescription = "select scope")
+            }
+        }
+    }
+}
+
+@Composable
+fun ScopeTypeDropDownMenu(
     isExpanded: Boolean = false,
     onDismiss: () -> Unit,
     onScopeTypeSelected: (ScopeType) -> Unit,

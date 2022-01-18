@@ -5,23 +5,24 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetValue
-import androidx.compose.material.Text
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.ViewModelProvider
 import com.hallett.scopes.di.scopeGeneratorModule
-import com.hallett.scopes.model.Scope
+import com.hallett.scopes.model.ScopeType
 import com.hallett.taskassistant.di.databaseModule
 import com.hallett.taskassistant.di.formatterModule
 import com.hallett.taskassistant.di.pagingModule
 import com.hallett.taskassistant.di.viewModelModule
 import com.hallett.taskassistant.ui.TaskAssistantViewModel
 import com.hallett.taskassistant.ui.composables.ScopeSelectorScreen
-import com.hallett.taskassistant.ui.composables.ScopeTypeSelector
+import com.hallett.taskassistant.ui.composables.ScopeTypeDropDownMenu
 import com.hallett.taskassistant.ui.composables.TaskEditScreen
 import com.hallett.taskassistant.ui.theme.TaskAssistantTheme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -63,26 +64,27 @@ class MainActivity : ComponentActivity(), DIAware {
     fun App() = withDI(di) {
         val modalState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
         val coroutineScope = rememberCoroutineScope()
-        val (selectedScope, setSelectedScope) = remember{ mutableStateOf<Scope?>(null) }
+        val selectedScope by viewModel.observeSelectedScope().collectAsState(initial = null)
+        val taskName by viewModel.getTaskName().collectAsState(initial = "")
+        val selectedScopeType by viewModel.observeScopeType().collectAsState(initial = ScopeType.DAY)
+
         ScopeSelectorScreen(
-            scopes = viewModel.observeScopes(),
+            scopeList = viewModel.observeScopeSelectorList(),
+            scopeType = selectedScopeType,
             modalState = modalState,
             onScopeTypeSelected = viewModel::onNewScopeTypeSelected,
             onScopeSelected = { newScope ->
-                setSelectedScope(newScope)
+                viewModel.setTaskScope(newScope)
                 coroutineScope.launch {
                     modalState.hide()
                 }
             },
-            onFullyExpandedContent = {
-                Text("Hello!")
-            }
-        ) {
+        ) { 
             TaskEditScreen(
-                taskNameFlow = viewModel.getTaskName(),
+                taskName = taskName,
                 scope = selectedScope,
                 onTaskNameUpdated = viewModel::setTaskName,
-                onTaskSubmitted = viewModel::onTaskSubmitted,
+                onTaskSubmitted = viewModel::onTaskSubmitted,   
                 onScopeClicked = {
                     coroutineScope.launch { modalState.show() }
                 }
@@ -91,18 +93,12 @@ class MainActivity : ComponentActivity(), DIAware {
     }
 }
 
-
-@Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
-}
-
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
     val (isExpanded, setIsExpanded) = remember { mutableStateOf(true) }
     TaskAssistantTheme {
-        ScopeTypeSelector(
+        ScopeTypeDropDownMenu(
             isExpanded = isExpanded,
             onDismiss = { setIsExpanded(!isExpanded) },
             onScopeTypeSelected = { }

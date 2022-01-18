@@ -72,12 +72,16 @@ class TaskAssistantViewModel(
         scopeTypeSelected.value = scopeType
     }
 
-    fun observeScopes(): Flow<PagingData<Scope>> = scopeTypeSelected.flatMapLatest { scopeType ->
+    fun observeScopeSelectorList(): Flow<PagingData<Scope>> = scopeTypeSelected.flatMapLatest { scopeType ->
         Log.i("TaskAssistantViewModel", "new scope type selected: $scopeType")
         generatePager(PagingConfig(pageSize = 10).toPagerParams(scopeType))
             .flow
             .flowOn(Dispatchers.Default)
     }
+
+    fun observeScopeType(): Flow<ScopeType> = scopeTypeSelected
+
+    fun observeSelectedScope(): Flow<Scope?> = taskFlow.map { it.scope }
 
     private fun Task.getScopeTypeOrDefault(): ScopeType {
         return scope?.type ?: DEFAULT_SCOPE

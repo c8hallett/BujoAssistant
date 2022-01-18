@@ -3,19 +3,13 @@ package com.hallett.taskassistant.ui.composables
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Launch
-import androidx.compose.material.icons.filled.Undo
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -29,18 +23,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.hallett.scopes.model.Scope
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
 
 @Composable
 fun TaskEditScreen(
-    taskNameFlow: Flow<String>,
+    taskName: String,
     scope: Scope?,
     onTaskNameUpdated: (String) -> Unit,
     onTaskSubmitted: () -> Unit,
     onScopeClicked: () -> Unit,
 ) {
-    val taskName by taskNameFlow.collectAsState(initial = "")
 
     Column(verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically)) {
         Card(backgroundColor = MaterialTheme.colors.onSurface){
@@ -83,7 +74,7 @@ fun TaskEditScreen(
 @Preview
 fun TaskCreationPreview() {
     TaskEditScreen(
-        taskNameFlow = flowOf("Do something"),
+        "Do something",
         scope = null,
         onTaskNameUpdated = {},
         onTaskSubmitted = { },
