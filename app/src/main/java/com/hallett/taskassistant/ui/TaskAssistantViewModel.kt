@@ -9,8 +9,10 @@ import androidx.paging.PagingData
 import com.hallett.scopes.model.Scope
 import com.hallett.scopes.model.ScopeType
 import com.hallett.taskassistant.database.task.TaskDao
+import com.hallett.taskassistant.database.task.TaskEntity
 import com.hallett.taskassistant.di.PagerParams
 import com.hallett.taskassistant.domain.Task
+import java.util.Date
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -65,7 +67,18 @@ class TaskAssistantViewModel(
     }
 
     fun onTaskSubmitted() {
-
+        viewModelScope.launch(Dispatchers.IO) {
+            if(taskFlow.value == Task.DEFAULT_VALUE) return@launch
+            taskDao.upsert(with(taskFlow.value){
+                TaskEntity(
+                    id = id,
+                    taskName = taskName,
+                    scope = scope,
+                    status = status,
+                    updatedAt = Date()
+                )
+            })
+        }
     }
 
     fun onNewScopeTypeSelected(scopeType: ScopeType) {

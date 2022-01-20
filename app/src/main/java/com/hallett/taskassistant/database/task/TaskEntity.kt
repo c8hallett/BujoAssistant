@@ -38,8 +38,8 @@ data class TaskEntity(
         val scope: Scope?,
         @ColumnInfo(name = UPDATED_AT)
         val updatedAt: Date = Date()
-    // TODO: might set status to "RESCHEDULED"
     )
+
 
     companion object{
         const val TABLE_NAME = "bujo_task"
