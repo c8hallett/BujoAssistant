@@ -1,18 +1,28 @@
 package com.hallett.taskassistant.ui.composables
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Launch
+import androidx.compose.material.icons.filled.Reply
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -22,19 +32,33 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.paging.PagingData
 import com.hallett.scopes.model.Scope
+import com.hallett.scopes.model.ScopeType
+import com.hallett.taskassistant.ui.formatters.Formatter
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
+import org.kodein.di.compose.rememberInstance
 
 @Composable
 fun TaskEditScreen(
     taskName: String,
     scope: Scope?,
+    scopeType: ScopeType,
+    scopes: Flow<PagingData<Scope>>,
     onTaskNameUpdated: (String) -> Unit,
+    onScopeTypeSelected: (ScopeType) -> Unit,
+    onScopeSelected: (Scope?) -> Unit,
     onTaskSubmitted: () -> Unit,
-    onScopeClicked: () -> Unit,
+    onTaskCancelled: () -> Unit,
 ) {
-
+    val (isSelectActive, setSelectActive) = remember{ mutableStateOf(false) }
     Column(verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically)) {
-        Card(backgroundColor = MaterialTheme.colors.onSurface){
+        val cardModifier = when(isSelectActive) {
+            true -> Modifier.weight(1.0f)
+            else -> Modifier
+        }
+        Card(backgroundColor = MaterialTheme.colors.onSurface, modifier = cardModifier){
             Column(modifier = Modifier.padding(12.dp)) {
                 BasicTextField(
                     value = taskName,
@@ -42,30 +66,36 @@ fun TaskEditScreen(
                     modifier = Modifier.fillMaxWidth(),
                     visualTransformation = TaskNameVisualizer(),
                 )
-                Button(
-                    onClick = { onScopeClicked() },
-                    colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.secondary),
-                    modifier = Modifier.align(Alignment.End),
-                ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(scope?.toString() ?: "Sometime", color = MaterialTheme.colors.onSecondary)
-                        Icon(Icons.Default.Launch, contentDescription = "select scope" )
-                    }
-                }
+                ScopeSelection(
+                    scope = scope,
+                    scopeType = scopeType,
+                    scopes = scopes,
+                    isSelectActive = isSelectActive,
+                    setSelectActive = setSelectActive,
+                    onScopeTypeSelected = onScopeTypeSelected,
+                    onScopeSelected = onScopeSelected
+                )
             }
         }
-        
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier.fillMaxWidth().padding(top = 24.dp),
-        ){
-            Button(onClick = {}, colors =  ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.error)) {
-                Text("Nevermind", color = MaterialTheme.colors.onError)
-            }
-            Button(onClick = onTaskSubmitted, colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary)){
-                Text("Yeah, that's right", color = MaterialTheme.colors.onPrimary)
-            }
+        TaskSelectionButtons(onTaskSubmitted = onTaskSubmitted, onTaskCancelled = onTaskCancelled)
+    }
+}
+
+
+@Composable
+fun TaskSelectionButtons(onTaskSubmitted: () -> Unit, onTaskCancelled: () -> Unit) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 24.dp),
+    ){
+        Button(onClick = {}, colors =  ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.error)) {
+            Text("Nevermind", color = MaterialTheme.colors.onError)
+        }
+        Button(onClick = onTaskSubmitted, colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary)){
+            Text("Yeah, that's right", color = MaterialTheme.colors.onPrimary)
         }
     }
 }
@@ -76,10 +106,20 @@ fun TaskCreationPreview() {
     TaskEditScreen(
         "Do something",
         scope = null,
+        scopeType = ScopeType.DAY,
+        scopes = flowOf(),
+        onScopeSelected = {},
+        onScopeTypeSelected = {},
+        onTaskCancelled = {},
         onTaskNameUpdated = {},
-        onTaskSubmitted = { },
-        onScopeClicked = { },
+        onTaskSubmitted = {}
     )
+}
+
+@Composable
+@Preview
+fun TaskSelectionButtonsPreview() {
+    TaskSelectionButtons(onTaskSubmitted = {}, onTaskCancelled = {})
 }
 
 private class TaskNameVisualizer(): VisualTransformation {

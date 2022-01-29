@@ -21,7 +21,6 @@ import com.hallett.taskassistant.di.formatterModule
 import com.hallett.taskassistant.di.pagingModule
 import com.hallett.taskassistant.di.viewModelModule
 import com.hallett.taskassistant.ui.TaskAssistantViewModel
-import com.hallett.taskassistant.ui.composables.ScopeSelectorScreen
 import com.hallett.taskassistant.ui.composables.ScopeTypeDropDownMenu
 import com.hallett.taskassistant.ui.composables.TaskEditScreen
 import com.hallett.taskassistant.ui.theme.TaskAssistantTheme
@@ -66,12 +65,14 @@ class MainActivity : ComponentActivity(), DIAware {
         val coroutineScope = rememberCoroutineScope()
         val selectedScope by viewModel.observeSelectedScope().collectAsState(initial = null)
         val taskName by viewModel.getTaskName().collectAsState(initial = "")
-        val selectedScopeType by viewModel.observeScopeType().collectAsState(initial = ScopeType.DAY)
+        val selectedScopeType by viewModel.observeScopeType().collectAsState(initial = ScopeType.WEEK)
 
-        ScopeSelectorScreen(
-            scopeList = viewModel.observeScopeSelectorList(),
+        TaskEditScreen(
+            taskName = taskName,
+            scope = selectedScope,
+            scopes = viewModel.observeScopeSelectorList(),
             scopeType = selectedScopeType,
-            modalState = modalState,
+            onTaskNameUpdated = viewModel::setTaskName,
             onScopeTypeSelected = viewModel::onNewScopeTypeSelected,
             onScopeSelected = { newScope ->
                 viewModel.setTaskScope(newScope)
@@ -79,17 +80,9 @@ class MainActivity : ComponentActivity(), DIAware {
                     modalState.hide()
                 }
             },
-        ) { 
-            TaskEditScreen(
-                taskName = taskName,
-                scope = selectedScope,
-                onTaskNameUpdated = viewModel::setTaskName,
-                onTaskSubmitted = viewModel::onTaskSubmitted,   
-                onScopeClicked = {
-                    coroutineScope.launch { modalState.show() }
-                }
-            )
-        }
+            onTaskSubmitted = viewModel::onTaskSubmitted,
+            onTaskCancelled = {}
+        )
     }
 }
 
