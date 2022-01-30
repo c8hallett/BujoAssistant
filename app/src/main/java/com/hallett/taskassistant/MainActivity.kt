@@ -3,24 +3,18 @@ package com.hallett.taskassistant
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.BottomAppBar
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
-import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.ViewModelProvider
@@ -30,7 +24,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.hallett.scopes.di.scopeGeneratorModule
-import com.hallett.scopes.model.ScopeType
 import com.hallett.taskassistant.di.databaseModule
 import com.hallett.taskassistant.di.formatterModule
 import com.hallett.taskassistant.di.pagingModule
@@ -39,15 +32,14 @@ import com.hallett.taskassistant.domain.Task
 import com.hallett.taskassistant.ui.TaskAssistantViewModel
 import com.hallett.taskassistant.ui.composables.ScopeTypeDropDownMenu
 import com.hallett.taskassistant.ui.composables.TaskEdit
-import com.hallett.taskassistant.ui.composables.TaskEditScreen
+import com.hallett.taskassistant.ui.composables.TaskList
 import com.hallett.taskassistant.ui.theme.TaskAssistantTheme
+import com.hallett.taskassistant.ui.theme.TaskListViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.launch
 import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.android.x.androidXModule
-import org.kodein.di.compose.withDI
 import org.kodein.di.instance
 
 @ExperimentalCoroutinesApi
@@ -66,9 +58,13 @@ class MainActivity : ComponentActivity(), DIAware {
     }
 
     private val vmpfactory: ViewModelProvider.Factory by instance()
-    private val viewModel: TaskAssistantViewModel by lazy {
+    private val taskAssistantViewModel: TaskAssistantViewModel by lazy {
         ViewModelProvider(this, vmpfactory).get(TaskAssistantViewModel::class.java)
     }
+    private val taskListViewModel: TaskListViewModel by lazy {
+        ViewModelProvider(this, vmpfactory).get(TaskListViewModel::class.java)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -103,14 +99,14 @@ class MainActivity : ComponentActivity(), DIAware {
                     })
                 ) { backStackEntry ->
                     TaskEdit(
-                        viewModel = viewModel,
+                        viewModel = taskAssistantViewModel,
                         di = di,
                         navController = navController,
                         taskId =  backStackEntry.arguments?.getLong("taskId") ?: Task.DEFAULT_VALUE.id
                     )
                 }
                 composable("list") {
-                    Text("Showing list of existing tasks")
+                    TaskList(viewModel = taskListViewModel, di = di, navController = navController)
                 }
             }
         }

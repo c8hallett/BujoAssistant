@@ -1,5 +1,6 @@
 package com.hallett.taskassistant.database.task
 
+import androidx.paging.PagingSource
 import androidx.room.*
 import com.hallett.taskassistant.database.task.TaskEntity.Companion.ID
 import com.hallett.taskassistant.database.task.TaskEntity.Companion.TABLE_NAME
@@ -38,6 +39,9 @@ interface TaskDao {
 
     @Query("SELECT * FROM $TABLE_NAME WHERE $TASK_SCOPE IS :scope")
     fun getAllTaskForScopeInstance(scope: Scope?): Flow<List<TaskEntity>>
+
+    @Query("SELECT * FROM $TABLE_NAME WHERE $TASK_SCOPE IS :scope")
+    fun getAllTaskForScopeInstancePage(scope: Scope?): PagingSource<Int, TaskEntity>
 
     @Query("SELECT * FROM $TABLE_NAME WHERE $ID = :taskId")
     fun observeTask(taskId: Long): Flow<TaskEntity?>

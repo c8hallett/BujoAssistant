@@ -37,17 +37,19 @@ class TaskAssistantViewModel(
 
     fun getTaskName(taskId: Long): Flow<String> {
         viewModelScope.launch(Dispatchers.IO) {
-            val savedTaskEntity = taskDao.getTask(taskId = taskId)
-            if(savedTaskEntity != null){
-                val mappedTask = with(savedTaskEntity){
-                    Task(
-                        id = id,
-                        taskName = taskName,
-                        scope = scope,
-                        status = status
-                    )
+            when(val savedTaskEntity = taskDao.getTask(taskId = taskId)){
+                null -> taskFlow.emit(Task.DEFAULT_VALUE)
+                else -> {
+                    val mappedTask = with(savedTaskEntity){
+                        Task(
+                            id = id,
+                            taskName = taskName,
+                            scope = scope,
+                            status = status
+                        )
+                    }
+                    taskFlow.emit(mappedTask)
                 }
-                taskFlow.emit(mappedTask)
             }
         }
         return taskFlow.map { it.taskName }
@@ -61,7 +63,6 @@ class TaskAssistantViewModel(
 
     fun setTaskScope(scope: Scope?) {
         viewModelScope.launch {
-            Log.i("VIEWMODEL", "New scope: $scope")
             taskFlow.emit(taskFlow.value.copy(scope = scope))
         }
     }
@@ -78,7 +79,6 @@ class TaskAssistantViewModel(
                     updatedAt = Date()
                 )
             })
-            taskFlow.value = Task.DEFAULT_VALUE
         }
     }
 
@@ -96,10 +96,6 @@ class TaskAssistantViewModel(
     fun observeScopeType(): Flow<ScopeType> = scopeTypeSelected
 
     fun observeSelectedScope(): Flow<Scope?> = taskFlow.map { it.scope }
-
-    private fun Task.getScopeTypeOrDefault(): ScopeType {
-        return scope?.type ?: DEFAULT_SCOPE
-    }
 
     private fun PagingConfig.toPagerParams(scopeType: ScopeType): PagerParams {
         return PagerParams(this, scopeType)

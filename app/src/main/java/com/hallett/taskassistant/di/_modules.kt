@@ -18,6 +18,7 @@ import com.hallett.taskassistant.ui.formatters.ScopeScaleFormatter
 import com.hallett.taskassistant.ui.formatters.ScopeSimpleDateFormatter
 import com.hallett.taskassistant.ui.formatters.ScopeSimpleLabelFormatter
 import com.hallett.taskassistant.ui.paging.ScopePagingSource
+import com.hallett.taskassistant.ui.theme.TaskListViewModel
 import java.text.Format
 import org.kodein.di.DI
 import org.kodein.di.bindFactory
@@ -27,9 +28,9 @@ import org.kodein.di.factory
 import org.kodein.di.instance
 
 val viewModelModule = DI.Module("viewmodel_module") {
-
     bindSingleton<ViewModelProvider.Factory>{ KodeinViewModelProviderFactory(directDI) }
-    bindProvider<ViewModel>(tag = TaskAssistantViewModel::class.java){ TaskAssistantViewModel(instance(), factory()) }
+    bindProvider<ViewModel>(tag = TaskAssistantViewModel::class.java){ TaskAssistantViewModel(instance(), factory<PagerParams, Pager<Scope, Scope>>()) }
+    bindProvider<ViewModel>(tag = TaskListViewModel::class.java){ TaskAssistantViewModel(instance(), instance()) }
 }
 
 val databaseModule = DI.Module("database_module") {
