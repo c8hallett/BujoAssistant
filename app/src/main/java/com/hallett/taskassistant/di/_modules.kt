@@ -16,7 +16,9 @@ import com.hallett.taskassistant.ui.formatters.Formatter
 import com.hallett.taskassistant.ui.formatters.ScopeOffsetLabelFormatter
 import com.hallett.taskassistant.ui.formatters.ScopeScaleFormatter
 import com.hallett.taskassistant.ui.formatters.ScopeSimpleDateFormatter
+import com.hallett.taskassistant.ui.formatters.ScopeSimpleLabelFormatter
 import com.hallett.taskassistant.ui.paging.ScopePagingSource
+import java.text.Format
 import org.kodein.di.DI
 import org.kodein.di.bindFactory
 import org.kodein.di.bindProvider
@@ -48,6 +50,7 @@ val formatterModule = DI.Module("formatter_module") {
     bindSingleton<Formatter<Scope?, Dp>>(tag = Formatter.EXTRA_PADDING) { ScopeScaleFormatter() }
     bindSingleton<Formatter<Scope?, String>>(tag = Formatter.OFFSET_LABEL) { ScopeOffsetLabelFormatter(instance()) }
     bindSingleton<Formatter<Scope?, String>>(tag = Formatter.SIMPLE_DATE) { ScopeSimpleDateFormatter() }
+    bindSingleton<Formatter<Scope?, String>>(tag = Formatter.SIMPLE_LABEL) { ScopeSimpleLabelFormatter(instance()) }
 }
 
 data class PagerParams(val config: PagingConfig, val scopeType: ScopeType)

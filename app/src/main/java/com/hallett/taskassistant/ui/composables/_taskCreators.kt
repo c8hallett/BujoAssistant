@@ -1,28 +1,18 @@
 package com.hallett.taskassistant.ui.composables
 
-import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Launch
-import androidx.compose.material.icons.filled.Reply
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -35,10 +25,8 @@ import androidx.compose.ui.unit.sp
 import androidx.paging.PagingData
 import com.hallett.scopes.model.Scope
 import com.hallett.scopes.model.ScopeType
-import com.hallett.taskassistant.ui.formatters.Formatter
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
-import org.kodein.di.compose.rememberInstance
 
 @Composable
 fun TaskEditScreen(
@@ -58,7 +46,7 @@ fun TaskEditScreen(
             true -> Modifier.weight(1.0f)
             else -> Modifier
         }
-        Card(backgroundColor = MaterialTheme.colors.onSurface, modifier = cardModifier){
+        Card(backgroundColor = MaterialTheme.colors.surface, modifier = cardModifier){
             Column(modifier = Modifier.padding(12.dp)) {
                 BasicTextField(
                     value = taskName,
@@ -69,11 +57,11 @@ fun TaskEditScreen(
                 ScopeSelection(
                     scope = scope,
                     scopeType = scopeType,
-                    scopes = scopes,
                     isSelectActive = isSelectActive,
-                    setSelectActive = setSelectActive,
+                    scopes = scopes,
                     onScopeTypeSelected = onScopeTypeSelected,
-                    onScopeSelected = onScopeSelected
+                    onScopeSelected = onScopeSelected,
+                    setSelectActive = setSelectActive,
                 )
             }
         }
