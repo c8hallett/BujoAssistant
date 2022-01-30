@@ -8,8 +8,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -22,11 +25,18 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import androidx.paging.PagingData
 import com.hallett.scopes.model.Scope
 import com.hallett.scopes.model.ScopeType
+import com.hallett.taskassistant.ui.TaskAssistantViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.launch
+import org.kodein.di.DI
+import org.kodein.di.compose.withDI
 
 @Composable
 fun TaskEditScreen(
@@ -79,13 +89,48 @@ fun TaskSelectionButtons(onTaskSubmitted: () -> Unit, onTaskCancelled: () -> Uni
             .fillMaxWidth()
             .padding(top = 24.dp),
     ){
-        Button(onClick = {}, colors =  ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.error)) {
+        Button(onClick = onTaskCancelled, colors =  ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.error)) {
             Text("Nevermind", color = MaterialTheme.colors.onError)
         }
         Button(onClick = onTaskSubmitted, colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary)){
             Text("Yeah, that's right", color = MaterialTheme.colors.onPrimary)
         }
     }
+}
+
+
+@FlowPreview
+@ExperimentalMaterialApi
+@ExperimentalCoroutinesApi
+@Composable
+fun TaskEdit(viewModel: TaskAssistantViewModel, di: DI, navController: NavController, taskId: Long) = withDI(di) {
+    val modalState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
+    val coroutineScope = rememberCoroutineScope()
+
+    val taskName by viewModel.getTaskName(taskId = taskId).collectAsState(initial = "")
+    val selectedScope by viewModel.observeSelectedScope().collectAsState(initial = null)
+    val selectedScopeType by viewModel.observeScopeType().collectAsState(initial = ScopeType.WEEK)
+    TaskEditScreen(
+        taskName = taskName,
+        scope = selectedScope,
+        scopes = viewModel.observeScopeSelectorList(),
+        scopeType = selectedScopeType,
+        onTaskNameUpdated = viewModel::setTaskName,
+        onScopeTypeSelected = viewModel::onNewScopeTypeSelected,
+        onScopeSelected = { newScope ->
+            viewModel.setTaskScope(newScope)
+            coroutineScope.launch {
+                modalState.hide()
+            }
+        },
+        onTaskSubmitted = {
+            viewModel.onTaskSubmitted()
+            navController.popBackStack()
+        },
+        onTaskCancelled = {
+            navController.popBackStack()
+        }
+    )
 }
 
 @Composable

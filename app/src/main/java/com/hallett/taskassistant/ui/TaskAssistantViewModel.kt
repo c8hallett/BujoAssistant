@@ -35,7 +35,7 @@ class TaskAssistantViewModel(
     private val scopeTypeSelected = MutableStateFlow(DEFAULT_SCOPE)
 
 
-    fun getTaskName(taskId: Long = -1L): Flow<String> {
+    fun getTaskName(taskId: Long): Flow<String> {
         viewModelScope.launch(Dispatchers.IO) {
             val savedTaskEntity = taskDao.getTask(taskId = taskId)
             if(savedTaskEntity != null){
@@ -48,7 +48,6 @@ class TaskAssistantViewModel(
                     )
                 }
                 taskFlow.emit(mappedTask)
-                scopeTypeSelected.emit(mappedTask.getScopeTypeOrDefault())
             }
         }
         return taskFlow.map { it.taskName }
@@ -62,6 +61,7 @@ class TaskAssistantViewModel(
 
     fun setTaskScope(scope: Scope?) {
         viewModelScope.launch {
+            Log.i("VIEWMODEL", "New scope: $scope")
             taskFlow.emit(taskFlow.value.copy(scope = scope))
         }
     }
@@ -78,6 +78,7 @@ class TaskAssistantViewModel(
                     updatedAt = Date()
                 )
             })
+            taskFlow.value = Task.DEFAULT_VALUE
         }
     }
 

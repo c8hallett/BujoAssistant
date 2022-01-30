@@ -3,8 +3,17 @@ package com.hallett.taskassistant
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.BottomAppBar
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.FloatingActionButton
+import androidx.compose.material.Icon
 import androidx.compose.material.ModalBottomSheetValue
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -12,16 +21,24 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.hallett.scopes.di.scopeGeneratorModule
 import com.hallett.scopes.model.ScopeType
 import com.hallett.taskassistant.di.databaseModule
 import com.hallett.taskassistant.di.formatterModule
 import com.hallett.taskassistant.di.pagingModule
 import com.hallett.taskassistant.di.viewModelModule
+import com.hallett.taskassistant.domain.Task
 import com.hallett.taskassistant.ui.TaskAssistantViewModel
 import com.hallett.taskassistant.ui.composables.ScopeTypeDropDownMenu
+import com.hallett.taskassistant.ui.composables.TaskEdit
 import com.hallett.taskassistant.ui.composables.TaskEditScreen
 import com.hallett.taskassistant.ui.theme.TaskAssistantTheme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -55,34 +72,48 @@ class MainActivity : ComponentActivity(), DIAware {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            TaskAssistantTheme { App() }
+            TaskAssistantTheme {
+                App()
+            }
         }
     }
 
     @Composable
-    fun App() = withDI(di) {
-        val modalState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
-        val coroutineScope = rememberCoroutineScope()
-        val selectedScope by viewModel.observeSelectedScope().collectAsState(initial = null)
-        val taskName by viewModel.getTaskName().collectAsState(initial = "")
-        val selectedScopeType by viewModel.observeScopeType().collectAsState(initial = ScopeType.WEEK)
+    fun App() {
+        val navController = rememberNavController()
 
-        TaskEditScreen(
-            taskName = taskName,
-            scope = selectedScope,
-            scopes = viewModel.observeScopeSelectorList(),
-            scopeType = selectedScopeType,
-            onTaskNameUpdated = viewModel::setTaskName,
-            onScopeTypeSelected = viewModel::onNewScopeTypeSelected,
-            onScopeSelected = { newScope ->
-                viewModel.setTaskScope(newScope)
-                coroutineScope.launch {
-                    modalState.hide()
+        Scaffold(
+            bottomBar = { BottomAppBar { Text("it's a me, a bottom app bar") } },
+            floatingActionButton = {
+                FloatingActionButton(onClick = { navController.navigate("taskEdit/${Task.DEFAULT_VALUE.id}") }) {
+                    Icon(Icons.Default.Add, "new task")
                 }
-            },
-            onTaskSubmitted = viewModel::onTaskSubmitted,
-            onTaskCancelled = {}
-        )
+            }
+        ) { innerPadding ->
+            NavHost(
+                navController = navController,
+                startDestination = "list",
+                modifier = Modifier.padding(innerPadding)
+            ) {
+                composable(
+                    "taskEdit/{taskId}",
+                    arguments = listOf(navArgument("taskId"){
+                        type = NavType.LongType
+                        defaultValue = Task.DEFAULT_VALUE.id
+                    })
+                ) { backStackEntry ->
+                    TaskEdit(
+                        viewModel = viewModel,
+                        di = di,
+                        navController = navController,
+                        taskId =  backStackEntry.arguments?.getLong("taskId") ?: Task.DEFAULT_VALUE.id
+                    )
+                }
+                composable("list") {
+                    Text("Showing list of existing tasks")
+                }
+            }
+        }
     }
 }
 

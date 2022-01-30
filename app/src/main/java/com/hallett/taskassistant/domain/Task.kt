@@ -10,7 +10,7 @@ data class Task(
 ) {
     companion object {
         val DEFAULT_VALUE = Task(
-            id = -1L,
+            id = 0L,
             taskName = "",
             scope = null,
             status = TaskStatus.INCOMPLETE,
