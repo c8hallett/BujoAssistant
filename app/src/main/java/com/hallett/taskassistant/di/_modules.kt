@@ -20,6 +20,8 @@ import com.hallett.taskassistant.ui.formatters.ScopeSimpleLabelFormatter
 import com.hallett.taskassistant.ui.paging.ScopePagingSource
 import com.hallett.taskassistant.ui.theme.TaskListViewModel
 import java.text.Format
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import org.kodein.di.DI
 import org.kodein.di.bindFactory
 import org.kodein.di.bindProvider
@@ -27,10 +29,12 @@ import org.kodein.di.bindSingleton
 import org.kodein.di.factory
 import org.kodein.di.instance
 
+@OptIn(FlowPreview::class)
+@ExperimentalCoroutinesApi
 val viewModelModule = DI.Module("viewmodel_module") {
     bindSingleton<ViewModelProvider.Factory>{ KodeinViewModelProviderFactory(directDI) }
     bindProvider<ViewModel>(tag = TaskAssistantViewModel::class.java){ TaskAssistantViewModel(instance(), factory<PagerParams, Pager<Scope, Scope>>()) }
-    bindProvider<ViewModel>(tag = TaskListViewModel::class.java){ TaskAssistantViewModel(instance(), instance()) }
+    bindProvider<ViewModel>(tag = TaskListViewModel::class.java){ TaskListViewModel(instance(), instance()) }
 }
 
 val databaseModule = DI.Module("database_module") {
