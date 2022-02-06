@@ -11,15 +11,15 @@ import com.hallett.scopes.model.ScopeType
 import com.hallett.scopes.scope_generator.IScopeGenerator
 import com.hallett.taskassistant.database.BujoAssDatabase
 import com.hallett.taskassistant.database.task.TaskDao
-import com.hallett.taskassistant.ui.TaskAssistantViewModel
+import com.hallett.taskassistant.ui.viewmodels.TaskEditViewModel
 import com.hallett.taskassistant.ui.formatters.Formatter
 import com.hallett.taskassistant.ui.formatters.ScopeOffsetLabelFormatter
 import com.hallett.taskassistant.ui.formatters.ScopeScaleFormatter
 import com.hallett.taskassistant.ui.formatters.ScopeSimpleDateFormatter
 import com.hallett.taskassistant.ui.formatters.ScopeSimpleLabelFormatter
 import com.hallett.taskassistant.ui.paging.ScopePagingSource
-import com.hallett.taskassistant.ui.theme.TaskListViewModel
-import java.text.Format
+import com.hallett.taskassistant.ui.viewmodels.ScopeSelectionViewModel
+import com.hallett.taskassistant.ui.viewmodels.TaskListViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import org.kodein.di.DI
@@ -33,7 +33,8 @@ import org.kodein.di.instance
 @ExperimentalCoroutinesApi
 val viewModelModule = DI.Module("viewmodel_module") {
     bindSingleton<ViewModelProvider.Factory>{ KodeinViewModelProviderFactory(directDI) }
-    bindProvider<ViewModel>(tag = TaskAssistantViewModel::class.java){ TaskAssistantViewModel(instance(), factory<PagerParams, Pager<Scope, Scope>>()) }
+    bindProvider<ViewModel>(tag = ScopeSelectionViewModel::class.java) { ScopeSelectionViewModel(factory<PagerParams, Pager<Scope, Scope>>())  }
+    bindProvider<ViewModel>(tag = TaskEditViewModel::class.java){ TaskEditViewModel(instance()) }
     bindProvider<ViewModel>(tag = TaskListViewModel::class.java){ TaskListViewModel(instance(), instance()) }
 }
 

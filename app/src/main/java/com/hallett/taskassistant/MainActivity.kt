@@ -29,12 +29,13 @@ import com.hallett.taskassistant.di.formatterModule
 import com.hallett.taskassistant.di.pagingModule
 import com.hallett.taskassistant.di.viewModelModule
 import com.hallett.taskassistant.domain.Task
-import com.hallett.taskassistant.ui.TaskAssistantViewModel
+import com.hallett.taskassistant.ui.viewmodels.TaskEditViewModel
 import com.hallett.taskassistant.ui.composables.ScopeTypeDropDownMenu
 import com.hallett.taskassistant.ui.composables.TaskEdit
 import com.hallett.taskassistant.ui.composables.TaskList
 import com.hallett.taskassistant.ui.theme.TaskAssistantTheme
-import com.hallett.taskassistant.ui.theme.TaskListViewModel
+import com.hallett.taskassistant.ui.viewmodels.ScopeSelectionViewModel
+import com.hallett.taskassistant.ui.viewmodels.TaskListViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import org.kodein.di.DI
@@ -58,10 +59,13 @@ class MainActivity : ComponentActivity(), DIAware {
     }
 
     private val vmpfactory: ViewModelProvider.Factory by instance()
-    private val taskAssistantViewModel: TaskAssistantViewModel by lazy {
-        ViewModelProvider(this, vmpfactory).get(TaskAssistantViewModel::class.java)
+    private val scopeSelectionVm: ScopeSelectionViewModel by lazy {
+        ViewModelProvider(this, vmpfactory).get(ScopeSelectionViewModel::class.java)
     }
-    private val taskListViewModel: TaskListViewModel by lazy {
+    private val taskEditVm: TaskEditViewModel by lazy {
+        ViewModelProvider(this, vmpfactory).get(TaskEditViewModel::class.java)
+    }
+    private val taskListVm: TaskListViewModel by lazy {
         ViewModelProvider(this, vmpfactory).get(TaskListViewModel::class.java)
     }
 
@@ -99,14 +103,20 @@ class MainActivity : ComponentActivity(), DIAware {
                     })
                 ) { backStackEntry ->
                     TaskEdit(
-                        viewModel = taskAssistantViewModel,
+                        taskEditVm = taskEditVm,
+                        scopeSelectionVm = scopeSelectionVm,
                         di = di,
                         navController = navController,
                         taskId =  backStackEntry.arguments?.getLong("taskId") ?: Task.DEFAULT_VALUE.id
                     )
                 }
                 composable("list") {
-                    TaskList(viewModel = taskListViewModel, di = di, navController = navController)
+                    TaskList(
+                        taskEditVm = taskListVm,
+                        scopeSelectionVm = scopeSelectionVm,
+                        di = di,
+                        navController = navController
+                    )
                 }
             }
         }

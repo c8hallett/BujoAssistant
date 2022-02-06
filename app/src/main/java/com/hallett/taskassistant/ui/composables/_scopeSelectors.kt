@@ -80,7 +80,6 @@ fun ScopeTypeSelectorLabel(
         append("during the ")
         pushStyle(
             SpanStyle(
-                background = Color.LightGray,
                 color = MaterialTheme.colors.secondaryVariant,
                 fontWeight = FontWeight.Bold
             )

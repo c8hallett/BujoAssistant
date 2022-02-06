@@ -26,59 +26,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.paging.PagingData
-import com.hallett.scopes.model.Scope
 import com.hallett.scopes.model.ScopeType
-import com.hallett.taskassistant.ui.TaskAssistantViewModel
+import com.hallett.taskassistant.ui.viewmodels.ScopeSelectionViewModel
+import com.hallett.taskassistant.ui.viewmodels.TaskEditViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import org.kodein.di.DI
 import org.kodein.di.compose.withDI
-
-@Composable
-fun TaskEditScreen(
-    taskName: String,
-    scope: Scope?,
-    scopeType: ScopeType,
-    scopes: Flow<PagingData<Scope>>,
-    onTaskNameUpdated: (String) -> Unit,
-    onScopeTypeSelected: (ScopeType) -> Unit,
-    onScopeSelected: (Scope?) -> Unit,
-    onTaskSubmitted: () -> Unit,
-    onTaskCancelled: () -> Unit,
-) {
-    val (isSelectActive, setSelectActive) = remember{ mutableStateOf(false) }
-    Column(verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically)) {
-        val cardModifier = when(isSelectActive) {
-            true -> Modifier.weight(1.0f)
-            else -> Modifier
-        }
-        Card(backgroundColor = MaterialTheme.colors.surface, modifier = cardModifier){
-            Column(modifier = Modifier.padding(12.dp)) {
-                BasicTextField(
-                    value = taskName,
-                    onValueChange = { onTaskNameUpdated(it.trimStart().trimEndExtra()) } ,
-                    modifier = Modifier.fillMaxWidth(),
-                    visualTransformation = TaskNameVisualizer(),
-                )
-                ScopeSelection(
-                    scope = scope,
-                    scopeType = scopeType,
-                    isSelectActive = isSelectActive,
-                    scopes = scopes,
-                    onScopeTypeSelected = onScopeTypeSelected,
-                    onScopeSelected = onScopeSelected,
-                    setSelectActive = setSelectActive,
-                )
-            }
-        }
-        TaskSelectionButtons(onTaskSubmitted = onTaskSubmitted, onTaskCancelled = onTaskCancelled)
-    }
-}
-
 
 @Composable
 fun TaskSelectionButtons(onTaskSubmitted: () -> Unit, onTaskCancelled: () -> Unit) {
@@ -103,50 +58,58 @@ fun TaskSelectionButtons(onTaskSubmitted: () -> Unit, onTaskCancelled: () -> Uni
 @ExperimentalMaterialApi
 @ExperimentalCoroutinesApi
 @Composable
-fun TaskEdit(viewModel: TaskAssistantViewModel, di: DI, navController: NavController, taskId: Long) = withDI(di) {
+fun TaskEdit(taskEditVm: TaskEditViewModel, scopeSelectionVm: ScopeSelectionViewModel, di: DI, navController: NavController, taskId: Long) = withDI(di) {
+
     val modalState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
     val coroutineScope = rememberCoroutineScope()
 
-    val taskName by viewModel.getTaskName(taskId = taskId).collectAsState(initial = "")
-    val selectedScope by viewModel.observeSelectedScope().collectAsState(initial = null)
-    val selectedScopeType by viewModel.observeScopeType().collectAsState(initial = ScopeType.WEEK)
-    TaskEditScreen(
-        taskName = taskName,
-        scope = selectedScope,
-        scopes = viewModel.observeScopeSelectorList(),
-        scopeType = selectedScopeType,
-        onTaskNameUpdated = viewModel::setTaskName,
-        onScopeTypeSelected = viewModel::onNewScopeTypeSelected,
-        onScopeSelected = { newScope ->
-            viewModel.setTaskScope(newScope)
-            coroutineScope.launch {
-                modalState.hide()
-            }
-        },
-        onTaskSubmitted = {
-            viewModel.onTaskSubmitted()
-            navController.popBackStack()
-        },
-        onTaskCancelled = {
-            navController.popBackStack()
+    val taskName by taskEditVm.getTaskName(taskId = taskId).collectAsState(initial = "")
+    val selectedScope by taskEditVm.observeSelectedScope().collectAsState(initial = null)
+    val selectedScopeType by scopeSelectionVm.observeScopeType().collectAsState(initial = ScopeType.WEEK)
+    val (isSelectActive, setSelectActive) = remember{ mutableStateOf(false) }
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically)) {
+        val cardModifier = when(isSelectActive) {
+            true -> Modifier.weight(1.0f)
+            else -> Modifier
         }
-    )
-}
-
-@Composable
-@Preview
-fun TaskCreationPreview() {
-    TaskEditScreen(
-        "Do something",
-        scope = null,
-        scopeType = ScopeType.DAY,
-        scopes = flowOf(),
-        onScopeSelected = {},
-        onScopeTypeSelected = {},
-        onTaskCancelled = {},
-        onTaskNameUpdated = {},
-        onTaskSubmitted = {}
-    )
+        Card(backgroundColor = MaterialTheme.colors.surface, modifier = cardModifier){
+            Column(modifier = Modifier.padding(12.dp)) {
+                BasicTextField(
+                    value = taskName,
+                    onValueChange = { newTaskName ->
+                        taskEditVm.setTaskName(newTaskName.trimStart().trimEndExtra())
+                    } ,
+                    modifier = Modifier.fillMaxWidth(),
+                    visualTransformation = TaskNameVisualizer(),
+                )
+                ScopeSelection(
+                    scope = selectedScope,
+                    scopeType = selectedScopeType,
+                    isSelectActive = isSelectActive,
+                    scopes = scopeSelectionVm.observeScopeSelectorList(),
+                    onScopeTypeSelected = { newScopeType ->
+                        scopeSelectionVm.onNewScopeTypeSelected(newScopeType)
+                    },
+                    onScopeSelected = { newScope ->
+                        taskEditVm.setTaskScope(newScope)
+                        coroutineScope.launch {
+                            modalState.hide()
+                        }
+                    },
+                    setSelectActive = setSelectActive,
+                )
+            }
+        }
+        TaskSelectionButtons(
+            onTaskSubmitted = {
+                taskEditVm.onTaskSubmitted()
+                navController.popBackStack()
+            },
+            onTaskCancelled = {
+                navController.popBackStack()
+            }
+        )
+    }
 }
 
 @Composable
