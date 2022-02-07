@@ -221,10 +221,11 @@ fun ScopeSelection(
     scopes: Flow<PagingData<Scope>>,
     onScopeTypeSelected: (ScopeType) -> Unit,
     onScopeSelected: (Scope?) -> Unit,
-    setSelectActive: (Boolean) -> Unit
+    setSelectActive: (Boolean) -> Unit,
+    modifier: Modifier = Modifier
 ) {
 
-    Column(modifier = Modifier
+    Column(modifier = modifier
         .animateContentSize()
         .fillMaxWidth()) {
 
@@ -238,7 +239,7 @@ fun ScopeSelection(
             )
             false -> InactiveScopeLabel(
                 scope = scope,
-                setIsSelectActive = setSelectActive
+                setIsSelectActive = setSelectActive,
             )
         }
     }
@@ -264,7 +265,7 @@ fun ColumnScope.ActiveScopeSelectionContent(
             scopeType = scopeType,
             isExpanded = isExpanded,
             setIsExpanded = setIsExpanded,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f).align(Alignment.CenterVertically)
         )
         IconButton(
             onClick = { onScopeSelectedWithDismiss(null) },
