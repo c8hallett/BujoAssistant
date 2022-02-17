@@ -23,10 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
-import com.hallett.scopes.model.ScopeType
 import com.hallett.taskassistant.domain.Task
-import com.hallett.taskassistant.ui.viewmodels.ScopeSelectionViewModel
-import com.hallett.taskassistant.ui.viewmodels.TaskListViewModel
 import org.kodein.di.DI
 import org.kodein.di.compose.withDI
 import taskListViewModel
@@ -36,11 +33,11 @@ fun TaskList(di: DI, navController: NavController) = withDI(di) {
     val taskEditViewModel = di.taskListViewModel()
     val pagedTask = taskEditViewModel.observeTasksForCurrentScope().collectAsLazyPagingItems()
     val scope by taskEditViewModel.observerCurrentScope().collectAsState(initial = null)
-    val (isSelectActive, setSelectActive) = remember{ mutableStateOf(false)}
+    val (isSelectActive, setSelectActive) = remember { mutableStateOf(false) }
 
     Column {
 
-        val scopeSelectionHeight = when{
+        val scopeSelectionHeight = when {
             isSelectActive -> Modifier.fillMaxHeight(0.38f)
             else -> Modifier.wrapContentHeight()
         }
@@ -54,13 +51,17 @@ fun TaskList(di: DI, navController: NavController) = withDI(di) {
             modifier = scopeSelectionHeight.padding(horizontal = 12.dp)
         )
 
-        LazyColumn(verticalArrangement = Arrangement.SpaceBetween){
+        LazyColumn(verticalArrangement = Arrangement.SpaceBetween) {
             items(pagedTask) { task ->
-                when(task){
-                    null -> Spacer(modifier = Modifier
-                        .fillMaxWidth()
-                        .height(12.dp))
-                    else -> TaskItem(task = task, modifier = Modifier.clickable { navController.navigate("taskEdit/${task.id}") })
+                when (task) {
+                    null -> Spacer(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(12.dp)
+                    )
+                    else -> TaskItem(
+                        task = task,
+                        modifier = Modifier.clickable { navController.navigate("taskEdit/${task.id}") })
                 }
             }
         }
@@ -69,7 +70,9 @@ fun TaskList(di: DI, navController: NavController) = withDI(di) {
 
 @Composable
 fun TaskItem(task: Task, modifier: Modifier) {
-    Card(modifier = modifier.fillMaxWidth().padding(horizontal = 12.dp)) {
+    Card(modifier = modifier
+        .fillMaxWidth()
+        .padding(horizontal = 12.dp)) {
         Text(task.taskName, style = MaterialTheme.typography.h3, modifier = Modifier.padding(12.dp))
     }
 }

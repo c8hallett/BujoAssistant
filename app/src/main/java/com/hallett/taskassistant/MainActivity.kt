@@ -17,7 +17,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.navigation.NavOptions
 import androidx.navigation.NavType
@@ -31,21 +30,16 @@ import com.hallett.taskassistant.di.formatterModule
 import com.hallett.taskassistant.di.pagingModule
 import com.hallett.taskassistant.di.viewModelModule
 import com.hallett.taskassistant.domain.Task
-import com.hallett.taskassistant.ui.viewmodels.TaskEditViewModel
 import com.hallett.taskassistant.ui.composables.ScopeTypeDropDownMenu
 import com.hallett.taskassistant.ui.composables.TaskEdit
 import com.hallett.taskassistant.ui.composables.TaskList
 import com.hallett.taskassistant.ui.theme.TaskAssistantTheme
-import com.hallett.taskassistant.ui.viewmodels.ScopeSelectionViewModel
-import com.hallett.taskassistant.ui.viewmodels.TaskListViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.android.x.androidXModule
-import org.kodein.di.bindProvider
 import org.kodein.di.bindSingleton
-import org.kodein.di.instance
 
 @ExperimentalCoroutinesApi
 @ExperimentalMaterialApi
@@ -60,7 +54,7 @@ class MainActivity : ComponentActivity(), DIAware {
             scopeGeneratorModule,
             androidXModule(application)
         )
-        bindSingleton<ViewModelStoreOwner> { this@MainActivity  }
+        bindSingleton<ViewModelStoreOwner> { this@MainActivity }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -83,7 +77,10 @@ class MainActivity : ComponentActivity(), DIAware {
                     onClick = {
                         navController.navigate(
                             route = "taskEdit/${Task.DEFAULT_VALUE.id}",
-                            navOptions = NavOptions.Builder().setPopUpTo(navController.graph.startDestinationId, inclusive = false).build()
+                            navOptions = NavOptions.Builder().setPopUpTo(
+                                navController.graph.startDestinationId,
+                                inclusive = false
+                            ).build()
                         )
                     }
                 ) {
@@ -98,7 +95,7 @@ class MainActivity : ComponentActivity(), DIAware {
             ) {
                 composable(
                     "taskEdit/{taskId}",
-                    arguments = listOf(navArgument("taskId"){
+                    arguments = listOf(navArgument("taskId") {
                         type = NavType.LongType
                         defaultValue = Task.DEFAULT_VALUE.id
                     })
@@ -106,7 +103,8 @@ class MainActivity : ComponentActivity(), DIAware {
                     TaskEdit(
                         di = di,
                         navController = navController,
-                        taskId =  backStackEntry.arguments?.getLong("taskId") ?: Task.DEFAULT_VALUE.id
+                        taskId = backStackEntry.arguments?.getLong("taskId")
+                            ?: Task.DEFAULT_VALUE.id
                     )
                 }
                 composable("list") {

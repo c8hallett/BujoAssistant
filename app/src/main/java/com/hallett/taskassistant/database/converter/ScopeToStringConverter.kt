@@ -1,12 +1,10 @@
 package com.hallett.taskassistant.database.converter
 
 import androidx.room.TypeConverter
-import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer
 import com.google.gson.JsonElement
-import com.google.gson.JsonObject
 import com.google.gson.JsonPrimitive
 import com.google.gson.JsonSerializationContext
 import com.google.gson.JsonSerializer
@@ -17,21 +15,22 @@ import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 class ScopeToStringConverter {
-    private val gson = GsonBuilder().registerTypeAdapter(LocalDate::class.java, LocalDateAdapter()).create()
+    private val gson =
+        GsonBuilder().registerTypeAdapter(LocalDate::class.java, LocalDateAdapter()).create()
 
     @TypeConverter
-    fun scopeToString(scope: Scope?): String? = when(scope) {
+    fun scopeToString(scope: Scope?): String? = when (scope) {
         null -> null
         else -> gson.toJson(scope)
     }
 
     @TypeConverter
-    fun stringToScope(value: String?): Scope? = when(value){
+    fun stringToScope(value: String?): Scope? = when (value) {
         null -> null
         else -> gson.fromJson(value, Scope::class.java)
     }
 
-    private class LocalDateAdapter: JsonSerializer<LocalDate>, JsonDeserializer<LocalDate> {
+    private class LocalDateAdapter : JsonSerializer<LocalDate>, JsonDeserializer<LocalDate> {
         override fun serialize(
             src: LocalDate?,
             typeOfSrc: Type?,

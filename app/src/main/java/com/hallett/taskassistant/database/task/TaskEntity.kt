@@ -1,6 +1,8 @@
 package com.hallett.taskassistant.database.task
 
-import androidx.room.*
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.hallett.scopes.model.Scope
 import com.hallett.taskassistant.domain.TaskStatus
 import java.util.Date
@@ -41,7 +43,7 @@ data class TaskEntity(
     )
 
 
-    companion object{
+    companion object {
         const val TABLE_NAME = "bujo_task"
         const val ID = "id"
         const val TASK_NAME = "task_name"

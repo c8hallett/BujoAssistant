@@ -5,12 +5,13 @@ import androidx.compose.ui.unit.dp
 import com.hallett.scopes.model.Scope
 import com.hallett.scopes.model.ScopeType
 
-class ScopeScaleFormatter: Formatter<Scope?, Dp> {
-    private companion object{
+class ScopeScaleFormatter : Formatter<Scope?, Dp> {
+    private companion object {
         const val DP_SCALE = 12f
     }
+
     override fun format(input: Scope?): Dp {
-        val factor = when(input?.type) {
+        val factor = when (input?.type) {
             null, ScopeType.DAY -> 0f
             ScopeType.WEEK -> 1.945f
             ScopeType.MONTH -> 3.434f

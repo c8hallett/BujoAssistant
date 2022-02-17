@@ -8,7 +8,7 @@ class DateToLongConverter {
     fun dateToLong(dateTime: Date?): Long? = dateTime?.time
 
     @TypeConverter
-    fun longToDate(epochMillis: Long?): Date? = when(epochMillis){
+    fun longToDate(epochMillis: Long?): Date? = when (epochMillis) {
         null -> null
         else -> Date(epochMillis)
     }

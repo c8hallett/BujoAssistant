@@ -6,7 +6,12 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.material.*
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.Card
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -25,9 +30,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.hallett.scopes.model.ScopeType
-import com.hallett.taskassistant.ui.viewmodels.ScopeSelectionViewModel
-import com.hallett.taskassistant.ui.viewmodels.TaskEditViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import org.kodein.di.DI
@@ -42,11 +44,17 @@ fun TaskSelectionButtons(onTaskSubmitted: () -> Unit, onTaskCancelled: () -> Uni
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 24.dp),
-    ){
-        Button(onClick = onTaskCancelled, colors =  ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.error)) {
+    ) {
+        Button(
+            onClick = onTaskCancelled,
+            colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.error)
+        ) {
             Text("Nevermind", color = MaterialTheme.colors.onError)
         }
-        Button(onClick = onTaskSubmitted, colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary)){
+        Button(
+            onClick = onTaskSubmitted,
+            colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary)
+        ) {
             Text("Yeah, that's right", color = MaterialTheme.colors.onPrimary)
         }
     }
@@ -62,19 +70,19 @@ fun TaskEdit(di: DI, navController: NavController, taskId: Long) = withDI(di) {
 
     val taskName by taskEditVm.getTaskName(taskId = taskId).collectAsState(initial = "")
     val selectedScope by taskEditVm.observeSelectedScope().collectAsState(initial = null)
-    val (isSelectActive, setSelectActive) = remember{ mutableStateOf(false) }
+    val (isSelectActive, setSelectActive) = remember { mutableStateOf(false) }
     Column(verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically)) {
-        val cardModifier = when(isSelectActive) {
+        val cardModifier = when (isSelectActive) {
             true -> Modifier.weight(1.0f)
             else -> Modifier
         }
-        Card(backgroundColor = MaterialTheme.colors.surface, modifier = cardModifier){
+        Card(backgroundColor = MaterialTheme.colors.surface, modifier = cardModifier) {
             Column(modifier = Modifier.padding(12.dp)) {
                 BasicTextField(
                     value = taskName,
                     onValueChange = { newTaskName ->
                         taskEditVm.setTaskName(newTaskName.trimStart().trimEndExtra())
-                    } ,
+                    },
                     modifier = Modifier.fillMaxWidth(),
                     visualTransformation = TaskNameVisualizer(),
                 )
@@ -107,14 +115,14 @@ fun TaskSelectionButtonsPreview() {
     TaskSelectionButtons(onTaskSubmitted = {}, onTaskCancelled = {})
 }
 
-private class TaskNameVisualizer(): VisualTransformation {
+private class TaskNameVisualizer : VisualTransformation {
     private companion object {
         const val PREFIX_STRING = "I want to "
         const val DEFAULT_STRING = " ... "
         val FONT_SIZE = 24.sp
     }
 
-    private val transformedOffsetMapping = object: OffsetMapping {
+    private val transformedOffsetMapping = object : OffsetMapping {
         override fun originalToTransformed(offset: Int): Int = offset + PREFIX_STRING.length
         override fun transformedToOriginal(offset: Int): Int = offset - PREFIX_STRING.length
     }
@@ -144,10 +152,10 @@ private class TaskNameVisualizer(): VisualTransformation {
 
 private fun String.trimEndExtra(): String {
     var foundChar = false
-    return this.foldRightIndexed(""){ index, character, acc ->
-        when{
+    return this.foldRightIndexed("") { index, character, acc ->
+        when {
             foundChar -> character + acc
-            character.isWhitespace() -> when{
+            character.isWhitespace() -> when {
                 // current character is a double space
                 this.getOrNull(index - 1)?.isWhitespace() == true -> acc
                 else -> {

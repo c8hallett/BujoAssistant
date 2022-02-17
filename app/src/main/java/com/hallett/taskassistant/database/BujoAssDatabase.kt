@@ -17,6 +17,6 @@ import com.hallett.taskassistant.database.task.TaskEntity
     DateToLongConverter::class,
     ScopeToStringConverter::class
 )
-abstract class BujoAssDatabase: RoomDatabase() {
+abstract class BujoAssDatabase : RoomDatabase() {
     abstract fun bujoTaskDao(): TaskDao
 }

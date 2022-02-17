@@ -18,8 +18,8 @@ import kotlinx.coroutines.launch
 
 class ScopeSelectionViewModel(
     private val generatePager: (PagerParams) -> Pager<Scope, Scope>
-): ViewModel() {
-    private companion object{
+) : ViewModel() {
+    private companion object {
         val DEFAULT_SCOPE = ScopeType.DAY
     }
 
@@ -33,12 +33,13 @@ class ScopeSelectionViewModel(
 
     fun observeScopeType(): Flow<ScopeType> = scopeTypeSelected
 
-    fun observeScopeSelectorList(): Flow<PagingData<Scope>> = scopeTypeSelected.flatMapLatest { scopeType ->
-        Log.i("TaskAssistantViewModel", "new scope type selected: $scopeType")
-        generatePager(PagingConfig(pageSize = 10).toPagerParams(scopeType))
-            .flow
-            .flowOn(Dispatchers.Default)
-    }
+    fun observeScopeSelectorList(): Flow<PagingData<Scope>> =
+        scopeTypeSelected.flatMapLatest { scopeType ->
+            Log.i("TaskAssistantViewModel", "new scope type selected: $scopeType")
+            generatePager(PagingConfig(pageSize = 10).toPagerParams(scopeType))
+                .flow
+                .flowOn(Dispatchers.Default)
+        }
 
     private fun PagingConfig.toPagerParams(scopeType: ScopeType): PagerParams {
         return PagerParams(this, scopeType)

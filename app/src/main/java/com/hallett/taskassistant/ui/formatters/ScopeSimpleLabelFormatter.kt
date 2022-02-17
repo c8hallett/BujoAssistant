@@ -6,7 +6,8 @@ import com.hallett.scopes.scope_evaluator.IScopeEvaluator
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-class ScopeSimpleLabelFormatter(private val evaluator: IScopeEvaluator): Formatter<Scope?, String> {
+class ScopeSimpleLabelFormatter(private val evaluator: IScopeEvaluator) :
+    Formatter<Scope?, String> {
     private companion object {
         const val DAY_PATTERN = "MMM dd, yyyy"
         const val WEEK_PATTERN = "MMM dd, yyyy"
@@ -14,9 +15,10 @@ class ScopeSimpleLabelFormatter(private val evaluator: IScopeEvaluator): Formatt
         const val MONTH_YEAR_PATTERN = "MMMM yyyy"
         const val YEAR_PATTERN = "yyyy"
     }
+
     private val defaultText = "Sometime"
 
-    override fun format(input: Scope?): String = when(input?.type) {
+    override fun format(input: Scope?): String = when (input?.type) {
         null -> defaultText
         ScopeType.DAY -> formatDay(evaluator.getOffset(input), input.value)
         ScopeType.WEEK -> formatWeek(evaluator.getOffset(input), input.value)
@@ -51,5 +53,6 @@ class ScopeSimpleLabelFormatter(private val evaluator: IScopeEvaluator): Formatt
         else -> "in ${YEAR_PATTERN.formatDate(date)}"
     }
 
-    private fun String.formatDate(date: LocalDate): String = DateTimeFormatter.ofPattern(this).format(date)
+    private fun String.formatDate(date: LocalDate): String =
+        DateTimeFormatter.ofPattern(this).format(date)
 }

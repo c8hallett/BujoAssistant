@@ -1,4 +1,3 @@
-import androidx.compose.runtime.Composable
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStoreOwner
 import com.hallett.taskassistant.ui.viewmodels.ScopeSelectionViewModel

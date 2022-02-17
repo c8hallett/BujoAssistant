@@ -4,7 +4,7 @@ import com.hallett.scopes.model.Scope
 import com.hallett.scopes.model.ScopeType
 import java.time.format.DateTimeFormatter
 
-class ScopeSimpleDateFormatter: Formatter<Scope?, String> {
+class ScopeSimpleDateFormatter : Formatter<Scope?, String> {
 
     private val patternMap = mapOf(
         ScopeType.DAY to "MMM dd, yyyy",
@@ -14,9 +14,9 @@ class ScopeSimpleDateFormatter: Formatter<Scope?, String> {
     )
     private val defaultText = "Sometime"
 
-    override fun format(input: Scope?): String = when(input) {
+    override fun format(input: Scope?): String = when (input) {
         null -> defaultText
-        else -> when(val pattern = patternMap[input.type]) {
+        else -> when (val pattern = patternMap[input.type]) {
             null -> defaultText
             else -> DateTimeFormatter.ofPattern(pattern).format(input.value)
         }

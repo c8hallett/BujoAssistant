@@ -6,8 +6,10 @@ import org.kodein.di.DirectDI
 import org.kodein.di.DirectDIAware
 import org.kodein.di.instanceOrNull
 
-class KodeinViewModelProviderFactory(override val directDI: DirectDI): ViewModelProvider.Factory, DirectDIAware {
+class KodeinViewModelProviderFactory(override val directDI: DirectDI) : ViewModelProvider.Factory,
+    DirectDIAware {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return directDI.instanceOrNull<ViewModel>(tag = modelClass) as? T ?: modelClass.newInstance()
+        return directDI.instanceOrNull<ViewModel>(tag = modelClass) as? T
+            ?: modelClass.newInstance()
     }
 }

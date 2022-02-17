@@ -1,14 +1,14 @@
 package com.hallett.taskassistant.database
 
-import com.hallett.scopes.scope_generator.IScopeGenerator
 import com.hallett.scopes.model.ScopeType
+import com.hallett.scopes.scope_generator.IScopeGenerator
 import com.hallett.taskassistant.database.task.TaskDao
 import com.hallett.taskassistant.database.task.TaskEntity
+import java.time.LocalDate
+import java.util.Calendar
+import kotlin.math.max
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.time.LocalDate
-import java.util.*
-import kotlin.math.max
 
 class TaskGenerator(
     private val taskDao: TaskDao,
@@ -21,7 +21,8 @@ class TaskGenerator(
         const val PERCENT_DAY_SCOPE = 0.50
         const val PERCENT_WEEK_SCOPE = 0.30
         const val PERCENT_MONTH_SCOPE = 0.1
-        val PERCENT_NULL_SCOPE = max(1 - (PERCENT_DAY_SCOPE + PERCENT_WEEK_SCOPE + PERCENT_MONTH_SCOPE), 0.00)
+        val PERCENT_NULL_SCOPE =
+            max(1 - (PERCENT_DAY_SCOPE + PERCENT_WEEK_SCOPE + PERCENT_MONTH_SCOPE), 0.00)
     }
 
     private val mutableCalendar: Calendar
@@ -46,7 +47,7 @@ class TaskGenerator(
         )
     }
 
-    suspend fun generateTasks() = withContext(Dispatchers.IO){
+    suspend fun generateTasks() = withContext(Dispatchers.IO) {
         val entityList = mutableListOf<TaskEntity>()
 
         repeat((NUM_TASKS * PERCENT_NULL_SCOPE).toInt()) {

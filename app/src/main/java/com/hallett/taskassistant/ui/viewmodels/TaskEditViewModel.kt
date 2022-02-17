@@ -19,13 +19,13 @@ import kotlinx.coroutines.launch
 @FlowPreview
 class TaskEditViewModel(
     private val taskDao: TaskDao
-): ViewModel() {
+) : ViewModel() {
 
     private val taskFlow = MutableStateFlow(Task.DEFAULT_VALUE)
 
     fun getTaskName(taskId: Long): Flow<String> {
         viewModelScope.launch(Dispatchers.IO) {
-            val newTaskToEmit = when(val task = taskDao.getTask(taskId = taskId)) {
+            val newTaskToEmit = when (val task = taskDao.getTask(taskId = taskId)) {
                 null -> Task.DEFAULT_VALUE
                 else -> with(task) {
                     Task(
@@ -56,8 +56,8 @@ class TaskEditViewModel(
     fun onTaskSubmitted() {
         viewModelScope.launch(Dispatchers.IO) {
             Log.i("ViewModel", "Submitting task: ${taskFlow.value}")
-            if(taskFlow.value == Task.DEFAULT_VALUE) return@launch
-            taskDao.upsert(with(taskFlow.value){
+            if (taskFlow.value == Task.DEFAULT_VALUE) return@launch
+            taskDao.upsert(with(taskFlow.value) {
                 TaskEntity(
                     id = id,
                     taskName = taskName,

@@ -3,12 +3,27 @@ package com.hallett.taskassistant.ui.composables
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Arrangement.SpaceBetween
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.InlineTextContent
 import androidx.compose.foundation.text.appendInlineContent
-import androidx.compose.material.*
+import androidx.compose.material.Card
+import androidx.compose.material.DropdownMenu
+import androidx.compose.material.DropdownMenuItem
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.Delete
@@ -52,7 +67,8 @@ fun ActiveScopeTypeSelector(
 ) {
     Row(
         horizontalArrangement = SpaceBetween,
-        modifier = Modifier.fillMaxWidth()){
+        modifier = Modifier.fillMaxWidth()
+    ) {
 
         ScopeTypeSelectorLabel(
             scopeType = scopeType,
@@ -86,7 +102,7 @@ fun ScopeTypeSelectorLabel(
             )
         )
         append(scopeType.name)
-        appendInlineContent(expandIconId, if(isExpanded) "[expand]" else "[collapse]")
+        appendInlineContent(expandIconId, if (isExpanded) "[expand]" else "[collapse]")
         pop()
         append(" of")
     }
@@ -98,9 +114,9 @@ fun ScopeTypeSelectorLabel(
                 placeholderVerticalAlign = PlaceholderVerticalAlign.AboveBaseline
             )
         ) {
-            when(isExpanded) {
-                true -> Icon(Icons.Default.ExpandLess,"",tint = MaterialTheme.colors.secondary)
-                false -> Icon(Icons.Default.ExpandMore,"",tint = MaterialTheme.colors.secondary)
+            when (isExpanded) {
+                true -> Icon(Icons.Default.ExpandLess, "", tint = MaterialTheme.colors.secondary)
+                false -> Icon(Icons.Default.ExpandMore, "", tint = MaterialTheme.colors.secondary)
             }
         }
     )
@@ -140,7 +156,8 @@ fun ScopeTypeDropDownMenu(
                     color = MaterialTheme.colors.onSecondary,
                     modifier = Modifier
                         .wrapContentWidth()
-                        .align(Alignment.CenterVertically))
+                        .align(Alignment.CenterVertically)
+                )
             }
         }
     }
@@ -166,11 +183,11 @@ fun InactiveScopeLabel(
 fun ScopeList(selectableScopes: Flow<PagingData<Scope>>, onScopeSelected: (Scope) -> Unit) {
     val lazyScopes = selectableScopes.collectAsLazyPagingItems()
     LazyColumn(
-        contentPadding = PaddingValues(top = 12.dp, bottom = 12.dp, start = 24.dp, end = 0.dp ),
+        contentPadding = PaddingValues(top = 12.dp, bottom = 12.dp, start = 24.dp, end = 0.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
-    ){
+    ) {
         items(lazyScopes) { selectableScope ->
-            when(selectableScope){
+            when (selectableScope) {
                 null -> Spacer(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -199,7 +216,7 @@ fun ScopeListItem(scope: Scope, onScopeSelected: (Scope) -> Unit) {
             horizontalArrangement = SpaceBetween,
             modifier = Modifier
                 .padding(vertical = 12.dp + extraPaddingFormatter.format(scope), horizontal = 12.dp)
-        ){
+        ) {
             Text(
                 labelFormatter.format(scope),
                 modifier = Modifier.align(Alignment.CenterVertically),
@@ -224,14 +241,17 @@ fun ScopeSelection(
     modifier: Modifier = Modifier,
 ) = withDI(di) {
     val scopeSelectionViewModel = di.scopeSelectionViewModel()
-    val scopeType by scopeSelectionViewModel.observeScopeType().collectAsState(initial = ScopeType.DAY)
+    val scopeType by scopeSelectionViewModel.observeScopeType()
+        .collectAsState(initial = ScopeType.DAY)
     val scopes = scopeSelectionViewModel.observeScopeSelectorList()
 
-    Column(modifier = modifier
-        .animateContentSize()
-        .fillMaxWidth()) {
+    Column(
+        modifier = modifier
+            .animateContentSize()
+            .fillMaxWidth()
+    ) {
 
-        when(isSelectActive) {
+        when (isSelectActive) {
             true -> ActiveScopeSelectionContent(
                 scopeType = scopeType,
                 scopes = scopes,
@@ -256,13 +276,13 @@ fun ColumnScope.ActiveScopeSelectionContent(
     onScopeSelected: (Scope?) -> Unit,
     setSelectActive: (Boolean) -> Unit
 ) {
-    val (isExpanded, setIsExpanded) = remember{ mutableStateOf(false) }
+    val (isExpanded, setIsExpanded) = remember { mutableStateOf(false) }
     fun onScopeSelectedWithDismiss(scope: Scope?) {
         onScopeSelected(scope)
         setSelectActive(false)
     }
 
-    Row(horizontalArrangement = SpaceBetween){
+    Row(horizontalArrangement = SpaceBetween) {
         ScopeTypeSelectorLabel(
             scopeType = scopeType,
             isExpanded = isExpanded,
