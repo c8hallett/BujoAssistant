@@ -23,7 +23,7 @@ class ScopeSelectionViewModel(
         val DEFAULT_SCOPE = ScopeType.DAY
     }
 
-    private val scopeTypeSelected = MutableStateFlow(ScopeType.DAY)
+    private val scopeTypeSelected = MutableStateFlow(DEFAULT_SCOPE)
 
     fun onNewScopeTypeSelected(scopeType: ScopeType) {
         viewModelScope.launch {

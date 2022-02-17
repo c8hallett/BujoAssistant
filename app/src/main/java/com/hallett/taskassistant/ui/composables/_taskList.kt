@@ -63,7 +63,7 @@ fun TaskList(taskEditVm: TaskListViewModel, scopeSelectionVm: ScopeSelectionView
                     null -> Spacer(modifier = Modifier
                         .fillMaxWidth()
                         .height(12.dp))
-                    else -> TaskItem(task = task, modifier = Modifier.clickable { navController.navigate("taskId/${task.id}") })
+                    else -> TaskItem(task = task, modifier = Modifier.clickable { navController.navigate("taskEdit/${task.id}") })
                 }
             }
         }

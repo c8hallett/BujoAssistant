@@ -25,8 +25,9 @@ class TaskEditViewModel(
 
     fun getTaskName(taskId: Long): Flow<String> {
         viewModelScope.launch(Dispatchers.IO) {
-            taskDao.getTask(taskId = taskId)?.also {
-                val mappedTask = with(it){
+            val newTaskToEmit = when(val task = taskDao.getTask(taskId = taskId)) {
+                null -> Task.DEFAULT_VALUE
+                else -> with(task) {
                     Task(
                         id = id,
                         taskName = taskName,
@@ -34,8 +35,8 @@ class TaskEditViewModel(
                         status = status
                     )
                 }
-                taskFlow.emit(mappedTask)
             }
+            taskFlow.emit(newTaskToEmit)
         }
         return taskFlow.map { it.taskName }
     }
@@ -65,7 +66,6 @@ class TaskEditViewModel(
                     updatedAt = Date()
                 )
             })
-            taskFlow.emit(Task.DEFAULT_VALUE)
         }
     }
 

@@ -60,12 +60,9 @@ fun TaskSelectionButtons(onTaskSubmitted: () -> Unit, onTaskCancelled: () -> Uni
 @Composable
 fun TaskEdit(taskEditVm: TaskEditViewModel, scopeSelectionVm: ScopeSelectionViewModel, di: DI, navController: NavController, taskId: Long) = withDI(di) {
 
-    val modalState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
-    val coroutineScope = rememberCoroutineScope()
-
     val taskName by taskEditVm.getTaskName(taskId = taskId).collectAsState(initial = "")
     val selectedScope by taskEditVm.observeSelectedScope().collectAsState(initial = null)
-    val selectedScopeType by scopeSelectionVm.observeScopeType().collectAsState(initial = ScopeType.WEEK)
+    val selectedScopeType by scopeSelectionVm.observeScopeType().collectAsState(initial = ScopeType.DAY)
     val (isSelectActive, setSelectActive) = remember{ mutableStateOf(false) }
     Column(verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically)) {
         val cardModifier = when(isSelectActive) {
@@ -92,9 +89,6 @@ fun TaskEdit(taskEditVm: TaskEditViewModel, scopeSelectionVm: ScopeSelectionView
                     },
                     onScopeSelected = { newScope ->
                         taskEditVm.setTaskScope(newScope)
-                        coroutineScope.launch {
-                            modalState.hide()
-                        }
                     },
                     setSelectActive = setSelectActive,
                 )

@@ -18,6 +18,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavOptions
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -85,7 +86,14 @@ class MainActivity : ComponentActivity(), DIAware {
         Scaffold(
             bottomBar = { BottomAppBar { Text("it's a me, a bottom app bar") } },
             floatingActionButton = {
-                FloatingActionButton(onClick = { navController.navigate("taskEdit/${Task.DEFAULT_VALUE.id}") }) {
+                FloatingActionButton(
+                    onClick = {
+                        navController.navigate(
+                            route = "taskEdit/${Task.DEFAULT_VALUE.id}",
+                            navOptions = NavOptions.Builder().setPopUpTo(navController.graph.startDestinationId, inclusive = false).build()
+                        )
+                    }
+                ) {
                     Icon(Icons.Default.Add, "new task")
                 }
             }
@@ -116,7 +124,7 @@ class MainActivity : ComponentActivity(), DIAware {
                         scopeSelectionVm = scopeSelectionVm,
                         di = di,
                         navController = navController
-                    )
+                        )
                 }
             }
         }
