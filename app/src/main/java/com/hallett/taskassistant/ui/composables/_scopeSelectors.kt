@@ -9,21 +9,19 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.InlineTextContent
 import androidx.compose.foundation.text.appendInlineContent
 import androidx.compose.material.*
-import androidx.compose.material.Button
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Cancel
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
-import androidx.compose.material.icons.filled.Reply
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.Placeholder
 import androidx.compose.ui.text.PlaceholderVerticalAlign
@@ -40,7 +38,10 @@ import com.hallett.scopes.model.ScopeType
 import com.hallett.scopes.scope_generator.IScopeGenerator
 import com.hallett.taskassistant.ui.formatters.Formatter
 import kotlinx.coroutines.flow.Flow
+import org.kodein.di.DI
 import org.kodein.di.compose.rememberInstance
+import org.kodein.di.compose.withDI
+import scopeSelectionViewModel
 
 @Composable
 fun ActiveScopeTypeSelector(
@@ -215,15 +216,16 @@ fun ScopeListItem(scope: Scope, onScopeSelected: (Scope) -> Unit) {
 
 @Composable
 fun ScopeSelection(
+    di: DI,
     scope: Scope?,
-    scopeType: ScopeType,
     isSelectActive: Boolean,
-    scopes: Flow<PagingData<Scope>>,
-    onScopeTypeSelected: (ScopeType) -> Unit,
     onScopeSelected: (Scope?) -> Unit,
     setSelectActive: (Boolean) -> Unit,
-    modifier: Modifier = Modifier
-) {
+    modifier: Modifier = Modifier,
+) = withDI(di) {
+    val scopeSelectionViewModel = di.scopeSelectionViewModel()
+    val scopeType by scopeSelectionViewModel.observeScopeType().collectAsState(initial = ScopeType.DAY)
+    val scopes = scopeSelectionViewModel.observeScopeSelectorList()
 
     Column(modifier = modifier
         .animateContentSize()
@@ -235,7 +237,7 @@ fun ScopeSelection(
                 scopes = scopes,
                 onScopeSelected = onScopeSelected,
                 setSelectActive = setSelectActive,
-                onScopeTypeSelected = onScopeTypeSelected
+                onScopeTypeSelected = scopeSelectionViewModel::onNewScopeTypeSelected
             )
             false -> InactiveScopeLabel(
                 scope = scope,
@@ -265,7 +267,9 @@ fun ColumnScope.ActiveScopeSelectionContent(
             scopeType = scopeType,
             isExpanded = isExpanded,
             setIsExpanded = setIsExpanded,
-            modifier = Modifier.weight(1f).align(Alignment.CenterVertically)
+            modifier = Modifier
+                .weight(1f)
+                .align(Alignment.CenterVertically)
         )
         IconButton(
             onClick = { onScopeSelectedWithDismiss(null) },

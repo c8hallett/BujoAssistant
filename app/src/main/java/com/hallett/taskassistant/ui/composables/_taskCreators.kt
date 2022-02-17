@@ -12,7 +12,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,9 +30,9 @@ import com.hallett.taskassistant.ui.viewmodels.ScopeSelectionViewModel
 import com.hallett.taskassistant.ui.viewmodels.TaskEditViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.launch
 import org.kodein.di.DI
 import org.kodein.di.compose.withDI
+import taskEditViewModel
 
 @Composable
 fun TaskSelectionButtons(onTaskSubmitted: () -> Unit, onTaskCancelled: () -> Unit) {
@@ -58,11 +57,11 @@ fun TaskSelectionButtons(onTaskSubmitted: () -> Unit, onTaskCancelled: () -> Uni
 @ExperimentalMaterialApi
 @ExperimentalCoroutinesApi
 @Composable
-fun TaskEdit(taskEditVm: TaskEditViewModel, scopeSelectionVm: ScopeSelectionViewModel, di: DI, navController: NavController, taskId: Long) = withDI(di) {
+fun TaskEdit(di: DI, navController: NavController, taskId: Long) = withDI(di) {
+    val taskEditVm = di.taskEditViewModel()
 
     val taskName by taskEditVm.getTaskName(taskId = taskId).collectAsState(initial = "")
     val selectedScope by taskEditVm.observeSelectedScope().collectAsState(initial = null)
-    val selectedScopeType by scopeSelectionVm.observeScopeType().collectAsState(initial = ScopeType.DAY)
     val (isSelectActive, setSelectActive) = remember{ mutableStateOf(false) }
     Column(verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically)) {
         val cardModifier = when(isSelectActive) {
@@ -80,13 +79,9 @@ fun TaskEdit(taskEditVm: TaskEditViewModel, scopeSelectionVm: ScopeSelectionView
                     visualTransformation = TaskNameVisualizer(),
                 )
                 ScopeSelection(
+                    di = di,
                     scope = selectedScope,
-                    scopeType = selectedScopeType,
                     isSelectActive = isSelectActive,
-                    scopes = scopeSelectionVm.observeScopeSelectorList(),
-                    onScopeTypeSelected = { newScopeType ->
-                        scopeSelectionVm.onNewScopeTypeSelected(newScopeType)
-                    },
                     onScopeSelected = { newScope ->
                         taskEditVm.setTaskScope(newScope)
                     },

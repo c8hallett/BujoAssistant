@@ -18,6 +18,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelStoreOwner
 import androidx.navigation.NavOptions
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -42,6 +43,8 @@ import kotlinx.coroutines.FlowPreview
 import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.android.x.androidXModule
+import org.kodein.di.bindProvider
+import org.kodein.di.bindSingleton
 import org.kodein.di.instance
 
 @ExperimentalCoroutinesApi
@@ -57,17 +60,7 @@ class MainActivity : ComponentActivity(), DIAware {
             scopeGeneratorModule,
             androidXModule(application)
         )
-    }
-
-    private val vmpfactory: ViewModelProvider.Factory by instance()
-    private val scopeSelectionVm: ScopeSelectionViewModel by lazy {
-        ViewModelProvider(this, vmpfactory).get(ScopeSelectionViewModel::class.java)
-    }
-    private val taskEditVm: TaskEditViewModel by lazy {
-        ViewModelProvider(this, vmpfactory).get(TaskEditViewModel::class.java)
-    }
-    private val taskListVm: TaskListViewModel by lazy {
-        ViewModelProvider(this, vmpfactory).get(TaskListViewModel::class.java)
+        bindSingleton<ViewModelStoreOwner> { this@MainActivity  }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -111,8 +104,6 @@ class MainActivity : ComponentActivity(), DIAware {
                     })
                 ) { backStackEntry ->
                     TaskEdit(
-                        taskEditVm = taskEditVm,
-                        scopeSelectionVm = scopeSelectionVm,
                         di = di,
                         navController = navController,
                         taskId =  backStackEntry.arguments?.getLong("taskId") ?: Task.DEFAULT_VALUE.id
@@ -120,11 +111,9 @@ class MainActivity : ComponentActivity(), DIAware {
                 }
                 composable("list") {
                     TaskList(
-                        taskEditVm = taskListVm,
-                        scopeSelectionVm = scopeSelectionVm,
                         di = di,
                         navController = navController
-                        )
+                    )
                 }
             }
         }
