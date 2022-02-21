@@ -21,6 +21,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.paging.PagingData
+import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.hallett.taskassistant.domain.Task
@@ -30,9 +32,9 @@ import org.kodein.di.compose.withDI
 import taskListViewModel
 
 @Composable
-fun TaskList(di: DI, navController: NavController) = withDI(di) {
+fun OpenTaskList(di: DI, navController: NavController) = withDI(di) {
     val taskEditViewModel = di.taskListViewModel()
-    val pagedTask = taskEditViewModel.observeTasksForCurrentScope().collectAsLazyPagingItems()
+    val pagedTasks = taskEditViewModel.observeTasksForCurrentScope().collectAsLazyPagingItems()
     val scope by taskEditViewModel.observerCurrentScope().collectAsState(initial = null)
     val (isSelectActive, setSelectActive) = remember { mutableStateOf(false) }
 
@@ -52,22 +54,27 @@ fun TaskList(di: DI, navController: NavController) = withDI(di) {
             modifier = scopeSelectionHeight.padding(horizontal = 12.dp)
         )
 
-        LazyColumn(verticalArrangement = Arrangement.SpaceBetween) {
-            items(pagedTask) { task ->
-                when (task) {
-                    null -> Spacer(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(12.dp)
-                    )
-                    else -> TaskItem(
-                        task = task,
-                        modifier = Modifier.clickable {
-                            navController.navigate(TaskNavDestination.TaskEdit.calculateRoute(task.id) ){
-                                cleanupBackstack(navController)
-                            }
-                        })
-                }
+        TaskList(pagedTasks = pagedTasks) { task ->
+            navController.navigate(TaskNavDestination.TaskEdit.calculateRoute(task.id) ){
+                cleanupBackstack(navController)
+            }
+        }
+    }
+}
+
+@Composable
+fun TaskList(pagedTasks: LazyPagingItems<Task>, onTaskClicked: (Task) -> Unit) {
+    LazyColumn(verticalArrangement = Arrangement.SpaceBetween) {
+        items(pagedTasks) { task ->
+            when (task) {
+                null -> Spacer(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(12.dp)
+                )
+                else -> TaskItem(
+                    task = task,
+                    modifier = Modifier.clickable { onTaskClicked(task) })
             }
         }
     }

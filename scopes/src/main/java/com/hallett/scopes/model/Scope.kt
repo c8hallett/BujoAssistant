@@ -8,4 +8,6 @@ data class Scope internal constructor(
     val type: ScopeType,
     val value: LocalDate,
     internal val chronoUnit: ChronoUnit,
-): Serializable
+): Serializable, Comparable<Scope> {
+    override fun compareTo(other: Scope): Int = chronoUnit.between(value, other.value).toInt()
+}

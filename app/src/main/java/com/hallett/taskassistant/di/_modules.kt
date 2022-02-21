@@ -17,6 +17,7 @@ import com.hallett.taskassistant.ui.formatters.ScopeScaleFormatter
 import com.hallett.taskassistant.ui.formatters.ScopeSimpleDateFormatter
 import com.hallett.taskassistant.ui.formatters.ScopeSimpleLabelFormatter
 import com.hallett.taskassistant.ui.paging.ScopePagingSource
+import com.hallett.taskassistant.ui.viewmodels.OverdueTaskViewModel
 import com.hallett.taskassistant.ui.viewmodels.ScopeSelectionViewModel
 import com.hallett.taskassistant.ui.viewmodels.TaskEditViewModel
 import com.hallett.taskassistant.ui.viewmodels.TaskListViewModel
@@ -41,6 +42,12 @@ val viewModelModule = DI.Module("viewmodel_module") {
     bindProvider<ViewModel>(tag = TaskEditViewModel::class.java) { TaskEditViewModel(instance()) }
     bindProvider<ViewModel>(tag = TaskListViewModel::class.java) {
         TaskListViewModel(
+            instance(),
+            instance()
+        )
+    }
+    bindProvider<ViewModel>(tag = OverdueTaskViewModel::class.java) {
+        OverdueTaskViewModel(
             instance(),
             instance()
         )

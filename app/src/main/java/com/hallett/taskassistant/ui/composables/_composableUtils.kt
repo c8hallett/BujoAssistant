@@ -1,5 +1,6 @@
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStoreOwner
+import com.hallett.taskassistant.ui.viewmodels.OverdueTaskViewModel
 import com.hallett.taskassistant.ui.viewmodels.ScopeSelectionViewModel
 import com.hallett.taskassistant.ui.viewmodels.TaskEditViewModel
 import com.hallett.taskassistant.ui.viewmodels.TaskListViewModel
@@ -25,4 +26,11 @@ fun DI.taskListViewModel(): TaskListViewModel {
     val vmpfactory: ViewModelProvider.Factory by instance()
     return ViewModelProvider(viewModelStoreOwner, vmpfactory)
         .get(TaskListViewModel::class.java)
+}
+
+fun DI.overviewTaskViewModel(): OverdueTaskViewModel {
+    val viewModelStoreOwner: ViewModelStoreOwner by instance()
+    val vmpfactory: ViewModelProvider.Factory by instance()
+    return ViewModelProvider(viewModelStoreOwner, vmpfactory)
+        .get(OverdueTaskViewModel::class.java)
 }

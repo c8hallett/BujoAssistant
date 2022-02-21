@@ -45,7 +45,7 @@ fun MainNavHost(innerPadding: PaddingValues, di: DI, navController: NavHostContr
             )
         }
         composable(TaskNavDestination.TaskList.route) {
-            TaskList(
+            OpenTaskList(
                 di = di,
                 navController = navController
             )
