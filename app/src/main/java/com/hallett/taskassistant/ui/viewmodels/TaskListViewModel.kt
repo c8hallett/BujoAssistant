@@ -6,22 +6,18 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import androidx.paging.map
 import com.hallett.scopes.model.Scope
 import com.hallett.scopes.scope_generator.IScopeGenerator
-import com.hallett.taskassistant.database.task.TaskDao
-import com.hallett.domain.Task
+import com.hallett.database.TaskDao
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 class TaskListViewModel(
     scopeGenerator: IScopeGenerator,
-    private val taskDao: TaskDao,
+    private val taskDao: com.hallett.database.TaskDao,
 ) : ViewModel() {
     private val selectedScopeFlow: MutableStateFlow<Scope?> =
         MutableStateFlow(scopeGenerator.generateScope())

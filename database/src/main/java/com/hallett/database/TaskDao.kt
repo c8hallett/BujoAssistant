@@ -1,4 +1,4 @@
-package com.hallett.taskassistant.database.task
+package com.hallett.database
 
 import androidx.paging.PagingSource
 import androidx.room.Dao
@@ -9,9 +9,9 @@ import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
 import com.hallett.scopes.model.Scope
-import com.hallett.taskassistant.database.task.TaskEntity.Companion.ID
-import com.hallett.taskassistant.database.task.TaskEntity.Companion.TABLE_NAME
-import com.hallett.taskassistant.database.task.TaskEntity.Companion.TASK_SCOPE
+import com.hallett.database.TaskEntity.Companion.ID
+import com.hallett.database.TaskEntity.Companion.TABLE_NAME
+import com.hallett.database.TaskEntity.Companion.TASK_SCOPE
 
 @Dao
 interface TaskDao {

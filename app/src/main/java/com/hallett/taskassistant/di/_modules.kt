@@ -5,12 +5,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
-import androidx.room.Room
 import com.hallett.scopes.model.Scope
 import com.hallett.scopes.model.ScopeType
 import com.hallett.scopes.scope_generator.IScopeGenerator
-import com.hallett.taskassistant.database.BujoAssDatabase
-import com.hallett.taskassistant.database.task.TaskDao
 import com.hallett.taskassistant.ui.formatters.Formatter
 import com.hallett.taskassistant.ui.formatters.ScopeOffsetLabelFormatter
 import com.hallett.taskassistant.ui.formatters.ScopeScaleFormatter
@@ -51,20 +48,6 @@ val viewModelModule = DI.Module("viewmodel_module") {
             instance(),
             instance()
         )
-    }
-}
-
-val databaseModule = DI.Module("database_module") {
-    bindSingleton<BujoAssDatabase> {
-        Room.databaseBuilder(
-            instance(),
-            BujoAssDatabase::class.java,
-            "bujo_ass_database"
-        ).build()
-    }
-
-    bindSingleton<TaskDao> {
-        instance<BujoAssDatabase>().bujoTaskDao()
     }
 }
 

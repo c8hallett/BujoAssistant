@@ -1,4 +1,4 @@
-package com.hallett.taskassistant.database.task
+package com.hallett.database
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

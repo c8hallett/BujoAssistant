@@ -1,4 +1,4 @@
-package com.hallett.taskassistant.database.converter
+package com.hallett.database.converter
 
 import androidx.room.TypeConverter
 import com.google.gson.GsonBuilder

@@ -1,12 +1,10 @@
-package com.hallett.taskassistant.database
+package com.hallett.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.hallett.taskassistant.database.converter.DateToLongConverter
-import com.hallett.taskassistant.database.converter.ScopeToStringConverter
-import com.hallett.taskassistant.database.task.TaskDao
-import com.hallett.taskassistant.database.task.TaskEntity
+import com.hallett.database.converter.DateToLongConverter
+import com.hallett.database.converter.ScopeToStringConverter
 
 @Database(
     entities = [TaskEntity::class],

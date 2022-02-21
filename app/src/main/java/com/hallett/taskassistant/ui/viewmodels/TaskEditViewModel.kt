@@ -4,8 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hallett.scopes.model.Scope
-import com.hallett.taskassistant.database.task.TaskDao
-import com.hallett.domain.Task
+import com.hallett.database.TaskDao
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -16,7 +15,7 @@ import kotlinx.coroutines.launch
 @ExperimentalCoroutinesApi
 @FlowPreview
 class TaskEditViewModel(
-    private val taskDao: TaskDao
+    private val taskDao: com.hallett.database.TaskDao
 ) : ViewModel() {
 
     private val taskFlow = MutableStateFlow(com.hallett.domain.Task.DEFAULT_VALUE)

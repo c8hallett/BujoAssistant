@@ -11,8 +11,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.navigation.compose.rememberNavController
+import com.hallett.database.di.databaseModule
 import com.hallett.scopes.di.scopeGeneratorModule
-import com.hallett.taskassistant.di.databaseModule
 import com.hallett.taskassistant.di.formatterModule
 import com.hallett.taskassistant.di.pagingModule
 import com.hallett.taskassistant.di.viewModelModule
@@ -22,7 +22,6 @@ import com.hallett.taskassistant.ui.composables.TaskBottomAppBar
 import com.hallett.taskassistant.ui.composables.TaskFloatingActionBar
 import com.hallett.taskassistant.ui.theme.TaskAssistantTheme
 import com.hallett.taskassistant.util.AndroidLoggerHandler
-import java.util.logging.Logger
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import org.kodein.di.DI

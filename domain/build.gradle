@@ -11,4 +11,8 @@ java {
 dependencies {
     api project(":scopes")
     api project(":logging")
+
+    // kodein
+    api "org.kodein.di:kodein-di:$kodein_version"
+    api "org.kodein.di:kodein-di-framework-compose:$kodein_version"
 }

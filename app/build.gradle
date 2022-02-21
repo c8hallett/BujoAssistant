@@ -50,6 +50,7 @@ android {
 
 dependencies {
     implementation project(":domain")
+    implementation project(":database")
 
     implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.appcompat:appcompat:1.4.0'
@@ -65,19 +66,6 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
-
-    // kodein
-    implementation "org.kodein.di:kodein-di:$kodein_version"
-    implementation "org.kodein.di:kodein-di-framework-compose:$kodein_version"
-
-    // room
-    implementation "androidx.room:room-ktx:$room_version"
-    implementation "androidx.room:room-paging:$room_version"
-    kapt "androidx.room:room-compiler:$room_version"
-    testImplementation "androidx.room:room-testing:$room_version"
-
-    // gson
-    implementation 'com.google.code.gson:gson:2.8.7'
 
     // paging 3
     implementation "androidx.paging:paging-runtime-ktx:3.1.0"

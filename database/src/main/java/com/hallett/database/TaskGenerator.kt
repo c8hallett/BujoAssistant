@@ -1,9 +1,7 @@
-package com.hallett.taskassistant.database
+package com.hallett.database
 
 import com.hallett.scopes.model.ScopeType
 import com.hallett.scopes.scope_generator.IScopeGenerator
-import com.hallett.taskassistant.database.task.TaskDao
-import com.hallett.taskassistant.database.task.TaskEntity
 import java.time.LocalDate
 import java.util.Calendar
 import kotlin.math.max
