@@ -21,6 +21,8 @@ import com.hallett.taskassistant.ui.composables.ScopeTypeDropDownMenu
 import com.hallett.taskassistant.ui.composables.TaskBottomAppBar
 import com.hallett.taskassistant.ui.composables.TaskFloatingActionBar
 import com.hallett.taskassistant.ui.theme.TaskAssistantTheme
+import com.hallett.taskassistant.util.AndroidLoggerHandler
+import java.util.logging.Logger
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import org.kodein.di.DI
@@ -46,6 +48,7 @@ class MainActivity : ComponentActivity(), DIAware {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        AndroidLoggerHandler.setup()
         setContent {
             TaskAssistantTheme {
                 App()
