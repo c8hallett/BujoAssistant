@@ -1,7 +1,10 @@
 package com.hallett.database.di
 
 import androidx.room.Room
-import com.hallett.database.BujoAssDatabase
+import com.hallett.database.ITaskRepository
+import com.hallett.database.TaskRepository
+import com.hallett.database.room.BujoAssDatabase
+import com.hallett.database.room.TaskDao
 import org.kodein.di.DI
 import org.kodein.di.bindSingleton
 import org.kodein.di.instance
@@ -15,7 +18,11 @@ val databaseModule = DI.Module("database_module") {
         ).build()
     }
 
-    bindSingleton<com.hallett.database.TaskDao> {
+    bindSingleton<TaskDao> {
         instance<BujoAssDatabase>().bujoTaskDao()
+    }
+
+    bindSingleton<ITaskRepository> {
+        TaskRepository(instance(), instance(), instance())
     }
 }

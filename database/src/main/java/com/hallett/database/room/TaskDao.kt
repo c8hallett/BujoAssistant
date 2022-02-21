@@ -1,4 +1,4 @@
-package com.hallett.database
+package com.hallett.database.room
 
 import androidx.paging.PagingSource
 import androidx.room.Dao
@@ -8,13 +8,15 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
-import com.hallett.scopes.model.Scope
-import com.hallett.database.TaskEntity.Companion.ID
-import com.hallett.database.TaskEntity.Companion.TABLE_NAME
-import com.hallett.database.TaskEntity.Companion.TASK_SCOPE
+import com.hallett.database.room.TaskEntity.Companion.ID
+import com.hallett.database.room.TaskEntity.Companion.TABLE_NAME
+import com.hallett.database.room.TaskEntity.Companion.TASK_SCOPE_TYPE
+import com.hallett.database.room.TaskEntity.Companion.TASK_SCOPE_VALUE
+import com.hallett.scopes.model.ScopeType
+import java.time.LocalDate
 
 @Dao
-interface TaskDao {
+internal interface TaskDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(task: TaskEntity): Long
@@ -42,18 +44,18 @@ interface TaskDao {
     @Query("DELETE FROM $TABLE_NAME")
     suspend fun clearTable()
 
-    @Query("SELECT * FROM $TABLE_NAME WHERE $TASK_SCOPE IS :scope")
-    fun getAllTaskForScopeInstancePage(scope: Scope?): PagingSource<Int, TaskEntity>
-
     @Query("SELECT * FROM $TABLE_NAME WHERE $ID = :taskId")
     suspend fun getTask(taskId: Long): TaskEntity?
 
-    @Query("SELECT * FROM $TABLE_NAME WHERE $TASK_SCOPE < :currentScope")
-    fun getAllOverdueTasks(currentScope: Scope): PagingSource<Int, TaskEntity>
+    @Query("SELECT * FROM $TABLE_NAME WHERE $TASK_SCOPE_TYPE IS :scopeType AND $TASK_SCOPE_VALUE IS :value")
+    fun getAllTaskForScope(scopeType: ScopeType?, value: LocalDate?): PagingSource<Int, TaskEntity>
+
+    @Query("SELECT * FROM $TABLE_NAME WHERE $TASK_SCOPE_VALUE < :value")
+    fun getAllOverdueTasks(value: LocalDate): PagingSource<Int, TaskEntity>
 
     @Update(entity = TaskEntity::class)
     suspend fun updateTaskStatus(update: TaskEntity.StatusUpdate)
 
     @Update(entity = TaskEntity::class)
-    suspend fun rescheduleTask(update: TaskEntity.NewScopeUpdate)
+    suspend fun rescheduleTask(update: TaskEntity.ScopeUpdate)
 }

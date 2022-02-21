@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
+import com.hallett.domain.coroutines.DispatchersWrapper
 import com.hallett.scopes.model.Scope
 import com.hallett.scopes.model.ScopeType
 import com.hallett.scopes.scope_generator.IScopeGenerator
@@ -18,6 +19,7 @@ import com.hallett.taskassistant.ui.viewmodels.OverdueTaskViewModel
 import com.hallett.taskassistant.ui.viewmodels.ScopeSelectionViewModel
 import com.hallett.taskassistant.ui.viewmodels.TaskEditViewModel
 import com.hallett.taskassistant.ui.viewmodels.TaskListViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import org.kodein.di.DI
@@ -40,13 +42,11 @@ val viewModelModule = DI.Module("viewmodel_module") {
     bindProvider<ViewModel>(tag = TaskListViewModel::class.java) {
         TaskListViewModel(
             instance(),
-            instance()
         )
     }
     bindProvider<ViewModel>(tag = OverdueTaskViewModel::class.java) {
         OverdueTaskViewModel(
             instance(),
-            instance()
         )
     }
 }
@@ -72,5 +72,15 @@ val pagingModule = DI.Module("paging_module") {
     bindFactory<PagerParams, Pager<Scope, Scope>> { params: PagerParams ->
         val initialKey = instance<IScopeGenerator>().generateScope(params.scopeType)
         Pager(params.config, initialKey) { ScopePagingSource(instance(), instance()) }
+    }
+}
+
+val utilModule = DI.Module("util_module") {
+    bindSingleton<DispatchersWrapper>() {
+        DispatchersWrapper(
+            main = Dispatchers.Main,
+            io = Dispatchers.IO,
+            default = Dispatchers.Default
+        )
     }
 }

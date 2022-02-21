@@ -15,6 +15,7 @@ import com.hallett.database.di.databaseModule
 import com.hallett.scopes.di.scopeGeneratorModule
 import com.hallett.taskassistant.di.formatterModule
 import com.hallett.taskassistant.di.pagingModule
+import com.hallett.taskassistant.di.utilModule
 import com.hallett.taskassistant.di.viewModelModule
 import com.hallett.taskassistant.ui.composables.MainNavHost
 import com.hallett.taskassistant.ui.composables.ScopeTypeDropDownMenu
@@ -40,6 +41,7 @@ class MainActivity : ComponentActivity(), DIAware {
             formatterModule,
             pagingModule,
             scopeGeneratorModule,
+            utilModule,
             androidXModule(application)
         )
         bindSingleton<ViewModelStoreOwner> { this@MainActivity }

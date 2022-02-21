@@ -23,7 +23,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.hallett.domain.Task
+import androidx.paging.compose.items
+import com.hallett.domain.model.Task
 import com.hallett.taskassistant.ui.navigation.TaskNavDestination
 import org.kodein.di.DI
 import org.kodein.di.compose.withDI
@@ -61,7 +62,7 @@ fun OpenTaskList(di: DI, navController: NavController) = withDI(di) {
 }
 
 @Composable
-fun TaskList(pagedTasks: LazyPagingItems<com.hallett.domain.Task>, onTaskClicked: (com.hallett.domain.Task) -> Unit) {
+fun TaskList(pagedTasks: LazyPagingItems<Task>, onTaskClicked: (Task) -> Unit) {
     LazyColumn(verticalArrangement = Arrangement.SpaceBetween) {
         items(pagedTasks) { task ->
             when (task) {
@@ -79,7 +80,7 @@ fun TaskList(pagedTasks: LazyPagingItems<com.hallett.domain.Task>, onTaskClicked
 }
 
 @Composable
-fun TaskItem(task: com.hallett.domain.Task, modifier: Modifier) {
+fun TaskItem(task: Task, modifier: Modifier) {
     Card(modifier = modifier
         .fillMaxWidth()
         .padding(horizontal = 12.dp)) {

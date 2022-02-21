@@ -1,4 +1,4 @@
-package com.hallett.domain
+package com.hallett.domain.model
 
 import com.hallett.scopes.model.Scope
 

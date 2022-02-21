@@ -8,7 +8,7 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import com.hallett.taskassistant.R
-import com.hallett.domain.Task
+import com.hallett.domain.model.Task
 
 sealed class TaskNavDestination(val route: String) {
     private companion object {
@@ -21,14 +21,14 @@ sealed class TaskNavDestination(val route: String) {
     }
 
     object TaskEdit: TaskNavDestination(ROUTE_TASK_EDIT) {
-        fun calculateRoute(id: Long = com.hallett.domain.Task.DEFAULT_VALUE.id) = "$PATH_TASK_EDIT/$id"
+        fun calculateRoute(id: Long = Task.DEFAULT_VALUE.id) = "$PATH_TASK_EDIT$id"
         val args = listOf(navArgument(ARG_TASK_ID) {
             type = NavType.LongType
-            defaultValue = com.hallett.domain.Task.DEFAULT_VALUE.id
+            defaultValue = Task.DEFAULT_VALUE.id
         })
 
         fun getTaskId(backStack: NavBackStackEntry): Long {
-            return backStack.arguments?.getLong(ARG_TASK_ID) ?: com.hallett.domain.Task.DEFAULT_VALUE.id
+            return backStack.arguments?.getLong(ARG_TASK_ID) ?: Task.DEFAULT_VALUE.id
         }
     }
 

@@ -1,10 +1,10 @@
-package com.hallett.database
+package com.hallett.database.room
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.hallett.database.converter.DateToLongConverter
-import com.hallett.database.converter.ScopeToStringConverter
+import com.hallett.database.converter.LocalDateToLongConverter
 
 @Database(
     entities = [TaskEntity::class],
@@ -13,8 +13,8 @@ import com.hallett.database.converter.ScopeToStringConverter
 )
 @TypeConverters(
     DateToLongConverter::class,
-    ScopeToStringConverter::class
+    LocalDateToLongConverter::class
 )
-abstract class BujoAssDatabase : RoomDatabase() {
+internal abstract class BujoAssDatabase : RoomDatabase() {
     abstract fun bujoTaskDao(): TaskDao
 }
