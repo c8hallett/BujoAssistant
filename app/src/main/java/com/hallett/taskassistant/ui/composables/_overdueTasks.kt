@@ -1,6 +1,7 @@
 package com.hallett.taskassistant.ui.composables
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -17,6 +18,9 @@ fun OverdueTasks(di: DI, navController: NavController) = withDI(di) {
 
     Column {
         Text("Overdue tasks", style = MaterialTheme.typography.h6)
+        Button(onClick = {viewModel.addRandomOverdueTask()}){
+            Text("Random Overdue Task")
+        }
         TaskList(pagedTasks = pagedTasks) {}
     }
 }

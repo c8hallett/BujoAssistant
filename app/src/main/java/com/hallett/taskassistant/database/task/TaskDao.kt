@@ -50,8 +50,8 @@ interface TaskDao {
     @Query("SELECT * FROM $TABLE_NAME WHERE $ID = :taskId")
     suspend fun getTask(taskId: Long): TaskEntity?
 
-    @Query("SELECT * FROM $TABLE_NAME WHERE $TASK_STATUS IN (:statuses) AND $TASK_SCOPE < :currentScope")
-    fun getAllOverdueTasks(currentScope: Scope, statuses: List<TaskStatus> = listOf(TaskStatus.INCOMPLETE)): PagingSource<Int, TaskEntity>
+    @Query("SELECT * FROM $TABLE_NAME WHERE $TASK_SCOPE < :currentScope")
+    fun getAllOverdueTasks(currentScope: Scope): PagingSource<Int, TaskEntity>
 
     @Update(entity = TaskEntity::class)
     suspend fun updateTaskStatus(update: TaskEntity.StatusUpdate)
