@@ -24,4 +24,7 @@
         <item quantity="one">"Next year</item>
         <item quantity="other">%d years from now</item>
     </plurals>
+
+    <string name="navigation_label_task_list">Task List</string>
+    <string name="navigation_label_overdue_tasks">Overdue Tasks</string>
 </resources>

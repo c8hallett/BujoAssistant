@@ -24,6 +24,7 @@ import androidx.navigation.NavController
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.hallett.taskassistant.domain.Task
+import com.hallett.taskassistant.ui.navigation.TaskNavDestination
 import org.kodein.di.DI
 import org.kodein.di.compose.withDI
 import taskListViewModel
@@ -61,7 +62,11 @@ fun TaskList(di: DI, navController: NavController) = withDI(di) {
                     )
                     else -> TaskItem(
                         task = task,
-                        modifier = Modifier.clickable { navController.navigate("taskEdit/${task.id}") })
+                        modifier = Modifier.clickable {
+                            navController.navigate(TaskNavDestination.TaskEdit.calculateRoute(task.id) ){
+                                cleanupBackstack(navController)
+                            }
+                        })
                 }
             }
         }

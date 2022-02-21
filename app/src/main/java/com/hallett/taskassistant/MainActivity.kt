@@ -3,36 +3,23 @@ package com.hallett.taskassistant
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.BottomAppBar
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.FloatingActionButton
-import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.ViewModelStoreOwner
-import androidx.navigation.NavOptions
-import androidx.navigation.NavType
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
 import com.hallett.scopes.di.scopeGeneratorModule
 import com.hallett.taskassistant.di.databaseModule
 import com.hallett.taskassistant.di.formatterModule
 import com.hallett.taskassistant.di.pagingModule
 import com.hallett.taskassistant.di.viewModelModule
-import com.hallett.taskassistant.domain.Task
+import com.hallett.taskassistant.ui.composables.MainNavHost
 import com.hallett.taskassistant.ui.composables.ScopeTypeDropDownMenu
-import com.hallett.taskassistant.ui.composables.TaskEdit
-import com.hallett.taskassistant.ui.composables.TaskList
+import com.hallett.taskassistant.ui.composables.TaskBottomAppBar
+import com.hallett.taskassistant.ui.composables.TaskFloatingActionBar
 import com.hallett.taskassistant.ui.theme.TaskAssistantTheme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -71,49 +58,11 @@ class MainActivity : ComponentActivity(), DIAware {
         val navController = rememberNavController()
 
         Scaffold(
-            bottomBar = { BottomAppBar { Text("it's a me, a bottom app bar") } },
-            floatingActionButton = {
-                FloatingActionButton(
-                    onClick = {
-                        navController.navigate(
-                            route = "taskEdit/${Task.DEFAULT_VALUE.id}",
-                            navOptions = NavOptions.Builder().setPopUpTo(
-                                navController.graph.startDestinationId,
-                                inclusive = false
-                            ).build()
-                        )
-                    }
-                ) {
-                    Icon(Icons.Default.Add, "new task")
-                }
-            }
+            bottomBar = { TaskBottomAppBar(navController = navController) },
+            floatingActionButton = { TaskFloatingActionBar(navController = navController) },
+            isFloatingActionButtonDocked = true
         ) { innerPadding ->
-            NavHost(
-                navController = navController,
-                startDestination = "list",
-                modifier = Modifier.padding(innerPadding)
-            ) {
-                composable(
-                    "taskEdit/{taskId}",
-                    arguments = listOf(navArgument("taskId") {
-                        type = NavType.LongType
-                        defaultValue = Task.DEFAULT_VALUE.id
-                    })
-                ) { backStackEntry ->
-                    TaskEdit(
-                        di = di,
-                        navController = navController,
-                        taskId = backStackEntry.arguments?.getLong("taskId")
-                            ?: Task.DEFAULT_VALUE.id
-                    )
-                }
-                composable("list") {
-                    TaskList(
-                        di = di,
-                        navController = navController
-                    )
-                }
-            }
+            MainNavHost(innerPadding = innerPadding, di = di, navController = navController)
         }
     }
 }
