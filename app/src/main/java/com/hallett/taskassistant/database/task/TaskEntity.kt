@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.hallett.scopes.model.Scope
-import com.hallett.taskassistant.domain.TaskStatus
+import com.hallett.domain.TaskStatus
 import java.util.Date
 
 @Entity(tableName = TaskEntity.TABLE_NAME)
@@ -15,7 +15,7 @@ data class TaskEntity(
     @ColumnInfo(name = TASK_NAME)
     val taskName: String,
     @ColumnInfo(name = TASK_STATUS)
-    val status: TaskStatus = TaskStatus.INCOMPLETE,
+    val status: com.hallett.domain.TaskStatus = com.hallett.domain.TaskStatus.INCOMPLETE,
     @ColumnInfo(name = TASK_SCOPE)
     val scope: Scope? = null,
     @ColumnInfo(name = CREATED_AT)
@@ -28,7 +28,7 @@ data class TaskEntity(
         @ColumnInfo(name = ID)
         val taskId: Long,
         @ColumnInfo(name = TASK_STATUS)
-        val status: TaskStatus,
+        val status: com.hallett.domain.TaskStatus,
         @ColumnInfo(name = UPDATED_AT)
         val updated: Date = Date()
     )

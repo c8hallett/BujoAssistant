@@ -1,6 +1,5 @@
 package com.hallett.taskassistant.ui.viewmodels
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
@@ -11,7 +10,7 @@ import com.hallett.scopes.model.ScopeType
 import com.hallett.scopes.scope_generator.IScopeGenerator
 import com.hallett.taskassistant.database.task.TaskDao
 import com.hallett.taskassistant.database.task.TaskEntity
-import com.hallett.taskassistant.domain.Task
+import com.hallett.domain.Task
 import java.time.LocalDate
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -24,14 +23,14 @@ class OverdueTaskViewModel(
     private val scopeGenerator: IScopeGenerator
     ): ViewModel() {
 
-    fun observeOverdueTasks(): Flow<PagingData<Task>> = Pager(PagingConfig(pageSize = 20)) {
+    fun observeOverdueTasks(): Flow<PagingData<com.hallett.domain.Task>> = Pager(PagingConfig(pageSize = 20)) {
         taskDao.getAllOverdueTasks(currentScope = scopeGenerator.generateScope())
     }.flow
         .flowOn(Dispatchers.Default)
         .map { pagedData ->
             pagedData.map { savedTaskEntity ->
                 with(savedTaskEntity) {
-                    Task(
+                    com.hallett.domain.Task(
                         id = id,
                         taskName = taskName,
                         scope = scope,

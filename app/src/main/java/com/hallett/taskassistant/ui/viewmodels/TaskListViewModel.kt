@@ -10,7 +10,7 @@ import androidx.paging.map
 import com.hallett.scopes.model.Scope
 import com.hallett.scopes.scope_generator.IScopeGenerator
 import com.hallett.taskassistant.database.task.TaskDao
-import com.hallett.taskassistant.domain.Task
+import com.hallett.domain.Task
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,7 +28,7 @@ class TaskListViewModel(
 
     fun observerCurrentScope(): Flow<Scope?> = selectedScopeFlow
 
-    fun observeTasksForCurrentScope(): Flow<PagingData<Task>> =
+    fun observeTasksForCurrentScope(): Flow<PagingData<com.hallett.domain.Task>> =
         selectedScopeFlow.flatMapLatest { currentScope ->
             Pager(PagingConfig(pageSize = 20)) { taskDao.getAllTaskForScopeInstancePage(currentScope) }
                 .flow
@@ -37,7 +37,7 @@ class TaskListViewModel(
                     Log.i("ViewModel", "received new paged data for ${selectedScopeFlow.value}")
                     pagedData.map { savedTaskEntity ->
                         with(savedTaskEntity) {
-                            Task(
+                            com.hallett.domain.Task(
                                 id = id,
                                 taskName = taskName,
                                 scope = scope,

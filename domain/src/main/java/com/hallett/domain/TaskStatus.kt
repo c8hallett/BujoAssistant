@@ -1,4 +1,4 @@
-package com.hallett.taskassistant.domain
+package com.hallett.domain
 
 enum class TaskStatus {
     INCOMPLETE,

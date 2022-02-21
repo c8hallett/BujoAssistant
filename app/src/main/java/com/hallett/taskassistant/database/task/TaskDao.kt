@@ -12,8 +12,6 @@ import com.hallett.scopes.model.Scope
 import com.hallett.taskassistant.database.task.TaskEntity.Companion.ID
 import com.hallett.taskassistant.database.task.TaskEntity.Companion.TABLE_NAME
 import com.hallett.taskassistant.database.task.TaskEntity.Companion.TASK_SCOPE
-import com.hallett.taskassistant.database.task.TaskEntity.Companion.TASK_STATUS
-import com.hallett.taskassistant.domain.TaskStatus
 
 @Dao
 interface TaskDao {
