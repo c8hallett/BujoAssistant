@@ -47,6 +47,15 @@ internal class TaskRepository(
         taskDao.insert(task.toEntity())
     }
 
+    override suspend fun createNewTask(taskName: String, scope: Scope?) {
+        taskDao.insert(
+            TaskEntity(
+                taskName = taskName,
+                scope = scope.toEntity()
+            )
+        )
+    }
+
     override suspend fun getTask(taskId: Long): Task? = when(val entity = taskDao.getTask(taskId)) {
         null -> null
         else -> entity.toTask()
