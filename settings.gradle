@@ -7,4 +7,4 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "TaskAssistant"
-include ':app', ':scopes', ':logging', ':domain', ':database'
+include ':app', ':scopes', ':logging', ':domain', ':database', ':corndux'
