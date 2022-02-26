@@ -7,13 +7,15 @@ import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-@ObsoleteCoroutinesApi
-abstract class Store<State: IState, Action: IAction, SideEffect: ISideEffect>(
-    initialState: State,
-    performers: List<ActionPerformer<State, Action, SideEffect>>,
+abstract class Store<GlobalState: IState, Action: IAction, SideEffect: ISideEffect>(
+    initialState: GlobalState,
+    performers: List<ActionPerformer<GlobalState, Action, SideEffect>>,
     sideEffectPerformer: SideEffectPerformer<SideEffect>,
     private val scope: CoroutineScope,
 ) {
@@ -50,5 +52,8 @@ abstract class Store<State: IState, Action: IAction, SideEffect: ISideEffect>(
         }
     }
 
-    fun observeState(): StateFlow<State> = stateFlow
+    fun <T> observeState(select: (GlobalState) -> T): StateFlow<T> = stateFlow.map {
+        select(it)
+    }.stateIn(scope, SharingStarted.WhileSubscribed(), select(stateFlow.value)) // this is so big sad, map{} takes away my ez peasy StateFlow type
+
 }

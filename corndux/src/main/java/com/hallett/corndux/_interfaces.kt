@@ -4,8 +4,6 @@ interface IState
 interface IAction
 interface ISideEffect
 
-
-
 interface ActionPerformer<State: IState, Action: IAction, SideEffect: ISideEffect> {
     suspend fun performAction(
         action: Action,

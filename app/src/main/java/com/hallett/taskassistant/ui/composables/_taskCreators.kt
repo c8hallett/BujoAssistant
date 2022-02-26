@@ -78,13 +78,12 @@ fun TaskSelectionButtons(onTaskSubmitted: () -> Unit, onTaskCancelled: () -> Uni
 @Composable
 fun TaskCreation() {
     val store by rememberInstance<Store<TaskAssistantState, TaskAssistantAction, TaskAssistantSideEffect>>()
-    val state by store.observeState().collectAsState()
-    state.logI("New state: $state")
+    val shouldExpandCard by store.observeState { it.scopeSelectionInfo == null }.collectAsState()
 
     var taskName by remember{ mutableStateOf("") }
 
     Column(verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically)) {
-        val cardModifier = if(state.scopeSelectionInfo == null) Modifier else Modifier.weight(1.0f)
+        val cardModifier = if(shouldExpandCard) Modifier else Modifier.weight(1.0f)
 
         Card(backgroundColor = MaterialTheme.colors.surface, modifier = cardModifier) {
             Column(modifier = Modifier.padding(12.dp)) {
@@ -96,10 +95,7 @@ fun TaskCreation() {
                     modifier = Modifier.fillMaxWidth(),
                     visualTransformation = TaskNameVisualizer(),
                 )
-                ScopeSelection(
-                    state = state,
-                    dispatchAction = { store.dispatch(it) }
-                )
+                ScopeSelection()
             }
         }
 
