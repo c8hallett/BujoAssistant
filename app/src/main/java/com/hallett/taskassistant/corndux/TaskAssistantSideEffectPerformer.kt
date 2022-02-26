@@ -2,12 +2,16 @@ package com.hallett.taskassistant.corndux
 
 import androidx.navigation.NavController
 import com.hallett.corndux.SideEffectPerformer
-import com.hallett.logging.logI
+import com.hallett.domain.coroutines.DispatchersWrapper
+import kotlinx.coroutines.withContext
 
-class TaskAssistantSideEffectPerformer(): SideEffectPerformer<TaskAssistantSideEffect> {
-    override fun performSideEffect(sideEffect: TaskAssistantSideEffect) {
+class TaskAssistantSideEffectPerformer(
+    private val navController: NavController,
+    private val dispatchers: DispatchersWrapper
+): SideEffectPerformer<TaskAssistantSideEffect> {
+    override suspend fun performSideEffect(sideEffect: TaskAssistantSideEffect) {
         when(sideEffect) {
-            NavigateUp -> logI("Should pop the back stack somehow")// navController.popBackStack()
+            NavigateUp -> withContext(dispatchers.main){ navController.popBackStack() }
         }
     }
 }

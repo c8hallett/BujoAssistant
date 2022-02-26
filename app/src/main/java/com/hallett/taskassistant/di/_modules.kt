@@ -5,10 +5,19 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
+import com.hallett.corndux.ActionPerformer
+import com.hallett.corndux.SideEffectPerformer
+import com.hallett.corndux.Store
 import com.hallett.domain.coroutines.DispatchersWrapper
 import com.hallett.scopes.model.Scope
 import com.hallett.scopes.model.ScopeType
 import com.hallett.scopes.scope_generator.IScopeGenerator
+import com.hallett.taskassistant.corndux.TaskAssistantAction
+import com.hallett.taskassistant.corndux.TaskAssistantActionPerformer
+import com.hallett.taskassistant.corndux.TaskAssistantSideEffect
+import com.hallett.taskassistant.corndux.TaskAssistantSideEffectPerformer
+import com.hallett.taskassistant.corndux.TaskAssistantState
+import com.hallett.taskassistant.corndux.TaskAssistantStore
 import com.hallett.taskassistant.ui.formatters.Formatter
 import com.hallett.taskassistant.ui.formatters.ScopeOffsetLabelFormatter
 import com.hallett.taskassistant.ui.formatters.ScopeScaleFormatter
@@ -63,6 +72,32 @@ val formatterModule = DI.Module("formatter_module") {
         ScopeSimpleLabelFormatter(
             instance()
         )
+    }
+}
+
+val cornduxModule = DI.Module("corndux_module") {
+    bindSingleton<Store<TaskAssistantState, TaskAssistantAction, TaskAssistantSideEffect>> {
+        val initialState = TaskAssistantState(
+            scope = null,
+            scopeSelectionInfo = null
+        )
+
+        TaskAssistantStore(
+            initialState = initialState,
+            performers = instance(),
+            sideEffectPerformer = instance(),
+            scope = instance()
+        )
+    }
+
+    bindSingleton<List<ActionPerformer<TaskAssistantState, TaskAssistantAction, TaskAssistantSideEffect>>> {
+        listOf(
+            TaskAssistantActionPerformer(instance(), factory(), instance())
+        )
+    }
+
+    bindSingleton<SideEffectPerformer<TaskAssistantSideEffect>> {
+        TaskAssistantSideEffectPerformer(instance(), instance())
     }
 }
 

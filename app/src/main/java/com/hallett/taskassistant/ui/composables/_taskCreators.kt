@@ -17,6 +17,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -29,12 +30,21 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
+import com.hallett.corndux.Store
+import com.hallett.logging.logI
+import com.hallett.taskassistant.corndux.CancelTask
+import com.hallett.taskassistant.corndux.SubmitTask
+import com.hallett.taskassistant.corndux.TaskAssistantAction
+import com.hallett.taskassistant.corndux.TaskAssistantSideEffect
+import com.hallett.taskassistant.corndux.TaskAssistantState
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import org.kodein.di.DI
-import org.kodein.di.compose.withDI
-import taskEditViewModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.ObsoleteCoroutinesApi
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import org.kodein.di.compose.rememberInstance
 
 @Composable
 fun TaskSelectionButtons(onTaskSubmitted: () -> Unit, onTaskCancelled: () -> Unit) {
@@ -64,48 +74,53 @@ fun TaskSelectionButtons(onTaskSubmitted: () -> Unit, onTaskCancelled: () -> Uni
 @FlowPreview
 @ExperimentalMaterialApi
 @ExperimentalCoroutinesApi
+@ObsoleteCoroutinesApi
 @Composable
-fun TaskEdit(di: DI, navController: NavController, taskId: Long) = withDI(di) {
-    val taskEditVm = di.taskEditViewModel()
+fun TaskCreation() {
+    val store by rememberInstance<Store<TaskAssistantState, TaskAssistantAction, TaskAssistantSideEffect>>()
+    val state by store.observeState().collectAsState()
+    state.logI("New state: $state")
 
-    val taskName by taskEditVm.getTaskName(taskId = taskId).collectAsState(initial = "")
-    val selectedScope by taskEditVm.observeSelectedScope().collectAsState(initial = null)
-    val (isSelectActive, setSelectActive) = remember { mutableStateOf(false) }
+    var taskName by remember{ mutableStateOf("") }
+
     Column(verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically)) {
-        val cardModifier = when (isSelectActive) {
-            true -> Modifier.weight(1.0f)
-            else -> Modifier
-        }
+        val cardModifier = if(state.scopeSelectionInfo == null) Modifier else Modifier.weight(1.0f)
+
         Card(backgroundColor = MaterialTheme.colors.surface, modifier = cardModifier) {
             Column(modifier = Modifier.padding(12.dp)) {
                 BasicTextField(
                     value = taskName,
                     onValueChange = { newTaskName ->
-                        taskEditVm.setTaskName(newTaskName.trimStart().trimEndExtra())
+                        taskName = newTaskName
                     },
                     modifier = Modifier.fillMaxWidth(),
                     visualTransformation = TaskNameVisualizer(),
                 )
                 ScopeSelection(
-                    di = di,
-                    scope = selectedScope,
-                    isSelectActive = isSelectActive,
-                    onScopeSelected = { newScope ->
-                        taskEditVm.setTaskScope(newScope)
-                    },
-                    setSelectActive = setSelectActive,
+                    state = state,
+                    dispatchAction = { store.dispatch(it) }
                 )
             }
         }
+
         TaskSelectionButtons(
-            onTaskSubmitted = {
-                taskEditVm.onTaskSubmitted()
-                navController.popBackStack()
-            },
-            onTaskCancelled = {
-                navController.popBackStack()
-            }
+            onTaskSubmitted = { store.dispatch(SubmitTask(taskName.trimExtraSpaces())) },
+            onTaskCancelled = { store.dispatch(CancelTask) }
         )
+    }
+}
+
+fun CoroutineScope.debounce(
+    waitMs: Long = 300L,
+    destinationFunction: () -> Unit
+): () -> Unit {
+    var debounceJob: Job? = null
+    return {
+        debounceJob?.cancel()
+        debounceJob = launch {
+            delay(waitMs)
+            destinationFunction()
+        }
     }
 }
 
@@ -118,7 +133,7 @@ fun TaskSelectionButtonsPreview() {
 private class TaskNameVisualizer : VisualTransformation {
     private companion object {
         const val PREFIX_STRING = "I want to "
-        const val DEFAULT_STRING = " ... "
+        const val DEFAULT_STRING = " "
         val FONT_SIZE = 24.sp
     }
 
@@ -150,9 +165,11 @@ private class TaskNameVisualizer : VisualTransformation {
     }
 }
 
-private fun String.trimEndExtra(): String {
+private fun String.trimExtraSpaces(): String {
     var foundChar = false
-    return this.foldRightIndexed("") { index, character, acc ->
+    return this
+        .trimStart()
+        .foldRightIndexed("") { index, character, acc ->
         when {
             foundChar -> character + acc
             character.isWhitespace() -> when {

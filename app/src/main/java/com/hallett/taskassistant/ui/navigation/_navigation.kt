@@ -1,4 +1,4 @@
-package com.hallett.taskassistant.ui.composables
+package com.hallett.taskassistant.ui.navigation
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
@@ -21,14 +21,15 @@ import androidx.navigation.NavHostController
 import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.hallett.taskassistant.ui.navigation.BottomNavigationScreen
-import com.hallett.taskassistant.ui.navigation.TaskNavDestination
+import com.hallett.taskassistant.ui.composables.OpenTaskList
+import com.hallett.taskassistant.ui.composables.OverdueTasks
+import com.hallett.taskassistant.ui.composables.TaskCreation
 import org.kodein.di.DI
 
 
 @ExperimentalMaterialApi
 @Composable
-fun MainNavHost(innerPadding: PaddingValues, di: DI, navController: NavHostController) {
+fun MainNavHost(innerPadding: PaddingValues, navController: NavHostController) {
     NavHost(
         navController = navController,
         startDestination = TaskNavDestination.TaskList.route,
@@ -37,22 +38,16 @@ fun MainNavHost(innerPadding: PaddingValues, di: DI, navController: NavHostContr
         composable(
             TaskNavDestination.TaskEdit.route,
             arguments = TaskNavDestination.TaskEdit.args
-        ) { backStackEntry ->
-            TaskEdit(
-                di = di,
-                navController = navController,
-                taskId = TaskNavDestination.TaskEdit.getTaskId(backStackEntry)
-            )
+        ) { _ ->
+            TaskCreation()
         }
         composable(TaskNavDestination.TaskList.route) {
             OpenTaskList(
-                di = di,
                 navController = navController
             )
         }
         composable(TaskNavDestination.OverdueTasks.route) {
             OverdueTasks(
-                di = di,
                 navController = navController
             )
         }

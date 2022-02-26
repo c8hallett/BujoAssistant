@@ -26,13 +26,15 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.hallett.domain.model.Task
 import com.hallett.taskassistant.ui.navigation.TaskNavDestination
+import com.hallett.taskassistant.ui.navigation.cleanupBackstack
 import org.kodein.di.DI
+import org.kodein.di.compose.localDI
 import org.kodein.di.compose.withDI
 import taskListViewModel
 
 @Composable
-fun OpenTaskList(di: DI, navController: NavController) = withDI(di) {
-    val taskEditViewModel = di.taskListViewModel()
+fun OpenTaskList(navController: NavController) {
+    val taskEditViewModel = localDI().taskListViewModel()
     val pagedTasks = taskEditViewModel.observeTasksForCurrentScope().collectAsLazyPagingItems()
     val scope by taskEditViewModel.observerCurrentScope().collectAsState(initial = null)
     val (isSelectActive, setSelectActive) = remember { mutableStateOf(false) }
@@ -44,14 +46,14 @@ fun OpenTaskList(di: DI, navController: NavController) = withDI(di) {
             else -> Modifier.wrapContentHeight()
         }
 
-        ScopeSelection(
-            di = di,
-            scope = scope,
-            isSelectActive = isSelectActive,
-            onScopeSelected = taskEditViewModel::setCurrentScope,
-            setSelectActive = setSelectActive,
-            modifier = scopeSelectionHeight.padding(horizontal = 12.dp)
-        )
+//        ScopeSelection(
+//            di = di,
+//            scope = scope,
+//            isSelectActive = isSelectActive,
+//            onScopeSelected = taskEditViewModel::setCurrentScope,
+//            setSelectActive = setSelectActive,
+//            modifier = scopeSelectionHeight.padding(horizontal = 12.dp)
+//        )
 
         TaskList(pagedTasks = pagedTasks) { task ->
             navController.navigate(TaskNavDestination.TaskEdit.calculateRoute(task.id) ){

@@ -30,8 +30,6 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -51,12 +49,16 @@ import androidx.paging.compose.items
 import com.hallett.scopes.model.Scope
 import com.hallett.scopes.model.ScopeType
 import com.hallett.scopes.scope_generator.IScopeGenerator
+import com.hallett.taskassistant.corndux.EnterScopeSelection
+import com.hallett.taskassistant.corndux.ScopeSelectionCancelled
+import com.hallett.taskassistant.corndux.ScopeSelectionInfo
+import com.hallett.taskassistant.corndux.SelectNewScopeType
+import com.hallett.taskassistant.corndux.TaskAssistantAction
+import com.hallett.taskassistant.corndux.TaskAssistantState
+import com.hallett.taskassistant.corndux.UpdateTaskScope
 import com.hallett.taskassistant.ui.formatters.Formatter
 import kotlinx.coroutines.flow.Flow
-import org.kodein.di.DI
 import org.kodein.di.compose.rememberInstance
-import org.kodein.di.compose.withDI
-import scopeSelectionViewModel
 
 @Composable
 fun ActiveScopeTypeSelector(
@@ -166,13 +168,13 @@ fun ScopeTypeDropDownMenu(
 @Composable
 fun InactiveScopeLabel(
     scope: Scope?,
-    setIsSelectActive: (Boolean) -> Unit
+    onLabelClicked: () -> Unit
 ) {
     val labelFormatter: Formatter<Scope?, String> by rememberInstance(tag = Formatter.SIMPLE_LABEL)
 
     Text(
         text = labelFormatter.format(scope),
-        modifier = Modifier.clickable { setIsSelectActive(true) },
+        modifier = Modifier.clickable { onLabelClicked() },
         style = MaterialTheme.typography.h5,
         color = MaterialTheme.colors.onSurface
     )
@@ -233,35 +235,24 @@ fun ScopeListItem(scope: Scope, onScopeSelected: (Scope) -> Unit) {
 
 @Composable
 fun ScopeSelection(
-    di: DI,
-    scope: Scope?,
-    isSelectActive: Boolean,
-    onScopeSelected: (Scope?) -> Unit,
-    setSelectActive: (Boolean) -> Unit,
-    modifier: Modifier = Modifier,
-) = withDI(di) {
-    val scopeSelectionViewModel = di.scopeSelectionViewModel()
-    val scopeType by scopeSelectionViewModel.observeScopeType()
-        .collectAsState(initial = ScopeType.DAY)
-    val scopes = scopeSelectionViewModel.observeScopeSelectorList()
-
+    state: TaskAssistantState,
+    dispatchAction: (TaskAssistantAction) -> Unit,
+    modifier: Modifier = Modifier
+) {
     Column(
         modifier = modifier
             .animateContentSize()
             .fillMaxWidth()
     ) {
 
-        when (isSelectActive) {
-            true -> ActiveScopeSelectionContent(
-                scopeType = scopeType,
-                scopes = scopes,
-                onScopeSelected = onScopeSelected,
-                setSelectActive = setSelectActive,
-                onScopeTypeSelected = scopeSelectionViewModel::onNewScopeTypeSelected
+        when (val scopeSelectionInfo = state.scopeSelectionInfo) {
+            null -> InactiveScopeLabel(
+                scope = state.scope,
+                onLabelClicked = { dispatchAction(EnterScopeSelection) }
             )
-            false -> InactiveScopeLabel(
-                scope = scope,
-                setIsSelectActive = setSelectActive,
+            else -> ActiveScopeSelectionContent(
+                scopeSelectionInfo = scopeSelectionInfo,
+                dispatchAction = dispatchAction
             )
         }
     }
@@ -270,21 +261,14 @@ fun ScopeSelection(
 
 @Composable
 fun ColumnScope.ActiveScopeSelectionContent(
-    scopeType: ScopeType,
-    scopes: Flow<PagingData<Scope>>,
-    onScopeTypeSelected: (ScopeType) -> Unit,
-    onScopeSelected: (Scope?) -> Unit,
-    setSelectActive: (Boolean) -> Unit
+    scopeSelectionInfo: ScopeSelectionInfo,
+    dispatchAction: (TaskAssistantAction) -> Unit,
 ) {
     val (isExpanded, setIsExpanded) = remember { mutableStateOf(false) }
-    fun onScopeSelectedWithDismiss(scope: Scope?) {
-        onScopeSelected(scope)
-        setSelectActive(false)
-    }
 
     Row(horizontalArrangement = SpaceBetween) {
         ScopeTypeSelectorLabel(
-            scopeType = scopeType,
+            scopeType = scopeSelectionInfo.scopeType,
             isExpanded = isExpanded,
             setIsExpanded = setIsExpanded,
             modifier = Modifier
@@ -292,24 +276,24 @@ fun ColumnScope.ActiveScopeSelectionContent(
                 .align(Alignment.CenterVertically)
         )
         IconButton(
-            onClick = { onScopeSelectedWithDismiss(null) },
+            onClick = { dispatchAction(UpdateTaskScope(null)) },
         ) {
             Icon(Icons.Default.Delete, "remove scope", tint = MaterialTheme.colors.error)
         }
         IconButton(
-            onClick = { setSelectActive(false) },
+            onClick = { dispatchAction(ScopeSelectionCancelled) },
         ) {
             Icon(Icons.Default.Cancel, "cancel edit", tint = MaterialTheme.colors.error)
         }
         ScopeTypeDropDownMenu(
             isExpanded = isExpanded,
             onDismiss = { setIsExpanded(false) },
-            onScopeTypeSelected = onScopeTypeSelected
+            onScopeTypeSelected = { dispatchAction(SelectNewScopeType(it)) }
         )
     }
     ScopeList(
-        selectableScopes = scopes,
-        onScopeSelected = ::onScopeSelectedWithDismiss
+        selectableScopes = scopeSelectionInfo.scopes,
+        onScopeSelected = { dispatchAction(UpdateTaskScope(it)) }
     )
 }
 

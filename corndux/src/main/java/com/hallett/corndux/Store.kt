@@ -1,15 +1,14 @@
 package com.hallett.corndux
 
+import java.util.concurrent.Executors
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ObsoleteCoroutinesApi
+import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.consumeEach
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.newSingleThreadContext
-
 
 @ObsoleteCoroutinesApi
 abstract class Store<State: IState, Action: IAction, SideEffect: ISideEffect>(
@@ -20,21 +19,19 @@ abstract class Store<State: IState, Action: IAction, SideEffect: ISideEffect>(
 ) {
     private val stateFlow = MutableStateFlow(initialState)
 
-    private val actionDispatcher = newSingleThreadContext("action_sender")
+    private val customDispatcher = Executors.newFixedThreadPool(2).asCoroutineDispatcher()
     private val actionChannel = Channel<Action>()
-
-    private val effectDispatcher = newSingleThreadContext("effect_sender")
     private val sideEffectChannel = Channel<SideEffect>()
 
     init {
-        scope.launch(newSingleThreadContext("action_receiver")) {
+        scope.launch(customDispatcher) {
             actionChannel.consumeEach { newAction ->
                 stateFlow.value = performers.fold(stateFlow.value) { state, performer ->
                     performer.performAction(newAction, state, ::dispatch, ::dispatch)
                 }
             }
         }
-        scope.launch(newSingleThreadContext("effect_sender")) {
+        scope.launch(customDispatcher) {
             sideEffectChannel.consumeEach { newSideEffect ->
                 sideEffectPerformer.performSideEffect(newSideEffect)
             }
@@ -42,13 +39,13 @@ abstract class Store<State: IState, Action: IAction, SideEffect: ISideEffect>(
     }
 
     fun dispatch(action: Action) {
-        scope.launch(actionDispatcher) {
+        scope.launch(customDispatcher) {
             actionChannel.send(action)
         }
     }
 
     fun dispatch(sideEffect: SideEffect) {
-        scope.launch(effectDispatcher) {
+        scope.launch(customDispatcher) {
             sideEffectChannel.send(sideEffect)
         }
     }

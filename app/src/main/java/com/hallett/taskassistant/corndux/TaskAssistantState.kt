@@ -8,7 +8,6 @@ import kotlinx.coroutines.flow.Flow
 
 data class TaskAssistantState(
     val scope: Scope?,
-    val taskName: String,
     val scopeSelectionInfo: ScopeSelectionInfo?
 ): IState
 

@@ -4,6 +4,8 @@ interface IState
 interface IAction
 interface ISideEffect
 
+
+
 interface ActionPerformer<State: IState, Action: IAction, SideEffect: ISideEffect> {
     suspend fun performAction(
         action: Action,
@@ -14,5 +16,5 @@ interface ActionPerformer<State: IState, Action: IAction, SideEffect: ISideEffec
 }
 
 interface SideEffectPerformer<SideEffect: ISideEffect> {
-    fun performSideEffect(sideEffect: SideEffect)
+    suspend fun performSideEffect(sideEffect: SideEffect)
 }
