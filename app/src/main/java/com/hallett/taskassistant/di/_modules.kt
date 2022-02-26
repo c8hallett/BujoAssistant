@@ -79,7 +79,9 @@ val cornduxModule = DI.Module("corndux_module") {
     bindSingleton<Store<TaskAssistantState, TaskAssistantAction, TaskAssistantSideEffect>> {
         val initialState = TaskAssistantState(
             scope = null,
-            scopeSelectionInfo = null
+            scopeSelectionInfo = null,
+            tasks = null,
+            error = null
         )
 
         TaskAssistantStore(
@@ -92,7 +94,7 @@ val cornduxModule = DI.Module("corndux_module") {
 
     bindSingleton<List<ActionPerformer<TaskAssistantState, TaskAssistantAction, TaskAssistantSideEffect>>> {
         listOf(
-            TaskAssistantActionPerformer(instance(), factory(), instance())
+            TaskAssistantActionPerformer(instance(), instance(), factory(), instance())
         )
     }
 

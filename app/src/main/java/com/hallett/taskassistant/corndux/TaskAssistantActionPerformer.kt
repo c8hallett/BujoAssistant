@@ -8,11 +8,15 @@ import com.hallett.domain.coroutines.DispatchersWrapper
 import com.hallett.logging.logI
 import com.hallett.scopes.model.Scope
 import com.hallett.scopes.model.ScopeType
+import com.hallett.scopes.scope_generator.IScopeGenerator
 import com.hallett.taskassistant.di.PagerParams
+import com.hallett.taskassistant.ui.navigation.TaskNavDestination
+import java.time.LocalDate
 import kotlinx.coroutines.flow.flowOn
 
 class TaskAssistantActionPerformer(
     private val taskRepository: ITaskRepository,
+    private val scopeGenerator: IScopeGenerator,
     private val generatePager: (PagerParams) -> Pager<Scope, Scope>,
     private val dispatchers: DispatchersWrapper
 ): ActionPerformer<TaskAssistantState, TaskAssistantAction, TaskAssistantSideEffect>  {
@@ -35,6 +39,25 @@ class TaskAssistantActionPerformer(
             dispatchSideEffect(NavigateUp)
             state
         }
+        is BottomNavigationClicked -> {
+            dispatchSideEffect(NavigateToRootDestination(action.destination))
+            when(action) {
+                is TaskListClicked -> {
+                    val defaultScope = scopeGenerator.generateScope()
+                    val taskList = taskRepository.observeTasksForScope(PagingConfig(pageSize = 20), defaultScope)
+                    state.copy(scope = defaultScope, tasks = taskList)
+                }
+                is OverdueTasksClicked -> {
+                    val taskList = taskRepository.getOverdueTasks(PagingConfig(pageSize = 20), LocalDate.now())
+                    state.copy(tasks = taskList)
+                }
+            }
+        }
+        is FabClicked -> {
+            dispatchSideEffect(NavigateSingleTop(action.destination))
+            state.copy(scope = null)
+        }
+        else -> state
     }
 
     private fun createScopeSelectionInfo(scopeType: ScopeType): ScopeSelectionInfo {

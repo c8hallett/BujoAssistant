@@ -27,13 +27,11 @@ import androidx.paging.compose.items
 import com.hallett.domain.model.Task
 import com.hallett.taskassistant.ui.navigation.TaskNavDestination
 import com.hallett.taskassistant.ui.navigation.cleanupBackstack
-import org.kodein.di.DI
 import org.kodein.di.compose.localDI
-import org.kodein.di.compose.withDI
 import taskListViewModel
 
 @Composable
-fun OpenTaskList(navController: NavController) {
+fun OpenTaskList() {
     val taskEditViewModel = localDI().taskListViewModel()
     val pagedTasks = taskEditViewModel.observeTasksForCurrentScope().collectAsLazyPagingItems()
     val scope by taskEditViewModel.observerCurrentScope().collectAsState(initial = null)
@@ -56,9 +54,6 @@ fun OpenTaskList(navController: NavController) {
 //        )
 
         TaskList(pagedTasks = pagedTasks) { task ->
-            navController.navigate(TaskNavDestination.TaskEdit.calculateRoute(task.id) ){
-                cleanupBackstack(navController)
-            }
         }
     }
 }

@@ -21,10 +21,12 @@ import androidx.navigation.NavHostController
 import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.hallett.taskassistant.corndux.FabClicked
 import com.hallett.taskassistant.ui.composables.OpenTaskList
 import com.hallett.taskassistant.ui.composables.OverdueTasks
 import com.hallett.taskassistant.ui.composables.TaskCreation
-import org.kodein.di.DI
+import org.kodein.di.compose.rememberInstance
+import taskAssistantStore
 
 
 @ExperimentalMaterialApi
@@ -36,36 +38,32 @@ fun MainNavHost(innerPadding: PaddingValues, navController: NavHostController) {
         modifier = Modifier.padding(innerPadding)
     ) {
         composable(
-            TaskNavDestination.TaskEdit.route,
-            arguments = TaskNavDestination.TaskEdit.args
-        ) { _ ->
+            TaskNavDestination.CreateTask.route,
+        ) {
             TaskCreation()
         }
         composable(TaskNavDestination.TaskList.route) {
-            OpenTaskList(
-                navController = navController
-            )
+            OpenTaskList()
         }
         composable(TaskNavDestination.OverdueTasks.route) {
-            OverdueTasks(
-                navController = navController
-            )
+            OverdueTasks()
         }
-
-        // TODO: add composable for overdue tasks
     }
 }
 
 @Composable
-fun TaskBottomAppBar(navController: NavHostController) {
+fun TaskBottomAppBar() {
     val items = listOf(
         TaskNavDestination.TaskList,
         TaskNavDestination.OverdueTasks
     )
-    TaskBottomAppBarImpl(navController = navController, items = items)
+    TaskBottomAppBarImpl(items = items)
 }
 @Composable
-private fun TaskBottomAppBarImpl(navController: NavHostController, items: List<BottomNavigationScreen>) {
+private fun TaskBottomAppBarImpl(items: List<BottomNavigationScreen>) {
+    val store by taskAssistantStore()
+    val navController: NavController by rememberInstance()
+
     BottomAppBar(
         cutoutShape = MaterialTheme.shapes.small.copy(CornerSize(percent = 50))
     ) {
@@ -74,26 +72,17 @@ private fun TaskBottomAppBarImpl(navController: NavHostController, items: List<B
                 icon = { Icon(screen.icon, contentDescription = null) },
                 label = { Text(stringResource(screen.labelResId)) },
                 selected = navController.currentDestination?.hierarchy?.any { it.route == screen.route } == true,
-                onClick = {
-                    navController.navigate(screen.route) {
-                        popUpTo(navController.graph.startDestinationId)
-                        launchSingleTop = true
-                        restoreState = true
-                    }
-                }
+                onClick = { store.dispatch(screen.action) }
             )
         }
     }
 }
 
 @Composable
-fun TaskFloatingActionBar(navController: NavHostController) {
+fun TaskFloatingActionBar() {
+    val store by taskAssistantStore()
     FloatingActionButton(
-        onClick = {
-            navController.navigate(route = TaskNavDestination.TaskEdit.calculateRoute()) {
-                cleanupBackstack(navController)
-            }
-        }
+        onClick = { store.dispatch(FabClicked(TaskNavDestination.CreateTask)) }
     ) {
         Icon(Icons.Default.Add, "new task")
     }

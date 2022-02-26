@@ -5,13 +5,12 @@ import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.navigation.NavController
 import androidx.paging.compose.collectAsLazyPagingItems
 import org.kodein.di.compose.localDI
 import overviewTaskViewModel
 
 @Composable
-fun OverdueTasks(navController: NavController) {
+fun OverdueTasks() {
     val viewModel = localDI().overviewTaskViewModel()
     val pagedTasks = viewModel.observeOverdueTasks().collectAsLazyPagingItems()
 

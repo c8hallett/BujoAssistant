@@ -72,8 +72,8 @@ class MainActivity : ComponentActivity() {
             runtimeModule
         ){
             Scaffold(
-                bottomBar = { TaskBottomAppBar(navController = navController) },
-                floatingActionButton = { TaskFloatingActionBar(navController = navController) },
+                bottomBar = { TaskBottomAppBar() },
+                floatingActionButton = { TaskFloatingActionBar() },
                 isFloatingActionButtonDocked = true
             ) { innerPadding ->
                 MainNavHost(innerPadding = innerPadding, navController = navController)

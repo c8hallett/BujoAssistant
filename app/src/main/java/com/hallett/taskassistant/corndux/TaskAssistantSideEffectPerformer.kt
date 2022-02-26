@@ -10,8 +10,18 @@ class TaskAssistantSideEffectPerformer(
     private val dispatchers: DispatchersWrapper
 ): SideEffectPerformer<TaskAssistantSideEffect> {
     override suspend fun performSideEffect(sideEffect: TaskAssistantSideEffect) {
-        when(sideEffect) {
-            NavigateUp -> withContext(dispatchers.main){ navController.popBackStack() }
+        withContext(dispatchers.main){
+            when(sideEffect) {
+                is NavigateUp -> navController.popBackStack()
+                is NavigateToRootDestination -> navController.navigate(sideEffect.destination.route) {
+                    popUpTo(navController.graph.startDestinationId) { inclusive = true }
+                    launchSingleTop = true
+                    restoreState = true
+                }
+                is NavigateSingleTop -> navController.navigate(sideEffect.destination.route) {
+                    launchSingleTop = true
+                }
+            }
         }
     }
 }
