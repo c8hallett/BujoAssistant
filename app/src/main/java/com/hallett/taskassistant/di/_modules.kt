@@ -13,16 +13,21 @@ import com.hallett.scopes.model.Scope
 import com.hallett.scopes.model.ScopeType
 import com.hallett.scopes.scope_generator.IScopeGenerator
 import com.hallett.taskassistant.corndux.TaskAssistantAction
-import com.hallett.taskassistant.corndux.TaskAssistantActionPerformer
+import com.hallett.taskassistant.corndux.actionperformers.CreateTaskActionPerformer
+import com.hallett.taskassistant.corndux.actionperformers.RootNavigationActionPerformer
 import com.hallett.taskassistant.corndux.TaskAssistantSideEffect
 import com.hallett.taskassistant.corndux.TaskAssistantSideEffectPerformer
 import com.hallett.taskassistant.corndux.TaskAssistantState
 import com.hallett.taskassistant.corndux.TaskAssistantStore
+import com.hallett.taskassistant.corndux.actionperformers.OverdueTaskActionPerformer
+import com.hallett.taskassistant.corndux.actionperformers.SelectScopeActionPerformer
+import com.hallett.taskassistant.corndux.actionperformers.TaskListActionPerformer
 import com.hallett.taskassistant.ui.formatters.Formatter
 import com.hallett.taskassistant.ui.formatters.ScopeOffsetLabelFormatter
 import com.hallett.taskassistant.ui.formatters.ScopeScaleFormatter
 import com.hallett.taskassistant.ui.formatters.ScopeSimpleDateFormatter
 import com.hallett.taskassistant.ui.formatters.ScopeSimpleLabelFormatter
+import com.hallett.taskassistant.ui.navigation.TaskNavDestination
 import com.hallett.taskassistant.ui.paging.ScopePagingSource
 import com.hallett.taskassistant.ui.viewmodels.OverdueTaskViewModel
 import com.hallett.taskassistant.ui.viewmodels.ScopeSelectionViewModel
@@ -78,10 +83,11 @@ val formatterModule = DI.Module("formatter_module") {
 val cornduxModule = DI.Module("corndux_module") {
     bindSingleton<Store<TaskAssistantState, TaskAssistantAction, TaskAssistantSideEffect>> {
         val initialState = TaskAssistantState(
+            screen = TaskNavDestination.TaskList,
             scope = null,
             scopeSelectionInfo = null,
             tasks = null,
-            error = null
+            error = null,
         )
 
         TaskAssistantStore(
@@ -94,7 +100,11 @@ val cornduxModule = DI.Module("corndux_module") {
 
     bindSingleton<List<ActionPerformer<TaskAssistantState, TaskAssistantAction, TaskAssistantSideEffect>>> {
         listOf(
-            TaskAssistantActionPerformer(instance(), instance(), factory(), instance())
+            CreateTaskActionPerformer(instance()),
+            OverdueTaskActionPerformer(instance()),
+            SelectScopeActionPerformer(factory(), instance()),
+            TaskListActionPerformer(instance(), instance()),
+            RootNavigationActionPerformer(instance(), instance()),
         )
     }
 

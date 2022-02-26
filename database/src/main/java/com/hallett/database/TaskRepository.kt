@@ -61,13 +61,13 @@ internal class TaskRepository(
         else -> entity.toTask()
     }
 
-    override suspend fun updateStatus(taskId: Long, status: TaskStatus) {
-        val statusUpdate = TaskEntity.StatusUpdate(taskId, status)
+    override suspend fun updateStatus(task: Task, status: TaskStatus) {
+        val statusUpdate = TaskEntity.StatusUpdate(task.id, status)
         taskDao.updateTaskStatus(statusUpdate)
     }
 
-    override suspend fun moveToNewScope(taskId: Long, scope: Scope?) {
-        val scopeUpdate = TaskEntity.ScopeUpdate(taskId, scope.toEntity())
+    override suspend fun moveToNewScope(task: Task, scope: Scope?) {
+        val scopeUpdate = TaskEntity.ScopeUpdate(task.id, scope.toEntity())
         taskDao.rescheduleTask(scopeUpdate)
     }
 
@@ -103,6 +103,10 @@ internal class TaskRepository(
             type = type,
             value = value
         )
+    }
+
+    override suspend fun deleteTask(task: Task) {
+        taskDao.delete(task.id)
     }
 
     private fun TaskEntity.ScopeEntity?.toScope(): Scope? = this?.let {

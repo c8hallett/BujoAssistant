@@ -18,12 +18,13 @@ interface ITaskRepository {
 
     suspend fun createNewTask(taskName: String, scope: Scope?)
 
-    suspend fun updateStatus(taskId: Long, status: TaskStatus)
+    suspend fun updateStatus(task: Task, status: TaskStatus)
 
-    suspend fun moveToNewScope(taskId: Long, scope: Scope?)
+    suspend fun moveToNewScope(task: Task, scope: Scope?)
 
     suspend fun getTask(taskId: Long): Task?
 
     suspend fun randomTask(scopeType: ScopeType, overdue: Boolean)
 
+    suspend fun deleteTask(task: Task)
 }

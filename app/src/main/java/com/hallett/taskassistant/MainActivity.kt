@@ -30,11 +30,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import org.kodein.di.DI
-import org.kodein.di.DIAware
 import org.kodein.di.android.x.androidXModule
 import org.kodein.di.bindProvider
 import org.kodein.di.bindSingleton
-import org.kodein.di.compose.subDI
 import org.kodein.di.compose.withDI
 
 @ExperimentalCoroutinesApi

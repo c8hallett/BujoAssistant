@@ -10,4 +10,8 @@ class TaskAssistantStore(
     performers: List<ActionPerformer<TaskAssistantState, TaskAssistantAction, TaskAssistantSideEffect>>,
     sideEffectPerformer: SideEffectPerformer<TaskAssistantSideEffect>,
     scope: CoroutineScope,
-): Store<TaskAssistantState, TaskAssistantAction, TaskAssistantSideEffect>(initialState, performers, sideEffectPerformer, scope)
+): IStore(initialState, performers, sideEffectPerformer, scope)
+
+
+typealias IActionPerformer = ActionPerformer<TaskAssistantState, TaskAssistantAction, TaskAssistantSideEffect>
+typealias IStore = Store<TaskAssistantState, TaskAssistantAction, TaskAssistantSideEffect>

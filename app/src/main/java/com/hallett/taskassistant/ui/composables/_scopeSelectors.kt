@@ -6,7 +6,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Arrangement.SpaceBetween
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -48,14 +47,15 @@ import androidx.compose.ui.unit.dp
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
+import com.hallett.logging.logI
 import com.hallett.scopes.model.Scope
 import com.hallett.scopes.model.ScopeType
 import com.hallett.scopes.scope_generator.IScopeGenerator
 import com.hallett.taskassistant.corndux.EnterScopeSelection
-import com.hallett.taskassistant.corndux.ScopeSelectionCancelled
+import com.hallett.taskassistant.corndux.CancelScopeSelection
 import com.hallett.taskassistant.corndux.ScopeSelectionInfo
 import com.hallett.taskassistant.corndux.SelectNewScopeType
-import com.hallett.taskassistant.corndux.UpdateTaskScope
+import com.hallett.taskassistant.corndux.SelectNewScope
 import com.hallett.taskassistant.ui.formatters.Formatter
 import kotlinx.coroutines.flow.Flow
 import org.kodein.di.compose.rememberInstance
@@ -171,6 +171,7 @@ fun SelectableScopeLabel() {
     val store by taskAssistantStore()
     val scope by store.observeState { it.scope }.collectAsState()
     val labelFormatter: Formatter<Scope?, String> by rememberInstance(tag = Formatter.SIMPLE_LABEL)
+    scope?.logI("New scope: $scope")
 
     Text(
         text = labelFormatter.format(scope),
@@ -268,12 +269,12 @@ fun ActiveScopeSelectionContent(selectionInfo: ScopeSelectionInfo) {
                 .align(Alignment.CenterVertically)
         )
         IconButton(
-            onClick = { store.dispatch(UpdateTaskScope(null)) },
+            onClick = { store.dispatch(SelectNewScope(null)) },
         ) {
             Icon(Icons.Default.Delete, "remove scope", tint = MaterialTheme.colors.error)
         }
         IconButton(
-            onClick = { store.dispatch(ScopeSelectionCancelled) },
+            onClick = { store.dispatch(CancelScopeSelection) },
         ) {
             Icon(Icons.Default.Cancel, "cancel edit", tint = MaterialTheme.colors.error)
         }
@@ -285,7 +286,7 @@ fun ActiveScopeSelectionContent(selectionInfo: ScopeSelectionInfo) {
     }
     ScopeList(
         selectableScopes = selectionInfo.scopes,
-        onScopeSelected = { store.dispatch(UpdateTaskScope(it)) }
+        onScopeSelected = { store.dispatch(SelectNewScope(it)) }
     )
 }
 

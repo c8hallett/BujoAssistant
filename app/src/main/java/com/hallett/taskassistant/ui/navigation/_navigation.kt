@@ -87,8 +87,3 @@ fun TaskFloatingActionBar() {
         Icon(Icons.Default.Add, "new task")
     }
 }
-
-fun NavOptionsBuilder.cleanupBackstack(navController: NavController) {
-    popUpTo(navController.graph.startDestinationId){ inclusive = false }
-    launchSingleTop = true
-}

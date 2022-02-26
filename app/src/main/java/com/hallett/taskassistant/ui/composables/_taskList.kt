@@ -1,8 +1,11 @@
 package com.hallett.taskassistant.ui.composables
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Arrangement.SpaceBetween
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,56 +14,64 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Card
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.hallett.domain.model.Task
-import com.hallett.taskassistant.ui.navigation.TaskNavDestination
-import com.hallett.taskassistant.ui.navigation.cleanupBackstack
-import org.kodein.di.compose.localDI
-import taskListViewModel
+import com.hallett.taskassistant.corndux.CompleteTask
+import com.hallett.taskassistant.corndux.DeferTask
+import com.hallett.taskassistant.corndux.DeleteTask
+import taskAssistantStore
 
 @Composable
 fun OpenTaskList() {
-    val taskEditViewModel = localDI().taskListViewModel()
-    val pagedTasks = taskEditViewModel.observeTasksForCurrentScope().collectAsLazyPagingItems()
-    val scope by taskEditViewModel.observerCurrentScope().collectAsState(initial = null)
-    val (isSelectActive, setSelectActive) = remember { mutableStateOf(false) }
+    val store by taskAssistantStore()
+    val pagedTasks = store.observeState { it.tasks }
+        .collectAsState().value?.collectAsLazyPagingItems()
+    val isSelectActive by store.observeState { it.scopeSelectionInfo != null }.collectAsState()
+
 
     Column {
-
         val scopeSelectionHeight = when {
             isSelectActive -> Modifier.fillMaxHeight(0.38f)
             else -> Modifier.wrapContentHeight()
         }
+        
+        ScopeSelection(
+            modifier = scopeSelectionHeight.padding(horizontal = 12.dp)
+        )
 
-//        ScopeSelection(
-//            di = di,
-//            scope = scope,
-//            isSelectActive = isSelectActive,
-//            onScopeSelected = taskEditViewModel::setCurrentScope,
-//            setSelectActive = setSelectActive,
-//            modifier = scopeSelectionHeight.padding(horizontal = 12.dp)
-//        )
-
-        TaskList(pagedTasks = pagedTasks) { task ->
+        if(pagedTasks == null) {
+            Text("No tasks!")
+        } else {
+            TaskList(pagedTasks = pagedTasks) { task ->
+                TaskOperations(task = task)
+            }
         }
     }
 }
 
 @Composable
-fun TaskList(pagedTasks: LazyPagingItems<Task>, onTaskClicked: (Task) -> Unit) {
-    LazyColumn(verticalArrangement = Arrangement.SpaceBetween) {
+fun TaskList(pagedTasks: LazyPagingItems<Task>, expandedOptions: @Composable (Task) -> Unit) {
+    var expandedTask by remember { mutableStateOf<Task?>(null) }
+    
+    LazyColumn(verticalArrangement = SpaceBetween) {
         items(pagedTasks) { task ->
             when (task) {
                 null -> Spacer(
@@ -70,17 +81,47 @@ fun TaskList(pagedTasks: LazyPagingItems<Task>, onTaskClicked: (Task) -> Unit) {
                 )
                 else -> TaskItem(
                     task = task,
-                    modifier = Modifier.clickable { onTaskClicked(task) })
+                    expandedOptions = if(expandedTask == task) expandedOptions else null,
+                ) {
+                    expandedTask = if(expandedTask == task) null else task
+                }
             }
         }
     }
 }
 
 @Composable
-fun TaskItem(task: Task, modifier: Modifier) {
-    Card(modifier = modifier
+fun TaskItem(task: Task, expandedOptions: @Composable ((Task) -> Unit)?, onClick: (Task) -> Unit) {
+    Card(modifier = Modifier
+        .clickable { onClick(task) }
         .fillMaxWidth()
-        .padding(horizontal = 12.dp)) {
-        Text(task.taskName, style = MaterialTheme.typography.h3, modifier = Modifier.padding(12.dp))
+        .padding(horizontal = 12.dp)
+        .animateContentSize()
+    ) {
+        Column {
+            Text(task.taskName, style = MaterialTheme.typography.h3, modifier = Modifier.padding(12.dp))
+            expandedOptions?.invoke(task)
+        }
+    }
+}
+
+@Composable
+fun TaskOperations(task: Task) {
+    val store by taskAssistantStore()
+    Row(
+        horizontalArrangement = SpaceBetween,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        IconButton(onClick = { store.dispatch(DeleteTask(task)) }) {
+            Icon(Icons.Default.Delete, contentDescription = "delete task")
+        }
+        if(task.scope != null) {
+            IconButton(onClick = { store.dispatch(DeferTask(task)) }) {
+                Icon(Icons.Default.KeyboardArrowRight, contentDescription = "defer task")
+            }
+        }
+        IconButton(onClick = { store.dispatch(CompleteTask(task)) }) {
+            Icon(Icons.Default.CheckCircle, contentDescription = "complete task")
+        }
     }
 }
