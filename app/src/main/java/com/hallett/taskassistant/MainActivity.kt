@@ -9,7 +9,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -19,7 +18,6 @@ import com.hallett.taskassistant.di.cornduxModule
 import com.hallett.taskassistant.di.formatterModule
 import com.hallett.taskassistant.di.pagingModule
 import com.hallett.taskassistant.di.utilModule
-import com.hallett.taskassistant.di.viewModelModule
 import com.hallett.taskassistant.ui.navigation.MainNavHost
 import com.hallett.taskassistant.ui.composables.ScopeTypeDropDownMenu
 import com.hallett.taskassistant.ui.navigation.TaskBottomAppBar
@@ -32,7 +30,6 @@ import kotlinx.coroutines.FlowPreview
 import org.kodein.di.DI
 import org.kodein.di.android.x.androidXModule
 import org.kodein.di.bindProvider
-import org.kodein.di.bindSingleton
 import org.kodein.di.compose.withDI
 
 @ExperimentalCoroutinesApi

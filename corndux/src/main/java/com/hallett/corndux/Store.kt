@@ -11,7 +11,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import sun.awt.util.PerformanceLogger
 
 abstract class Store<GlobalState: IState, Action: IAction, SideEffect: ISideEffect>(
     initialState: GlobalState,
