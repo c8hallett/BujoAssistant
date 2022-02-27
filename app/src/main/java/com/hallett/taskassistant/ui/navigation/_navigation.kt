@@ -2,13 +2,11 @@ package com.hallett.taskassistant.ui.navigation
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.material.BottomAppBar
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -18,7 +16,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
-import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.hallett.taskassistant.corndux.FabClicked
@@ -64,9 +61,7 @@ private fun TaskBottomAppBarImpl(items: List<BottomNavigationScreen>) {
     val store by taskAssistantStore()
     val navController: NavController by rememberInstance()
 
-    BottomAppBar(
-        cutoutShape = MaterialTheme.shapes.small.copy(CornerSize(percent = 50))
-    ) {
+    BottomAppBar() {
         items.forEach { screen ->
             BottomNavigationItem(
                 icon = { Icon(screen.icon, contentDescription = null) },

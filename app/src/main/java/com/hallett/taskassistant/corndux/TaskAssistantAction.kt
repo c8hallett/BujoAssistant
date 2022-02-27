@@ -8,6 +8,8 @@ import com.hallett.taskassistant.ui.navigation.TaskNavDestination
 
 sealed interface TaskAssistantAction: IAction
 
+object PerformInitialSetup: TaskAssistantAction
+
 data class SelectNewScope(val newTaskScope: Scope?): TaskAssistantAction
 data class SelectNewScopeType(val scopeType: ScopeType): TaskAssistantAction
 object CancelScopeSelection: TaskAssistantAction

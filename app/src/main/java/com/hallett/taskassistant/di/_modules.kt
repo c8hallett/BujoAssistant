@@ -100,11 +100,11 @@ val cornduxModule = DI.Module("corndux_module") {
 
     bindSingleton<List<ActionPerformer<TaskAssistantState, TaskAssistantAction, TaskAssistantSideEffect>>> {
         listOf(
+            SelectScopeActionPerformer(factory(), instance()),
             CreateTaskActionPerformer(instance()),
             OverdueTaskActionPerformer(instance()),
-            SelectScopeActionPerformer(factory(), instance()),
             TaskListActionPerformer(instance(), instance()),
-            RootNavigationActionPerformer(instance(), instance()),
+            RootNavigationActionPerformer(),
         )
     }
 

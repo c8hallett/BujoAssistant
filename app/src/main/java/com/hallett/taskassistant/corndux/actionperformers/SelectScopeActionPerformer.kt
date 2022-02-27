@@ -15,7 +15,6 @@ import com.hallett.taskassistant.corndux.TaskAssistantAction
 import com.hallett.taskassistant.corndux.TaskAssistantSideEffect
 import com.hallett.taskassistant.corndux.TaskAssistantState
 import com.hallett.taskassistant.di.PagerParams
-import com.hallett.taskassistant.ui.navigation.TaskNavDestination
 import kotlinx.coroutines.flow.flowOn
 
 class SelectScopeActionPerformer(
@@ -29,12 +28,10 @@ class SelectScopeActionPerformer(
         dispatchNewAction: (TaskAssistantAction) -> Unit,
         dispatchSideEffect: (TaskAssistantSideEffect) -> Unit
     ): TaskAssistantState {
-        if(state.screen != TaskNavDestination.CreateTask) return state
-
         return when(action) {
             is SelectNewScope -> state.copy(scope = action.newTaskScope, scopeSelectionInfo = null)
             is SelectNewScopeType -> state.copy(scopeSelectionInfo = createScopeSelectionInfo(action.scopeType))
-            is EnterScopeSelection -> state.copy(scopeSelectionInfo = createScopeSelectionInfo(ScopeType.DAY))
+            is EnterScopeSelection -> state.copy(scopeSelectionInfo = createScopeSelectionInfo(state.scope?.type ?: ScopeType.DAY))
             is CancelScopeSelection -> state.copy(scopeSelectionInfo = null)
             else -> state
         }
