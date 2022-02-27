@@ -2,7 +2,6 @@ package com.hallett.corndux
 
 import java.util.concurrent.Executors
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.consumeEach
@@ -12,10 +11,12 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import sun.awt.util.PerformanceLogger
 
 abstract class Store<GlobalState: IState, Action: IAction, SideEffect: ISideEffect>(
     initialState: GlobalState,
     performers: List<ActionPerformer<GlobalState, Action, SideEffect>>,
+    middlewares: List<Middleware<GlobalState, Action>>,
     sideEffectPerformer: SideEffectPerformer<SideEffect>,
     private val scope: CoroutineScope,
 ) {
@@ -26,10 +27,21 @@ abstract class Store<GlobalState: IState, Action: IAction, SideEffect: ISideEffe
     private val sideEffectChannel = Channel<SideEffect>()
 
     init {
+
         scope.launch(customDispatcher) {
             actionChannel.consumeEach { newAction ->
+                middlewares.forEach{
+                    it.beforeActionPerformed(stateFlow.value, newAction)
+                }
                 stateFlow.value = performers.fold(stateFlow.value) { state, performer ->
-                    performer.performAction(newAction, state, ::dispatch, ::dispatch)
+                    performer.performAction(newAction, state, ::dispatch, ::dispatch).also { newState ->
+                        middlewares.forEach {
+                            it.afterEachPerformer(newState, newAction, performer::class.java)
+                        }
+                    }
+                }
+                middlewares.forEach{
+                    it.afterActionPerformed(stateFlow.value, newAction)
                 }
             }
         }

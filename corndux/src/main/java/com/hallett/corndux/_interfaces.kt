@@ -16,3 +16,9 @@ interface ActionPerformer<State: IState, Action: IAction, SideEffect: ISideEffec
 interface SideEffectPerformer<SideEffect: ISideEffect> {
     suspend fun performSideEffect(sideEffect: SideEffect)
 }
+
+abstract class Middleware<State: IState, Action: IAction> {
+    open fun beforeActionPerformed(state: State, action: Action) {}
+    open fun afterEachPerformer(state: State, action: Action, performer: Class<out ActionPerformer<State, Action, out ISideEffect>>) {}
+    open fun afterActionPerformed(state: State, action: Action) {}
+}

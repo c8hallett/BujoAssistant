@@ -54,12 +54,10 @@ class MainActivity : ComponentActivity() {
     fun App() {
         val navController = rememberNavController()
         val runtimeModule = DI.Module("runtime_module") {
-            bindSingleton<ViewModelStoreOwner> { this@MainActivity }
             bindProvider<CoroutineScope> { lifecycleScope }
             bindProvider<NavController> { navController }
         }
         withDI(
-            viewModelModule,
             databaseModule,
             formatterModule,
             pagingModule,

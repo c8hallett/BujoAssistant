@@ -8,7 +8,7 @@ import kotlinx.coroutines.withContext
 class TaskAssistantSideEffectPerformer(
     private val navController: NavController,
     private val dispatchers: DispatchersWrapper
-): SideEffectPerformer<TaskAssistantSideEffect> {
+): ISideEffectPerformer {
     override suspend fun performSideEffect(sideEffect: TaskAssistantSideEffect) {
         withContext(dispatchers.main){
             when(sideEffect) {
