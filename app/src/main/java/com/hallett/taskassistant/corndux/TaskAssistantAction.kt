@@ -23,6 +23,7 @@ class FabClicked(destination: TaskNavDestination): NavigationClicked(destination
 
 sealed class BottomNavigationClicked(destination: TaskNavDestination): NavigationClicked(destination)
 class TaskListClicked(destination: TaskNavDestination): BottomNavigationClicked(destination)
+class DashboardClicked(destination: TaskNavDestination): BottomNavigationClicked(destination)
 class OverdueTasksClicked(destination: TaskNavDestination): BottomNavigationClicked(destination)
 
 

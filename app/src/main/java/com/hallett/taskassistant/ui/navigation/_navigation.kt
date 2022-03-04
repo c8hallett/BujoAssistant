@@ -19,6 +19,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.hallett.taskassistant.corndux.FabClicked
+import com.hallett.taskassistant.taskdashboard.TaskDashboard
 import com.hallett.taskassistant.ui.composables.OpenTaskList
 import com.hallett.taskassistant.ui.composables.OverdueTasks
 import com.hallett.taskassistant.ui.composables.TaskCreation
@@ -42,6 +43,9 @@ fun MainNavHost(innerPadding: PaddingValues, navController: NavHostController) {
         composable(TaskNavDestination.TaskList.route) {
             OpenTaskList()
         }
+        composable(TaskNavDestination.Dashboard.route) {
+            TaskDashboard()
+        }
         composable(TaskNavDestination.OverdueTasks.route) {
             OverdueTasks()
         }
@@ -52,6 +56,7 @@ fun MainNavHost(innerPadding: PaddingValues, navController: NavHostController) {
 fun TaskBottomAppBar() {
     val items = listOf(
         TaskNavDestination.TaskList,
+        TaskNavDestination.Dashboard,
         TaskNavDestination.OverdueTasks
     )
     TaskBottomAppBarImpl(items = items)

@@ -35,7 +35,7 @@ internal class TaskRepository(
     override fun observeTasksForScope(
         pagingConfig: PagingConfig,
         scope: Scope?
-    ): Flow<PagingData<Task>>  = Pager(pagingConfig){
+    ): Flow<PagingData<Task>> = Pager(pagingConfig){
             taskDao.getAllTaskForScope(scope?.type, scope?.value)
         }
         .flow

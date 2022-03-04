@@ -1,6 +1,7 @@
 package com.hallett.taskassistant.corndux.actionperformers
 
 import com.hallett.taskassistant.corndux.BottomNavigationClicked
+import com.hallett.taskassistant.corndux.DashboardClicked
 import com.hallett.taskassistant.corndux.FabClicked
 import com.hallett.taskassistant.corndux.IActionPerformer
 import com.hallett.taskassistant.corndux.NavigateSingleTop
@@ -27,6 +28,10 @@ class RootNavigationActionPerformer(): IActionPerformer {
                     state.copy(screen = action.destination)
                 }
                 is OverdueTasksClicked -> {
+                    dispatchNewAction(PerformInitialSetup)
+                    state.copy(screen = action.destination)
+                }
+                is DashboardClicked -> {
                     dispatchNewAction(PerformInitialSetup)
                     state.copy(screen = action.destination)
                 }
