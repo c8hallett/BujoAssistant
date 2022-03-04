@@ -16,7 +16,7 @@ abstract class Store<GlobalState: IState, Action: IAction, SideEffect: ISideEffe
     initialState: GlobalState,
     performers: List<ActionPerformer<GlobalState, Action, SideEffect>>,
     middlewares: List<Middleware<GlobalState, Action>>,
-    sideEffectPerformer: SideEffectPerformer<SideEffect>,
+    sideEffectPerformer: SideEffectPerformer<SideEffect>? = null,
     private val scope: CoroutineScope,
 ) {
     private val stateFlow = MutableStateFlow(initialState)
@@ -46,7 +46,7 @@ abstract class Store<GlobalState: IState, Action: IAction, SideEffect: ISideEffe
         }
         scope.launch(customDispatcher) {
             sideEffectChannel.consumeEach { newSideEffect ->
-                sideEffectPerformer.performSideEffect(newSideEffect)
+                sideEffectPerformer?.performSideEffect(newSideEffect)
             }
         }
     }

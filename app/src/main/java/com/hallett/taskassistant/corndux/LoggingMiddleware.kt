@@ -1,30 +1,31 @@
 package com.hallett.taskassistant.corndux
 
 import com.hallett.corndux.ActionPerformer
+import com.hallett.corndux.IAction
 import com.hallett.corndux.ISideEffect
+import com.hallett.corndux.IState
+import com.hallett.corndux.Middleware
 import com.hallett.logging.logD
 
-class LoggingMiddleware: IMiddleware() {
-    private lateinit var prevState: TaskAssistantState
-
-    override fun beforeActionPerformed(state: TaskAssistantState, action: TaskAssistantAction) {
+class LoggingMiddleware<State: IState, Action: IAction>: Middleware<State, Action>() {
+    private lateinit var prevState: State
+    private lateinit var prevPeformerState: State
+    override fun beforeActionPerformed(state: State, action: Action) {
         prevState = state
         prevPeformerState = state
         logD("[$action] Before perform: $state ")
     }
 
-    private lateinit var prevPeformerState: TaskAssistantState
     override fun afterEachPerformer(
-        state: TaskAssistantState,
-        action: TaskAssistantAction,
-        performer: Class<out ActionPerformer<TaskAssistantState, TaskAssistantAction, out ISideEffect>>
+        state: State,
+        action: Action,
+        performer: Class<out ActionPerformer<State, Action, out ISideEffect>>
     ) {
         if(state != prevPeformerState) logD("[$action] ${performer.simpleName}: $state ")
         prevPeformerState = state
     }
 
-    override fun afterActionPerformed(state: TaskAssistantState, action: TaskAssistantAction) {
-        super.afterActionPerformed(state, action)
+    override fun afterActionPerformed(state: State, action: Action) {
         logD("[$action] Transform $prevState -> $state")
     }
 }

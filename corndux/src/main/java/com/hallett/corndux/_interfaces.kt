@@ -4,6 +4,15 @@ interface IState
 interface IAction
 interface ISideEffect
 
+interface IEvent
+abstract class Interpreter<Event: IEvent, Action: IAction>(private val store: Store<out IState, Action, out ISideEffect>) {
+    abstract fun mapEvent(event: Event): Action
+    fun dispatchEvent(event: Event) {
+        val action = mapEvent(event)
+        store.dispatch(action)
+    }
+}
+
 interface ActionPerformer<State: IState, Action: IAction, SideEffect: ISideEffect> {
     suspend fun performAction(
         action: Action,
