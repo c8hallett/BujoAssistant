@@ -29,11 +29,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.hallett.domain.model.Task
+import com.hallett.domain.model.TaskStatus
 import com.hallett.taskassistant.corndux.CompleteTask
 import com.hallett.taskassistant.corndux.DeferTask
 import com.hallett.taskassistant.corndux.DeleteTask
@@ -99,7 +101,12 @@ fun TaskItem(task: Task, expandedOptions: @Composable ((Task) -> Unit)?, onClick
         .animateContentSize()
     ) {
         Column {
-            Text(task.taskName, style = MaterialTheme.typography.h3, modifier = Modifier.padding(12.dp))
+            val textDecoration = if(task.status == TaskStatus.COMPLETE) TextDecoration.LineThrough else TextDecoration.None
+            Text(
+                text = task.taskName,
+                style = MaterialTheme.typography.h3.copy(textDecoration = textDecoration),
+                modifier = Modifier.padding(12.dp)
+            )
             expandedOptions?.invoke(task)
         }
     }

@@ -9,15 +9,18 @@ class LoggingMiddleware: IMiddleware() {
 
     override fun beforeActionPerformed(state: TaskAssistantState, action: TaskAssistantAction) {
         prevState = state
+        prevPeformerState = state
         logD("[$action] Before perform: $state ")
     }
 
+    private lateinit var prevPeformerState: TaskAssistantState
     override fun afterEachPerformer(
         state: TaskAssistantState,
         action: TaskAssistantAction,
         performer: Class<out ActionPerformer<TaskAssistantState, TaskAssistantAction, out ISideEffect>>
     ) {
-        logD("[$action] After $performer: $state ")
+        if(state != prevPeformerState) logD("[$action] ${performer.simpleName}: $state ")
+        prevPeformerState = state
     }
 
     override fun afterActionPerformed(state: TaskAssistantState, action: TaskAssistantAction) {
