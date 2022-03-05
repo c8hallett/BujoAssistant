@@ -37,8 +37,8 @@ class SelectScopeActionPerformer(
         }
     }
 
+    private val pagingConfig = PagingConfig(pageSize = 20)
     private fun createScopeSelectionInfo(scopeType: ScopeType): ScopeSelectionInfo {
-        val pagingConfig = PagingConfig(pageSize = 20)
         val scopes = generatePager(PagerParams(pagingConfig, scopeType))
             .flow
             .flowOn(dispatchers.default)

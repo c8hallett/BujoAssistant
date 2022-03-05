@@ -50,7 +50,7 @@ import androidx.paging.compose.items
 import com.hallett.logging.logI
 import com.hallett.scopes.model.Scope
 import com.hallett.scopes.model.ScopeType
-import com.hallett.scopes.scope_generator.IScopeGenerator
+import com.hallett.scopes.scope_generator.IScopeCalculator
 import com.hallett.taskassistant.corndux.EnterScopeSelection
 import com.hallett.taskassistant.corndux.CancelScopeSelection
 import com.hallett.taskassistant.corndux.ScopeSelectionInfo
@@ -293,10 +293,10 @@ fun ActiveScopeSelectionContent(selectionInfo: ScopeSelectionInfo) {
 @Composable
 @Preview
 fun ScopeListItemPreview() {
-    val scopeGenerator: IScopeGenerator by rememberInstance()
+    val scopeCalculator: IScopeCalculator by rememberInstance()
 
     ScopeListItem(
-        scope = scopeGenerator.generateScope(),
+        scope = scopeCalculator.generateScope(),
         onScopeSelected = {}
     )
 }

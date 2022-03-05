@@ -4,16 +4,14 @@ import androidx.compose.ui.unit.Dp
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import com.hallett.corndux.SideEffectPerformer
-import com.hallett.corndux.Store
 import com.hallett.domain.coroutines.DispatchersWrapper
 import com.hallett.scopes.model.Scope
 import com.hallett.scopes.model.ScopeType
-import com.hallett.scopes.scope_generator.IScopeGenerator
+import com.hallett.scopes.scope_generator.IScopeCalculator
 import com.hallett.taskassistant.corndux.IActionPerformer
 import com.hallett.taskassistant.corndux.IMiddleware
 import com.hallett.taskassistant.corndux.IStore
 import com.hallett.taskassistant.corndux.LoggingMiddleware
-import com.hallett.taskassistant.corndux.TaskAssistantAction
 import com.hallett.taskassistant.corndux.actionperformers.CreateTaskActionPerformer
 import com.hallett.taskassistant.corndux.actionperformers.RootNavigationActionPerformer
 import com.hallett.taskassistant.corndux.TaskAssistantSideEffect
@@ -126,12 +124,18 @@ val dashboardModule = DI.Module("dashboard_module") {
 
 }
 
-data class PagerParams(val config: PagingConfig, val scopeType: ScopeType)
+data class PagerParams(
+    val config: PagingConfig,
+    val scopeType: ScopeType,
+    val allowPreviousScopes: Boolean = false
+)
 
 val pagingModule = DI.Module("paging_module") {
     bindFactory<PagerParams, Pager<Scope, Scope>> { params: PagerParams ->
-        val initialKey = instance<IScopeGenerator>().generateScope(params.scopeType)
-        Pager(params.config, initialKey) { ScopePagingSource(instance(), instance()) }
+        val initialKey = instance<IScopeCalculator>().generateScope(params.scopeType)
+        Pager(params.config, initialKey) {
+            ScopePagingSource(instance(), params.allowPreviousScopes)
+        }
     }
 }
 

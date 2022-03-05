@@ -2,11 +2,11 @@ package com.hallett.taskassistant.ui.formatters
 
 import com.hallett.scopes.model.Scope
 import com.hallett.scopes.model.ScopeType
-import com.hallett.scopes.scope_evaluator.IScopeEvaluator
+import com.hallett.scopes.scope_generator.IScopeCalculator
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-class ScopeSimpleLabelFormatter(private val evaluator: IScopeEvaluator) :
+class ScopeSimpleLabelFormatter(private val scopeCalculator: IScopeCalculator) :
     Formatter<Scope?, String> {
     private companion object {
         const val DAY_PATTERN = "MMM dd, yyyy"
@@ -20,10 +20,10 @@ class ScopeSimpleLabelFormatter(private val evaluator: IScopeEvaluator) :
 
     override fun format(input: Scope?): String = when (input?.type) {
         null -> defaultText
-        ScopeType.DAY -> formatDay(evaluator.getOffset(input), input.value)
-        ScopeType.WEEK -> formatWeek(evaluator.getOffset(input), input.value)
-        ScopeType.MONTH -> formatMonth(evaluator.getOffset(input), input.value)
-        ScopeType.YEAR -> formatYear(evaluator.getOffset(input), input.value)
+        ScopeType.DAY -> formatDay(scopeCalculator.getOffset(input), input.value)
+        ScopeType.WEEK -> formatWeek(scopeCalculator.getOffset(input), input.value)
+        ScopeType.MONTH -> formatMonth(scopeCalculator.getOffset(input), input.value)
+        ScopeType.YEAR -> formatYear(scopeCalculator.getOffset(input), input.value)
     }
 
     private fun formatDay(offset: Int, date: LocalDate) = when {

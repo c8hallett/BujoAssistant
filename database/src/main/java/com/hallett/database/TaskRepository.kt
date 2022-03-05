@@ -11,7 +11,7 @@ import com.hallett.domain.model.Task
 import com.hallett.domain.model.TaskStatus
 import com.hallett.scopes.model.Scope
 import com.hallett.scopes.model.ScopeType
-import com.hallett.scopes.scope_generator.IScopeGenerator
+import com.hallett.scopes.scope_generator.IScopeCalculator
 import java.time.LocalDate
 import java.util.Date
 import kotlinx.coroutines.flow.Flow
@@ -21,7 +21,7 @@ import kotlinx.coroutines.flow.map
 internal class TaskRepository(
     private val taskDao: TaskDao,
     private val dispatchers: DispatchersWrapper,
-    private val scopeGenerator: IScopeGenerator
+    private val scopeCalculator: IScopeCalculator
 ): ITaskRepository {
 
     override fun getOverdueTasks(
@@ -78,7 +78,7 @@ internal class TaskRepository(
         }
         val newTask = TaskEntity(
             taskName = "Auto-generated task #${System.currentTimeMillis() % 100_000}",
-            scope = scopeGenerator.generateScope(scopeType, date).toEntity()
+            scope = scopeCalculator.generateScope(scopeType, date).toEntity()
         )
         taskDao.insert(newTask)
     }
@@ -110,6 +110,6 @@ internal class TaskRepository(
     }
 
     private fun TaskEntity.ScopeEntity?.toScope(): Scope? = this?.let {
-        scopeGenerator.generateScope(it.type, it.value)
+        scopeCalculator.generateScope(it.type, it.value)
     }
 }

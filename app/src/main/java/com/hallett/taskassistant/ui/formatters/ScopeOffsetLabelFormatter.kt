@@ -2,9 +2,9 @@ package com.hallett.taskassistant.ui.formatters
 
 import com.hallett.scopes.model.Scope
 import com.hallett.scopes.model.ScopeType
-import com.hallett.scopes.scope_evaluator.IScopeEvaluator
+import com.hallett.scopes.scope_generator.IScopeCalculator
 
-class ScopeOffsetLabelFormatter(private val scopeEvaluator: IScopeEvaluator) :
+class ScopeOffsetLabelFormatter(private val scopeCalculator: IScopeCalculator) :
     Formatter<Scope?, String> {
 
     private val scopeTypeMap: Map<ScopeType, (Int) -> String> = mapOf(
@@ -18,7 +18,7 @@ class ScopeOffsetLabelFormatter(private val scopeEvaluator: IScopeEvaluator) :
         null -> "Sometime"
         else -> when (val calculateOffsetLabel = scopeTypeMap[input.type]) {
             null -> "Sometime"
-            else -> calculateOffsetLabel(scopeEvaluator.getOffset(input))
+            else -> calculateOffsetLabel(scopeCalculator.getOffset(input))
         }
     }
 

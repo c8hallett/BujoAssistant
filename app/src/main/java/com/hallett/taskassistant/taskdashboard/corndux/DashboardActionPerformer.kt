@@ -2,13 +2,14 @@ package com.hallett.taskassistant.taskdashboard.corndux
 
 import androidx.paging.PagingConfig
 import com.hallett.database.ITaskRepository
+import com.hallett.logging.logI
 import com.hallett.scopes.model.ScopeType
-import com.hallett.scopes.scope_generator.IScopeGenerator
+import com.hallett.scopes.scope_generator.IScopeCalculator
 import java.time.LocalDate
 
 class DashboardActionPerformer(
     private val taskRepo: ITaskRepository,
-    private val scopeGenerator: IScopeGenerator
+    private val scopeCalculator: IScopeCalculator
     ): IDashboardActionPerformer {
 
     private val pagingConfig = PagingConfig(pageSize = 20)
@@ -20,29 +21,31 @@ class DashboardActionPerformer(
     ): DashboardState {
         return when(action) {
             is FetchInitialData -> {
-                val currentScope = scopeGenerator.generateScope(state.scopeType, LocalDate.now())
+                val currentScope = scopeCalculator.generateScope(state.scopeType, LocalDate.now())
                 state.copy(taskList = taskRepo.observeTasksForScope(pagingConfig, currentScope))
             }
             is LoadLargerScope -> {
-                when(val nextScope = state.scopeType.next()) {
+                when(val nextScopeType = state.scopeType.next()) {
                     state.scopeType -> state
                     else -> {
-                        val currentScope = scopeGenerator.generateScope(nextScope, LocalDate.now())
+                        val nextScope = scopeCalculator.generateScope(nextScopeType, LocalDate.now())
+                        logI("Fetching scope: $nextScope")
                         state.copy(
-                            scopeType = nextScope,
-                            taskList = taskRepo.observeTasksForScope(pagingConfig, currentScope)
+                            scopeType = nextScopeType,
+                            taskList = taskRepo.observeTasksForScope(pagingConfig, nextScope)
                         )
                     }
                 }
             }
             is LoadSmallerScope -> {
-                when(val prevScope = state.scopeType.previous()) {
+                when(val prevScopeType = state.scopeType.previous()) {
                     state.scopeType -> state
                     else -> {
-                        val currentScope = scopeGenerator.generateScope(prevScope, LocalDate.now())
+                        val prevScope = scopeCalculator.generateScope(prevScopeType, LocalDate.now())
+                        logI("Fetching scope: $prevScope")
                         state.copy(
-                            scopeType = prevScope,
-                            taskList = taskRepo.observeTasksForScope(pagingConfig, currentScope)
+                            scopeType = prevScopeType,
+                            taskList = taskRepo.observeTasksForScope(pagingConfig, prevScope)
                         )
                     }
                 }
