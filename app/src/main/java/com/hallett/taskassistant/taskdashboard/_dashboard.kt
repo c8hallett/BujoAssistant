@@ -41,9 +41,15 @@ fun TaskDashboard() {
                 store.dispatch(LoadSmallerScope)
             }
             if(taskList.itemCount == 0){
-                Text("No current tasks!", modifier = Modifier.fillMaxWidth().weight(1f))
+                Text(
+                    "No current tasks!",
+                    modifier = Modifier.fillMaxWidth().weight(1f)
+                )
             } else {
-                LazyColumn(verticalArrangement = Arrangement.SpaceBetween){
+                LazyColumn(
+                    verticalArrangement = Arrangement.SpaceBetween,
+                    modifier =  Modifier.fillMaxWidth().weight(1f)
+                ){
                     items(taskList) { task ->
                         when (task) {
                             null -> Spacer(
