@@ -18,8 +18,9 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.hallett.logging.logI
 import com.hallett.taskassistant.corndux.FabClicked
-import com.hallett.taskassistant.taskdashboard.TaskDashboard
+import com.hallett.taskassistant.ui.composables.TaskDashboard
 import com.hallett.taskassistant.ui.composables.OpenTaskList
 import com.hallett.taskassistant.ui.composables.OverdueTasks
 import com.hallett.taskassistant.ui.composables.TaskCreation
@@ -30,9 +31,10 @@ import taskAssistantStore
 @ExperimentalMaterialApi
 @Composable
 fun MainNavHost(innerPadding: PaddingValues, navController: NavHostController) {
+    logI("MainNavHost", "start destination = ${TaskNavDestination.startDestination}")
     NavHost(
         navController = navController,
-        startDestination = TaskNavDestination.TaskList.route,
+        startDestination = TaskNavDestination.startDestination.route,
         modifier = Modifier.padding(innerPadding)
     ) {
         composable(

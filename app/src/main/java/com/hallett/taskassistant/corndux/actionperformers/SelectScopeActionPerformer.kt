@@ -6,6 +6,7 @@ import com.hallett.domain.coroutines.DispatchersWrapper
 import com.hallett.scopes.model.Scope
 import com.hallett.scopes.model.ScopeType
 import com.hallett.taskassistant.corndux.CancelScopeSelection
+import com.hallett.taskassistant.corndux.CreateTaskState
 import com.hallett.taskassistant.corndux.EnterScopeSelection
 import com.hallett.taskassistant.corndux.IActionPerformer
 import com.hallett.taskassistant.corndux.ScopeSelectionInfo
@@ -14,7 +15,9 @@ import com.hallett.taskassistant.corndux.SelectNewScopeType
 import com.hallett.taskassistant.corndux.TaskAssistantAction
 import com.hallett.taskassistant.corndux.TaskAssistantSideEffect
 import com.hallett.taskassistant.corndux.TaskAssistantState
+import com.hallett.taskassistant.corndux.TasksListState
 import com.hallett.taskassistant.di.PagerParams
+import com.hallett.taskassistant.ui.navigation.TaskNavDestination
 import kotlinx.coroutines.flow.flowOn
 
 class SelectScopeActionPerformer(
@@ -28,11 +31,21 @@ class SelectScopeActionPerformer(
         dispatchNewAction: (TaskAssistantAction) -> Unit,
         dispatchSideEffect: (TaskAssistantSideEffect) -> Unit
     ): TaskAssistantState {
-        return when(action) {
-            is SelectNewScope -> state.copy(scope = action.newTaskScope, scopeSelectionInfo = null)
-            is SelectNewScopeType -> state.copy(scopeSelectionInfo = createScopeSelectionInfo(action.scopeType))
-            is EnterScopeSelection -> state.copy(scopeSelectionInfo = createScopeSelectionInfo(state.scope?.type ?: ScopeType.DAY))
-            is CancelScopeSelection -> state.copy(scopeSelectionInfo = null)
+        return when(state.session.screen) {
+            is TaskNavDestination.TaskList -> when(action) {
+                is SelectNewScope -> state.updateTaskList { copy(scope = action.newTaskScope, scopeSelectionInfo = null) }
+                is SelectNewScopeType -> state.updateTaskList { copy(scopeSelectionInfo = createScopeSelectionInfo(action.scopeType)) }
+                is EnterScopeSelection -> state.updateTaskList { copy(scopeSelectionInfo = createScopeSelectionInfo(scope?.type ?: ScopeType.DAY)) }
+                is CancelScopeSelection -> state.updateTaskList { copy(scopeSelectionInfo = null) }
+                else -> state
+            }
+            is TaskNavDestination.CreateTask -> when(action) {
+                is SelectNewScope -> state.updateCreateTask { copy(scope = action.newTaskScope, scopeSelectionInfo = null) }
+                is SelectNewScopeType -> state.updateCreateTask { copy(scopeSelectionInfo = createScopeSelectionInfo(action.scopeType)) }
+                is EnterScopeSelection -> state.updateCreateTask { copy(scopeSelectionInfo = createScopeSelectionInfo(scope?.type ?: ScopeType.DAY)) }
+                is CancelScopeSelection -> state.updateCreateTask { copy(scopeSelectionInfo = null) }
+                else -> state
+            }
             else -> state
         }
     }
@@ -45,4 +58,13 @@ class SelectScopeActionPerformer(
 
         return ScopeSelectionInfo(scopeType, scopes)
     }
+
+    private inline fun TaskAssistantState.updateCreateTask(update: CreateTaskState.() -> CreateTaskState): TaskAssistantState {
+        return updateComponents { copy(createTask = createTask.update()) }
+    }
+
+    private inline fun TaskAssistantState.updateTaskList(update: TasksListState.() -> TasksListState): TaskAssistantState {
+        return updateComponents { copy(taskList = taskList.update() ) }
+    }
+
 }

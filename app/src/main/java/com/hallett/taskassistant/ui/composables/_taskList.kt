@@ -43,9 +43,9 @@ import taskAssistantStore
 @Composable
 fun OpenTaskList() {
     val store by taskAssistantStore()
-    val pagedTasks = store.observeState { it.tasks }
-        .collectAsState().value?.collectAsLazyPagingItems()
-    val isSelectActive by store.observeState { it.scopeSelectionInfo != null }.collectAsState()
+    val state by store.observeState { it.components.taskList }.collectAsState()
+    val pagedTasks = state.taskList.collectAsLazyPagingItems()
+    val isSelectActive = state.scopeSelectionInfo == null
 
 
     Column {
@@ -55,6 +55,8 @@ fun OpenTaskList() {
         }
         
         ScopeSelection(
+            scope = state.scope,
+            scopeSelectionInfo = state.scopeSelectionInfo,
             modifier = scopeSelectionHeight.padding(horizontal = 12.dp)
         )
 

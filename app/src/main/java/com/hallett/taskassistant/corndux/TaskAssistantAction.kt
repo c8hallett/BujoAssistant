@@ -18,6 +18,9 @@ object EnterScopeSelection: TaskAssistantAction
 class SubmitTask(val taskName: String): TaskAssistantAction
 object CancelTask: TaskAssistantAction
 
+object LoadLargerScope: TaskAssistantAction
+object LoadSmallerScope: TaskAssistantAction
+
 sealed class NavigationClicked(val destination: TaskNavDestination): TaskAssistantAction
 class FabClicked(destination: TaskNavDestination): NavigationClicked(destination)
 

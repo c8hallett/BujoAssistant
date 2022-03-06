@@ -19,11 +19,11 @@ class CreateTaskActionPerformer(
         dispatchNewAction: (TaskAssistantAction) -> Unit,
         dispatchSideEffect: (TaskAssistantSideEffect) -> Unit
     ): TaskAssistantState {
-        if(state.screen != TaskNavDestination.CreateTask) return state
+        if(state.session.screen !is TaskNavDestination.CreateTask) return state
 
         return when(action) {
             is SubmitTask -> {
-                taskRepository.createNewTask(action.taskName, state.scope)
+                taskRepository.createNewTask(action.taskName, state.components.createTask.scope)
                 dispatchSideEffect(NavigateUp)
                 state
             }

@@ -167,11 +167,9 @@ fun ScopeTypeDropDownMenu(
 }
 
 @Composable
-fun SelectableScopeLabel() {
+fun SelectableScopeLabel(scope: Scope?) {
     val store by taskAssistantStore()
-    val scope by store.observeState { it.scope }.collectAsState()
     val labelFormatter: Formatter<Scope?, String> by rememberInstance(tag = Formatter.SIMPLE_LABEL)
-    scope?.logI("New scope: $scope")
 
     Text(
         text = labelFormatter.format(scope),
@@ -236,18 +234,17 @@ fun ScopeListItem(scope: Scope, onScopeSelected: (Scope) -> Unit) {
 
 @Composable
 fun ScopeSelection(
+    scope: Scope?,
+    scopeSelectionInfo: ScopeSelectionInfo?,
     modifier: Modifier = Modifier
 ) {
-    val store by taskAssistantStore()
-    val scopeSelectionInfo = store.observeState { it.scopeSelectionInfo }.collectAsState().value
-
     Column(
         modifier = modifier
             .animateContentSize()
             .fillMaxWidth()
     ) {
         when(scopeSelectionInfo) {
-            null -> SelectableScopeLabel()
+            null -> SelectableScopeLabel(scope)
             else -> ActiveScopeSelectionContent(scopeSelectionInfo)
         }
     }

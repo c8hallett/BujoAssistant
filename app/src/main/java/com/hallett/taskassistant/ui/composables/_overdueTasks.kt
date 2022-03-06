@@ -13,8 +13,8 @@ import taskAssistantStore
 @Composable
 fun OverdueTasks() {
     val store by taskAssistantStore()
-    val pagedTasks = store.observeState { it.tasks }
-        .collectAsState().value?.collectAsLazyPagingItems()
+    val pagedTasks = store.observeState { it.components.overdueTask.taskList }
+        .collectAsState().value.collectAsLazyPagingItems()
 
 
     Column {
@@ -22,7 +22,8 @@ fun OverdueTasks() {
         Button(onClick = {store.dispatch(AddRandomOverdueTask)}){
             Text("Random Overdue Task")
         }
-        if(pagedTasks == null) {
+
+        if(pagedTasks.itemCount == 0) {
             Text("No overdue tasks!")
         } else {
             TaskList(pagedTasks = pagedTasks) {}

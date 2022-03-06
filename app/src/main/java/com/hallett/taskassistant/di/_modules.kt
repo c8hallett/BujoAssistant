@@ -18,24 +18,17 @@ import com.hallett.taskassistant.corndux.TaskAssistantSideEffect
 import com.hallett.taskassistant.corndux.TaskAssistantSideEffectPerformer
 import com.hallett.taskassistant.corndux.TaskAssistantState
 import com.hallett.taskassistant.corndux.TaskAssistantStore
+import com.hallett.taskassistant.corndux.actionperformers.DashboardActionPerformer
 import com.hallett.taskassistant.corndux.actionperformers.OverdueTaskActionPerformer
 import com.hallett.taskassistant.corndux.actionperformers.SelectScopeActionPerformer
 import com.hallett.taskassistant.corndux.actionperformers.TaskListActionPerformer
-import com.hallett.taskassistant.taskdashboard.corndux.DashboardActionPerformer
-import com.hallett.taskassistant.taskdashboard.corndux.DashboardState
-import com.hallett.taskassistant.taskdashboard.corndux.DashboardStore
-import com.hallett.taskassistant.taskdashboard.corndux.IDashboardActionPerformer
-import com.hallett.taskassistant.taskdashboard.corndux.IDashboardMiddleware
-import com.hallett.taskassistant.taskdashboard.corndux.IDashboardStore
 import com.hallett.taskassistant.ui.formatters.Formatter
 import com.hallett.taskassistant.ui.formatters.ScopeOffsetLabelFormatter
 import com.hallett.taskassistant.ui.formatters.ScopeScaleFormatter
 import com.hallett.taskassistant.ui.formatters.ScopeSimpleDateFormatter
 import com.hallett.taskassistant.ui.formatters.ScopeSimpleLabelFormatter
-import com.hallett.taskassistant.ui.navigation.TaskNavDestination
 import com.hallett.taskassistant.ui.paging.ScopePagingSource
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.flowOf
 import org.kodein.di.DI
 import org.kodein.di.bindFactory
 import org.kodein.di.bindSingleton
@@ -59,16 +52,8 @@ val formatterModule = DI.Module("formatter_module") {
 
 val cornduxModule = DI.Module("corndux_module") {
     bindSingleton<IStore> {
-        val initialState = TaskAssistantState(
-            screen = TaskNavDestination.TaskList,
-            scope = null,
-            scopeSelectionInfo = null,
-            tasks = null,
-            error = null,
-        )
-
         TaskAssistantStore(
-            initialState = initialState,
+            initialState = TaskAssistantState(),
             performers = instance(),
             middlewares = instance(),
             sideEffectPerformer = instance(),
@@ -88,6 +73,7 @@ val cornduxModule = DI.Module("corndux_module") {
             CreateTaskActionPerformer(instance()),
             OverdueTaskActionPerformer(instance()),
             TaskListActionPerformer(instance(), instance()),
+            DashboardActionPerformer(instance(), instance()),
             RootNavigationActionPerformer(),
         )
     }
@@ -95,33 +81,6 @@ val cornduxModule = DI.Module("corndux_module") {
     bindSingleton<SideEffectPerformer<TaskAssistantSideEffect>> {
         TaskAssistantSideEffectPerformer(instance(), instance())
     }
-}
-
-val dashboardModule = DI.Module("dashboard_module") {
-    bindSingleton<IDashboardStore> {
-        val initialState = DashboardState(
-            taskList = flowOf(),
-            scopeType = ScopeType.DAY
-        )
-
-        DashboardStore(
-            initialState = initialState,
-            performers = instance(),
-            middlewares = instance(),
-            scope = instance()
-        )
-    }
-
-    bindSingleton<List<IDashboardMiddleware>> {
-        listOf(LoggingMiddleware()) // some crazy type casting going on here
-    }
-
-    bindSingleton<List<IDashboardActionPerformer>> {
-        listOf(
-            DashboardActionPerformer(instance(), instance())
-        )
-    }
-
 }
 
 data class PagerParams(

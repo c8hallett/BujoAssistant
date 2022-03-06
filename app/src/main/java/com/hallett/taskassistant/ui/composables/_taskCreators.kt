@@ -77,7 +77,8 @@ fun TaskSelectionButtons(onTaskSubmitted: () -> Unit, onTaskCancelled: () -> Uni
 @Composable
 fun TaskCreation() {
     val store by rememberInstance<Store<TaskAssistantState, TaskAssistantAction, TaskAssistantSideEffect>>()
-    val shouldExpandCard by store.observeState { it.scopeSelectionInfo == null }.collectAsState()
+    val createTaskInfo by store.observeState { it.components.createTask }.collectAsState()
+    val shouldExpandCard = createTaskInfo.scopeSelectionInfo == null
 
     var taskName by remember{ mutableStateOf("") }
 
@@ -94,7 +95,7 @@ fun TaskCreation() {
                     modifier = Modifier.fillMaxWidth(),
                     visualTransformation = TaskNameVisualizer(),
                 )
-                ScopeSelection()
+                ScopeSelection(createTaskInfo.scope, createTaskInfo.scopeSelectionInfo)
             }
         }
 

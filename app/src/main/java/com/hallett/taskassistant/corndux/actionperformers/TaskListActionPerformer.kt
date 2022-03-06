@@ -12,6 +12,7 @@ import com.hallett.taskassistant.corndux.SelectNewScope
 import com.hallett.taskassistant.corndux.TaskAssistantAction
 import com.hallett.taskassistant.corndux.TaskAssistantSideEffect
 import com.hallett.taskassistant.corndux.TaskAssistantState
+import com.hallett.taskassistant.corndux.TasksListState
 import com.hallett.taskassistant.ui.navigation.TaskNavDestination
 
 class TaskListActionPerformer(
@@ -27,16 +28,16 @@ class TaskListActionPerformer(
         dispatchNewAction: (TaskAssistantAction) -> Unit,
         dispatchSideEffect: (TaskAssistantSideEffect) -> Unit
     ): TaskAssistantState {
-        if (state.screen != TaskNavDestination.TaskList) return state
+        if (state.session.screen !is TaskNavDestination.TaskList) return state
         return when (action) {
             is PerformInitialSetup -> {
                 val todayScope = scopeCalculator.generateScope()
                 val taskList = taskRepository.observeTasksForScope(pagingConfig, todayScope)
-                state.copy(tasks = taskList, scope = todayScope)
+                state.updateTaskList { copy(taskList = taskList, scope = todayScope) }
             }
             is SelectNewScope -> {
-                val taskList = taskRepository.observeTasksForScope(pagingConfig, state.scope)
-                state.copy(tasks = taskList)
+                val taskList = taskRepository.observeTasksForScope(pagingConfig, state.components.taskList.scope)
+                state.updateTaskList { copy(taskList = taskList) }
             }
             is DeleteTask -> {
                 taskRepository.deleteTask(action.task)
@@ -51,11 +52,15 @@ class TaskListActionPerformer(
                 state
             }
             is RescheduleTask -> {
-                taskRepository.moveToNewScope(action.task, state.scope)
+                taskRepository.moveToNewScope(action.task, state.components.taskList.scope)
                 state
             }
 
             else -> state
         }
+    }
+
+    private inline fun TaskAssistantState.updateTaskList(update: TasksListState.() -> TasksListState): TaskAssistantState {
+        return updateComponents { copy(taskList = taskList.update() ) }
     }
 }

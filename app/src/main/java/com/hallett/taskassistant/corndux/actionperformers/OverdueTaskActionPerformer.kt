@@ -5,6 +5,7 @@ import com.hallett.database.ITaskRepository
 import com.hallett.scopes.model.ScopeType
 import com.hallett.taskassistant.corndux.AddRandomOverdueTask
 import com.hallett.taskassistant.corndux.IActionPerformer
+import com.hallett.taskassistant.corndux.OverdueTasksState
 import com.hallett.taskassistant.corndux.PerformInitialSetup
 import com.hallett.taskassistant.corndux.TaskAssistantAction
 import com.hallett.taskassistant.corndux.TaskAssistantSideEffect
@@ -22,11 +23,11 @@ class OverdueTaskActionPerformer(private val taskRepository: ITaskRepository): I
         dispatchNewAction: (TaskAssistantAction) -> Unit,
         dispatchSideEffect: (TaskAssistantSideEffect) -> Unit
     ): TaskAssistantState {
-        if(state.screen != TaskNavDestination.OverdueTasks) return state
+        if(state.session.screen !is TaskNavDestination.OverdueTasks) return state
         return when(action) {
             is PerformInitialSetup -> {
                 val taskList = taskRepository.getOverdueTasks(pagingConfig, LocalDate.now())
-                state.copy(tasks = taskList)
+                state.updateOverdueTask { copy(taskList = taskList) }
             }
             is AddRandomOverdueTask -> {
                 taskRepository.randomTask(ScopeType.values().random(), overdue = true)
@@ -34,5 +35,9 @@ class OverdueTaskActionPerformer(private val taskRepository: ITaskRepository): I
             }
             else -> state
         }
+    }
+
+    private inline fun TaskAssistantState.updateOverdueTask(update: OverdueTasksState.() -> OverdueTasksState): TaskAssistantState {
+        return updateComponents { copy(overdueTask = overdueTask.update()) }
     }
 }
