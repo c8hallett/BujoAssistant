@@ -13,7 +13,7 @@ import com.hallett.taskassistant.corndux.TaskAssistantState
 import com.hallett.taskassistant.ui.navigation.TaskNavDestination
 import java.time.LocalDate
 
-class OverdueTaskActionPerformer(private val taskRepository: ITaskRepository): IActionPerformer {
+class OverdueTaskReducer(private val taskRepository: ITaskRepository): IActionPerformer {
 
     private val pagingConfig = PagingConfig(pageSize = 20)
 

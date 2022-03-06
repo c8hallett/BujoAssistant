@@ -1,7 +1,7 @@
 package com.hallett.taskassistant.corndux
 
 import com.hallett.corndux.Action
-import com.hallett.corndux.ActionPerformer
+import com.hallett.corndux.Reducer
 import com.hallett.corndux.IState
 import com.hallett.corndux.Middleware
 import com.hallett.logging.logD
@@ -18,7 +18,7 @@ class LoggingMiddleware<State: IState>: Middleware<State> {
     override fun afterEachPerformer(
         state: State,
         action: Action,
-        performer: Class<out ActionPerformer<State>>
+        performer: Class<out Reducer<State>>
     ) {
         if(state != prevPeformerState) logD("[$action] ${performer.simpleName}: $state ")
         prevPeformerState = state

@@ -35,7 +35,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.hallett.domain.model.Task
 import com.hallett.domain.model.TaskStatus
-import com.hallett.taskassistant.corndux.actions.CompleteTask
+import com.hallett.taskassistant.corndux.actions.ToggleTaskComplete
 import com.hallett.taskassistant.corndux.actions.DeferTask
 import com.hallett.taskassistant.corndux.actions.DeleteTask
 import taskAssistantStore
@@ -128,7 +128,7 @@ fun TaskOperations(task: Task) {
                 Icon(Icons.Default.KeyboardArrowRight, contentDescription = "defer task")
             }
         }
-        IconButton(onClick = { store.dispatch(CompleteTask(task)) }) {
+        IconButton(onClick = { store.dispatch(ToggleTaskComplete(task)) }) {
             Icon(Icons.Default.CheckCircle, contentDescription = "complete task")
         }
     }

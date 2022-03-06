@@ -1,5 +1,6 @@
 package com.hallett.taskassistant.ui.composables
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -73,6 +74,7 @@ fun TaskDashboard() {
 fun TaskDashboardHeader(scopeType: ScopeType, onHeaderClicked: () -> Unit) {
     Column(modifier = Modifier
         .fillMaxWidth()
+        .animateContentSize()
         .clickable { onHeaderClicked() }) {
         // for all scope types that come before selected one
         ScopeType.values().take(scopeType.ordinal).forEach {
@@ -85,6 +87,7 @@ fun TaskDashboardHeader(scopeType: ScopeType, onHeaderClicked: () -> Unit) {
 fun TaskDashboardFooter(scopeType: ScopeType, onFooterClicked: () -> Unit) {
     Column(modifier = Modifier
         .fillMaxWidth()
+        .animateContentSize()
         .clickable { onFooterClicked() }) {
         ScopeType.values().run {
             // for all scope types that come after selected one

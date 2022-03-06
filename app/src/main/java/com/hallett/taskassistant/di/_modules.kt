@@ -12,15 +12,15 @@ import com.hallett.taskassistant.corndux.IActionPerformer
 import com.hallett.taskassistant.corndux.IMiddleware
 import com.hallett.taskassistant.corndux.IStore
 import com.hallett.taskassistant.corndux.LoggingMiddleware
-import com.hallett.taskassistant.corndux.actionperformers.CreateTaskActionPerformer
-import com.hallett.taskassistant.corndux.actionperformers.RootNavigationActionPerformer
+import com.hallett.taskassistant.corndux.actionperformers.CreateTaskReducer
+import com.hallett.taskassistant.corndux.actionperformers.RootNavigationReducer
 import com.hallett.taskassistant.corndux.sideeffects.TaskAssistantSideEffectPerformer
 import com.hallett.taskassistant.corndux.TaskAssistantState
 import com.hallett.taskassistant.corndux.TaskAssistantStore
-import com.hallett.taskassistant.corndux.actionperformers.DashboardActionPerformer
-import com.hallett.taskassistant.corndux.actionperformers.OverdueTaskActionPerformer
-import com.hallett.taskassistant.corndux.actionperformers.SelectScopeActionPerformer
-import com.hallett.taskassistant.corndux.actionperformers.TaskListActionPerformer
+import com.hallett.taskassistant.corndux.actionperformers.DashboardReducer
+import com.hallett.taskassistant.corndux.actionperformers.OverdueTaskReducer
+import com.hallett.taskassistant.corndux.actionperformers.SelectScopeReducer
+import com.hallett.taskassistant.corndux.actionperformers.TaskListReducer
 import com.hallett.taskassistant.ui.formatters.Formatter
 import com.hallett.taskassistant.ui.formatters.ScopeOffsetLabelFormatter
 import com.hallett.taskassistant.ui.formatters.ScopeScaleFormatter
@@ -68,12 +68,12 @@ val cornduxModule = DI.Module("corndux_module") {
 
     bindSingleton<List<IActionPerformer>> {
         listOf(
-            SelectScopeActionPerformer(factory(), instance()),
-            CreateTaskActionPerformer(instance()),
-            OverdueTaskActionPerformer(instance()),
-            TaskListActionPerformer(instance(), instance()),
-            DashboardActionPerformer(instance(), instance()),
-            RootNavigationActionPerformer(),
+            SelectScopeReducer(factory(), instance()),
+            CreateTaskReducer(instance()),
+            OverdueTaskReducer(instance()),
+            TaskListReducer(instance(), instance()),
+            DashboardReducer(instance(), instance()),
+            RootNavigationReducer(),
         )
     }
 

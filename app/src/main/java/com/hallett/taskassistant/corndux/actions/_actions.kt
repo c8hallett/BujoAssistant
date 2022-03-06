@@ -17,4 +17,4 @@ data class TaskClickedInList(val task: Task): Action
 data class DeleteTask(val task: Task): Action
 data class DeferTask(val task: Task): Action
 data class RescheduleTask(val task: Task): Action
-data class CompleteTask(val task: Task): Action
+data class ToggleTaskComplete(val task: Task): Action

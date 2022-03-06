@@ -14,10 +14,10 @@ import com.hallett.taskassistant.corndux.actions.RescheduleTask
 import com.hallett.taskassistant.corndux.actions.SelectNewScope
 import com.hallett.taskassistant.corndux.TaskAssistantState
 import com.hallett.taskassistant.corndux.TasksListState
-import com.hallett.taskassistant.corndux.actions.CompleteTask
+import com.hallett.taskassistant.corndux.actions.ToggleTaskComplete
 import com.hallett.taskassistant.ui.navigation.TaskNavDestination
 
-class TaskListActionPerformer(
+class TaskListReducer(
     private val taskRepository: ITaskRepository,
     private val scopeCalculator: IScopeCalculator
     ): IActionPerformer {
@@ -57,7 +57,7 @@ class TaskListActionPerformer(
                 taskRepository.moveToNewScope(action.task, state.components.taskList.scope)
                 state
             }
-            is CompleteTask -> {
+            is ToggleTaskComplete -> {
                 taskRepository.moveToNewScope(action.task, scopeCalculator.generateScope())
                 taskRepository.updateStatus(action.task, TaskStatus.COMPLETE)
                 state

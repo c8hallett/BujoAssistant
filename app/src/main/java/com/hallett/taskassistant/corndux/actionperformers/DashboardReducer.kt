@@ -15,7 +15,7 @@ import com.hallett.taskassistant.corndux.TaskAssistantState
 import com.hallett.taskassistant.ui.navigation.TaskNavDestination
 import java.time.LocalDate
 
-class DashboardActionPerformer(
+class DashboardReducer(
     private val taskRepo: ITaskRepository,
     private val scopeCalculator: IScopeCalculator
     ): IActionPerformer {

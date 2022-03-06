@@ -10,7 +10,7 @@ import com.hallett.taskassistant.corndux.actions.SubmitTask
 import com.hallett.taskassistant.corndux.TaskAssistantState
 import com.hallett.taskassistant.ui.navigation.TaskNavDestination
 
-class CreateTaskActionPerformer(
+class CreateTaskReducer(
     private val taskRepository: ITaskRepository,
 ): IActionPerformer {
     override suspend fun performAction(

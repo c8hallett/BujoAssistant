@@ -15,7 +15,7 @@ import com.hallett.taskassistant.corndux.TaskAssistantState
 import com.hallett.taskassistant.corndux.actions.TaskListClicked
 import com.hallett.taskassistant.ui.navigation.TaskNavDestination
 
-class RootNavigationActionPerformer: IActionPerformer {
+class RootNavigationReducer: IActionPerformer {
     override suspend fun performAction(
         action: Action,
         state: TaskAssistantState,

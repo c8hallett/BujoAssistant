@@ -20,7 +20,7 @@ import com.hallett.taskassistant.di.PagerParams
 import com.hallett.taskassistant.ui.navigation.TaskNavDestination
 import kotlinx.coroutines.flow.flowOn
 
-class SelectScopeActionPerformer(
+class SelectScopeReducer(
     private val generatePager: (PagerParams) -> Pager<Scope, Scope>,
     private val dispatchers: DispatchersWrapper
 ): IActionPerformer {

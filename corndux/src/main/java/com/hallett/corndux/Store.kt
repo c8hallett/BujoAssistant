@@ -12,35 +12,40 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-abstract class Store<GlobalState: IState>(
-    initialState: GlobalState,
-    performers: List<ActionPerformer<GlobalState>>,
-    middlewares: List<Middleware<GlobalState>>,
+abstract class Store<State: IState>(
+    initialState: State,
+    performers: List<Reducer<State>>,
+    middlewares: List<Middleware<State>>,
     sideEffectPerformers: List<SideEffectPerformer> = listOf(),
     private val scope: CoroutineScope,
 ) {
     private val stateFlow = MutableStateFlow(initialState)
+
 
     private val customDispatcher = Executors.newFixedThreadPool(2).asCoroutineDispatcher()
     private val actionChannel = Channel<Action>()
     private val sideEffectChannel = Channel<SideEffect>()
 
     init {
+        val preMiddleWares = middlewares.filterIsInstance<PreMiddleware<State>>()
+        val interMiddlewares = middlewares.filterIsInstance<InterMiddleware<State>>()
+        val postMiddlewares = middlewares.filterIsInstance<PostMiddleware<State>>()
 
         scope.launch(customDispatcher) {
             actionChannel.consumeEach { newAction ->
-                middlewares.forEach{
-                    it.beforeActionPerformed(stateFlow.value, newAction)
+                preMiddleWares.forEach{
+                    it.beforeActionPerformed(stateFlow.value, newAction, ::dispatch, ::dispatch)
                 }
                 stateFlow.value = performers.fold(stateFlow.value) { state, performer ->
-                    performer.performAction(newAction, state, ::dispatch, ::dispatch).also { newState ->
-                        middlewares.forEach {
-                            it.afterEachPerformer(newState, newAction, performer::class.java)
+                    interMiddlewares.forEach { it.afterEachReduce(state, newAction, performer::class.java) }
+                    performer.performAction(newAction, state).also { newState ->
+                        interMiddlewares.forEach {
+                            it.afterEachReduce(newState, newAction, performer::class.java)
                         }
                     }
                 }
-                middlewares.forEach{
-                    it.afterActionPerformed(stateFlow.value, newAction)
+                postMiddlewares.forEach{
+                    it.afterActionPerformed(stateFlow.value, newAction, ::dispatch, ::dispatch)
                 }
             }
         }
@@ -65,8 +70,7 @@ abstract class Store<GlobalState: IState>(
         }
     }
 
-    fun <T> observeState(select: (GlobalState) -> T): StateFlow<T> = stateFlow.map {
+    fun <T> observeState(select: (State) -> T): StateFlow<T> = stateFlow.map {
         select(it)
     }.stateIn(scope, SharingStarted.WhileSubscribed(), select(stateFlow.value)) // this is so big sad, map{} takes away my ez peasy StateFlow type
-
 }
