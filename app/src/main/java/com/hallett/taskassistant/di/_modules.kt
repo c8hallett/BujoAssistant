@@ -14,8 +14,7 @@ import com.hallett.taskassistant.corndux.IStore
 import com.hallett.taskassistant.corndux.LoggingMiddleware
 import com.hallett.taskassistant.corndux.actionperformers.CreateTaskActionPerformer
 import com.hallett.taskassistant.corndux.actionperformers.RootNavigationActionPerformer
-import com.hallett.taskassistant.corndux.TaskAssistantSideEffect
-import com.hallett.taskassistant.corndux.TaskAssistantSideEffectPerformer
+import com.hallett.taskassistant.corndux.sideeffects.TaskAssistantSideEffectPerformer
 import com.hallett.taskassistant.corndux.TaskAssistantState
 import com.hallett.taskassistant.corndux.TaskAssistantStore
 import com.hallett.taskassistant.corndux.actionperformers.DashboardActionPerformer
@@ -56,7 +55,7 @@ val cornduxModule = DI.Module("corndux_module") {
             initialState = TaskAssistantState(),
             performers = instance(),
             middlewares = instance(),
-            sideEffectPerformer = instance(),
+            sideEffectPerformers = instance(),
             scope = instance()
         )
     }
@@ -78,8 +77,10 @@ val cornduxModule = DI.Module("corndux_module") {
         )
     }
 
-    bindSingleton<SideEffectPerformer<TaskAssistantSideEffect>> {
-        TaskAssistantSideEffectPerformer(instance(), instance())
+    bindSingleton<List<SideEffectPerformer>> {
+        listOf(
+            TaskAssistantSideEffectPerformer(instance(), instance())
+        )
     }
 }
 

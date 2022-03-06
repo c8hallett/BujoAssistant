@@ -2,18 +2,18 @@ package com.hallett.taskassistant.corndux.actionperformers
 
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
+import com.hallett.corndux.Action
+import com.hallett.corndux.SideEffect
 import com.hallett.domain.coroutines.DispatchersWrapper
 import com.hallett.scopes.model.Scope
 import com.hallett.scopes.model.ScopeType
-import com.hallett.taskassistant.corndux.CancelScopeSelection
+import com.hallett.taskassistant.corndux.actions.CancelScopeSelection
 import com.hallett.taskassistant.corndux.CreateTaskState
-import com.hallett.taskassistant.corndux.EnterScopeSelection
+import com.hallett.taskassistant.corndux.actions.EnterScopeSelection
 import com.hallett.taskassistant.corndux.IActionPerformer
 import com.hallett.taskassistant.corndux.ScopeSelectionInfo
-import com.hallett.taskassistant.corndux.SelectNewScope
-import com.hallett.taskassistant.corndux.SelectNewScopeType
-import com.hallett.taskassistant.corndux.TaskAssistantAction
-import com.hallett.taskassistant.corndux.TaskAssistantSideEffect
+import com.hallett.taskassistant.corndux.actions.SelectNewScope
+import com.hallett.taskassistant.corndux.actions.SelectNewScopeType
 import com.hallett.taskassistant.corndux.TaskAssistantState
 import com.hallett.taskassistant.corndux.TasksListState
 import com.hallett.taskassistant.di.PagerParams
@@ -26,10 +26,10 @@ class SelectScopeActionPerformer(
 ): IActionPerformer {
 
     override suspend fun performAction(
-        action: TaskAssistantAction,
+        action: Action,
         state: TaskAssistantState,
-        dispatchNewAction: (TaskAssistantAction) -> Unit,
-        dispatchSideEffect: (TaskAssistantSideEffect) -> Unit
+        dispatchNewAction: (Action) -> Unit,
+        dispatchSideEffect: (SideEffect) -> Unit
     ): TaskAssistantState {
         return when(state.session.screen) {
             is TaskNavDestination.TaskList -> when(action) {

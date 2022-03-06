@@ -1,12 +1,12 @@
 package com.hallett.taskassistant.corndux.actionperformers
 
+import com.hallett.corndux.Action
+import com.hallett.corndux.SideEffect
 import com.hallett.database.ITaskRepository
-import com.hallett.taskassistant.corndux.CancelTask
+import com.hallett.taskassistant.corndux.actions.CancelTask
 import com.hallett.taskassistant.corndux.IActionPerformer
-import com.hallett.taskassistant.corndux.NavigateUp
-import com.hallett.taskassistant.corndux.SubmitTask
-import com.hallett.taskassistant.corndux.TaskAssistantAction
-import com.hallett.taskassistant.corndux.TaskAssistantSideEffect
+import com.hallett.taskassistant.corndux.sideeffects.NavigateUp
+import com.hallett.taskassistant.corndux.actions.SubmitTask
 import com.hallett.taskassistant.corndux.TaskAssistantState
 import com.hallett.taskassistant.ui.navigation.TaskNavDestination
 
@@ -14,10 +14,10 @@ class CreateTaskActionPerformer(
     private val taskRepository: ITaskRepository,
 ): IActionPerformer {
     override suspend fun performAction(
-        action: TaskAssistantAction,
+        action: Action,
         state: TaskAssistantState,
-        dispatchNewAction: (TaskAssistantAction) -> Unit,
-        dispatchSideEffect: (TaskAssistantSideEffect) -> Unit
+        dispatchNewAction: (Action) -> Unit,
+        dispatchSideEffect: (SideEffect) -> Unit
     ): TaskAssistantState {
         if(state.session.screen !is TaskNavDestination.CreateTask) return state
 

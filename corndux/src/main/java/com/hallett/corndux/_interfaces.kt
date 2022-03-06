@@ -1,19 +1,18 @@
 package com.hallett.corndux
 
 interface IState
-interface IAction
-interface ISideEffect
+interface Action
+interface SideEffect
 
-interface IEvent
-abstract class Interpreter<Event: IEvent, Action: IAction>(private val store: Store<out IState, Action, out ISideEffect>) {
-    abstract fun mapEvent(event: Event): Action
-    fun dispatchEvent(event: Event) {
-        val action = mapEvent(event)
+interface Event
+abstract class Interpreter(private val store: Store<out IState>) {
+    abstract fun mapEvent(event: Event): Action?
+    fun dispatchEvent(event: Event) = mapEvent(event)?.let { action ->
         store.dispatch(action)
     }
 }
 
-interface ActionPerformer<State: IState, Action: IAction, SideEffect: ISideEffect> {
+interface ActionPerformer<State: IState> {
     suspend fun performAction(
         action: Action,
         state: State,
@@ -22,12 +21,12 @@ interface ActionPerformer<State: IState, Action: IAction, SideEffect: ISideEffec
     ): State
 }
 
-interface SideEffectPerformer<SideEffect: ISideEffect> {
+interface SideEffectPerformer {
     suspend fun performSideEffect(sideEffect: SideEffect)
 }
 
-abstract class Middleware<State: IState, Action: IAction> {
-    open fun beforeActionPerformed(state: State, action: Action) {}
-    open fun afterEachPerformer(state: State, action: Action, performer: Class<out ActionPerformer<State, Action, out ISideEffect>>) {}
-    open fun afterActionPerformed(state: State, action: Action) {}
+interface Middleware<State: IState> {
+    fun beforeActionPerformed(state: State, action: Action) {}
+    fun afterEachPerformer(state: State, action: Action, performer: Class<out ActionPerformer<State>>) {}
+    fun afterActionPerformed(state: State, action: Action) {}
 }

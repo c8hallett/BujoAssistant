@@ -35,9 +35,9 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.hallett.domain.model.Task
 import com.hallett.domain.model.TaskStatus
-import com.hallett.taskassistant.corndux.CompleteTask
-import com.hallett.taskassistant.corndux.DeferTask
-import com.hallett.taskassistant.corndux.DeleteTask
+import com.hallett.taskassistant.corndux.actions.CompleteTask
+import com.hallett.taskassistant.corndux.actions.DeferTask
+import com.hallett.taskassistant.corndux.actions.DeleteTask
 import taskAssistantStore
 
 @Composable
@@ -45,7 +45,7 @@ fun OpenTaskList() {
     val store by taskAssistantStore()
     val state by store.observeState { it.components.taskList }.collectAsState()
     val pagedTasks = state.taskList.collectAsLazyPagingItems()
-    val isSelectActive = state.scopeSelectionInfo == null
+    val isSelectActive = state.scopeSelectionInfo != null
 
 
     Column {
@@ -60,7 +60,7 @@ fun OpenTaskList() {
             modifier = scopeSelectionHeight.padding(horizontal = 12.dp)
         )
 
-        if(pagedTasks == null) {
+        if(pagedTasks.itemCount == 0) {
             Text("No tasks!")
         } else {
             TaskList(pagedTasks = pagedTasks) { task ->

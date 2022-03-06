@@ -31,10 +31,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.hallett.corndux.Store
-import com.hallett.taskassistant.corndux.CancelTask
-import com.hallett.taskassistant.corndux.SubmitTask
-import com.hallett.taskassistant.corndux.TaskAssistantAction
-import com.hallett.taskassistant.corndux.TaskAssistantSideEffect
+import com.hallett.taskassistant.corndux.actions.CancelTask
+import com.hallett.taskassistant.corndux.actions.SubmitTask
 import com.hallett.taskassistant.corndux.TaskAssistantState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -44,6 +42,7 @@ import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.kodein.di.compose.rememberInstance
+import taskAssistantStore
 
 @Composable
 fun TaskSelectionButtons(onTaskSubmitted: () -> Unit, onTaskCancelled: () -> Unit) {
@@ -76,7 +75,7 @@ fun TaskSelectionButtons(onTaskSubmitted: () -> Unit, onTaskCancelled: () -> Uni
 @ObsoleteCoroutinesApi
 @Composable
 fun TaskCreation() {
-    val store by rememberInstance<Store<TaskAssistantState, TaskAssistantAction, TaskAssistantSideEffect>>()
+    val store by taskAssistantStore()
     val createTaskInfo by store.observeState { it.components.createTask }.collectAsState()
     val shouldExpandCard = createTaskInfo.scopeSelectionInfo == null
 

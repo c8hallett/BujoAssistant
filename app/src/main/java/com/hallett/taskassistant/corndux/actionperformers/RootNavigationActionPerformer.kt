@@ -1,27 +1,26 @@
 package com.hallett.taskassistant.corndux.actionperformers
 
-import com.hallett.taskassistant.corndux.BottomNavigationClicked
-import com.hallett.taskassistant.corndux.Components
+import com.hallett.corndux.Action
+import com.hallett.corndux.SideEffect
+import com.hallett.taskassistant.corndux.actions.BottomNavigationClicked
 import com.hallett.taskassistant.corndux.CreateTaskState
-import com.hallett.taskassistant.corndux.DashboardClicked
-import com.hallett.taskassistant.corndux.FabClicked
+import com.hallett.taskassistant.corndux.actions.DashboardClicked
+import com.hallett.taskassistant.corndux.actions.FabClicked
 import com.hallett.taskassistant.corndux.IActionPerformer
-import com.hallett.taskassistant.corndux.NavigateSingleTop
-import com.hallett.taskassistant.corndux.NavigateToRootDestination
-import com.hallett.taskassistant.corndux.OverdueTasksClicked
-import com.hallett.taskassistant.corndux.PerformInitialSetup
-import com.hallett.taskassistant.corndux.TaskAssistantAction
-import com.hallett.taskassistant.corndux.TaskAssistantSideEffect
+import com.hallett.taskassistant.corndux.sideeffects.NavigateSingleTop
+import com.hallett.taskassistant.corndux.sideeffects.NavigateToRootDestination
+import com.hallett.taskassistant.corndux.actions.OverdueTasksClicked
+import com.hallett.taskassistant.corndux.actions.PerformInitialSetup
 import com.hallett.taskassistant.corndux.TaskAssistantState
-import com.hallett.taskassistant.corndux.TaskListClicked
+import com.hallett.taskassistant.corndux.actions.TaskListClicked
 import com.hallett.taskassistant.ui.navigation.TaskNavDestination
 
-class RootNavigationActionPerformer(): IActionPerformer {
+class RootNavigationActionPerformer: IActionPerformer {
     override suspend fun performAction(
-        action: TaskAssistantAction,
+        action: Action,
         state: TaskAssistantState,
-        dispatchNewAction: (TaskAssistantAction) -> Unit,
-        dispatchSideEffect: (TaskAssistantSideEffect) -> Unit
+        dispatchNewAction: (Action) -> Unit,
+        dispatchSideEffect: (SideEffect) -> Unit
     ): TaskAssistantState = when(action) {
         is BottomNavigationClicked -> {
             dispatchSideEffect(NavigateToRootDestination(action.destination))

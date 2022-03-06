@@ -1,13 +1,12 @@
 package com.hallett.taskassistant.corndux
 
+import com.hallett.corndux.Action
 import com.hallett.corndux.ActionPerformer
-import com.hallett.corndux.IAction
-import com.hallett.corndux.ISideEffect
 import com.hallett.corndux.IState
 import com.hallett.corndux.Middleware
 import com.hallett.logging.logD
 
-class LoggingMiddleware<State: IState, Action: IAction>: Middleware<State, Action>() {
+class LoggingMiddleware<State: IState>: Middleware<State> {
     private lateinit var prevState: State
     private lateinit var prevPeformerState: State
     override fun beforeActionPerformed(state: State, action: Action) {
@@ -19,7 +18,7 @@ class LoggingMiddleware<State: IState, Action: IAction>: Middleware<State, Actio
     override fun afterEachPerformer(
         state: State,
         action: Action,
-        performer: Class<out ActionPerformer<State, Action, out ISideEffect>>
+        performer: Class<out ActionPerformer<State>>
     ) {
         if(state != prevPeformerState) logD("[$action] ${performer.simpleName}: $state ")
         prevPeformerState = state

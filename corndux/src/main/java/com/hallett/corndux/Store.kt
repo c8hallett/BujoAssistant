@@ -12,11 +12,11 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-abstract class Store<GlobalState: IState, Action: IAction, SideEffect: ISideEffect>(
+abstract class Store<GlobalState: IState>(
     initialState: GlobalState,
-    performers: List<ActionPerformer<GlobalState, Action, SideEffect>>,
-    middlewares: List<Middleware<GlobalState, Action>>,
-    sideEffectPerformer: SideEffectPerformer<SideEffect>? = null,
+    performers: List<ActionPerformer<GlobalState>>,
+    middlewares: List<Middleware<GlobalState>>,
+    sideEffectPerformers: List<SideEffectPerformer> = listOf(),
     private val scope: CoroutineScope,
 ) {
     private val stateFlow = MutableStateFlow(initialState)
@@ -46,7 +46,9 @@ abstract class Store<GlobalState: IState, Action: IAction, SideEffect: ISideEffe
         }
         scope.launch(customDispatcher) {
             sideEffectChannel.consumeEach { newSideEffect ->
-                sideEffectPerformer?.performSideEffect(newSideEffect)
+                sideEffectPerformers.forEach { performer ->
+                    performer.performSideEffect(newSideEffect)
+                }
             }
         }
     }

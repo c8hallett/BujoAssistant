@@ -1,18 +1,20 @@
 package com.hallett.taskassistant.corndux.actionperformers
 
 import androidx.paging.PagingConfig
+import com.hallett.corndux.Action
+import com.hallett.corndux.SideEffect
 import com.hallett.database.ITaskRepository
+import com.hallett.domain.model.TaskStatus
 import com.hallett.scopes.scope_generator.IScopeCalculator
-import com.hallett.taskassistant.corndux.DeferTask
-import com.hallett.taskassistant.corndux.DeleteTask
+import com.hallett.taskassistant.corndux.actions.DeferTask
+import com.hallett.taskassistant.corndux.actions.DeleteTask
 import com.hallett.taskassistant.corndux.IActionPerformer
-import com.hallett.taskassistant.corndux.PerformInitialSetup
-import com.hallett.taskassistant.corndux.RescheduleTask
-import com.hallett.taskassistant.corndux.SelectNewScope
-import com.hallett.taskassistant.corndux.TaskAssistantAction
-import com.hallett.taskassistant.corndux.TaskAssistantSideEffect
+import com.hallett.taskassistant.corndux.actions.PerformInitialSetup
+import com.hallett.taskassistant.corndux.actions.RescheduleTask
+import com.hallett.taskassistant.corndux.actions.SelectNewScope
 import com.hallett.taskassistant.corndux.TaskAssistantState
 import com.hallett.taskassistant.corndux.TasksListState
+import com.hallett.taskassistant.corndux.actions.CompleteTask
 import com.hallett.taskassistant.ui.navigation.TaskNavDestination
 
 class TaskListActionPerformer(
@@ -23,10 +25,10 @@ class TaskListActionPerformer(
     private val pagingConfig = PagingConfig(pageSize = 20)
 
     override suspend fun performAction(
-        action: TaskAssistantAction,
+        action: Action,
         state: TaskAssistantState,
-        dispatchNewAction: (TaskAssistantAction) -> Unit,
-        dispatchSideEffect: (TaskAssistantSideEffect) -> Unit
+        dispatchNewAction: (Action) -> Unit,
+        dispatchSideEffect: (SideEffect) -> Unit
     ): TaskAssistantState {
         if (state.session.screen !is TaskNavDestination.TaskList) return state
         return when (action) {
@@ -55,7 +57,11 @@ class TaskListActionPerformer(
                 taskRepository.moveToNewScope(action.task, state.components.taskList.scope)
                 state
             }
-
+            is CompleteTask -> {
+                taskRepository.moveToNewScope(action.task, scopeCalculator.generateScope())
+                taskRepository.updateStatus(action.task, TaskStatus.COMPLETE)
+                state
+            }
             else -> state
         }
     }

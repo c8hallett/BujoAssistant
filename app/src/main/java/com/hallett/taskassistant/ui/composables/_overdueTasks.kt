@@ -7,7 +7,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.hallett.taskassistant.corndux.AddRandomOverdueTask
+import com.hallett.taskassistant.corndux.actions.AddRandomOverdueTask
 import taskAssistantStore
 
 @Composable

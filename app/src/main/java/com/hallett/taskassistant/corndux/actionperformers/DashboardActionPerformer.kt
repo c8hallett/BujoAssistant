@@ -1,16 +1,16 @@
 package com.hallett.taskassistant.corndux.actionperformers
 
 import androidx.paging.PagingConfig
+import com.hallett.corndux.Action
+import com.hallett.corndux.SideEffect
 import com.hallett.database.ITaskRepository
 import com.hallett.scopes.model.ScopeType
 import com.hallett.scopes.scope_generator.IScopeCalculator
 import com.hallett.taskassistant.corndux.DashboardState
 import com.hallett.taskassistant.corndux.IActionPerformer
-import com.hallett.taskassistant.corndux.LoadLargerScope
-import com.hallett.taskassistant.corndux.LoadSmallerScope
-import com.hallett.taskassistant.corndux.PerformInitialSetup
-import com.hallett.taskassistant.corndux.TaskAssistantAction
-import com.hallett.taskassistant.corndux.TaskAssistantSideEffect
+import com.hallett.taskassistant.corndux.actions.LoadLargerScope
+import com.hallett.taskassistant.corndux.actions.LoadSmallerScope
+import com.hallett.taskassistant.corndux.actions.PerformInitialSetup
 import com.hallett.taskassistant.corndux.TaskAssistantState
 import com.hallett.taskassistant.ui.navigation.TaskNavDestination
 import java.time.LocalDate
@@ -22,10 +22,10 @@ class DashboardActionPerformer(
 
     private val pagingConfig = PagingConfig(pageSize = 20)
     override suspend fun performAction(
-        action: TaskAssistantAction,
+        action: Action,
         state: TaskAssistantState,
-        dispatchNewAction: (TaskAssistantAction) -> Unit,
-        dispatchSideEffect: (TaskAssistantSideEffect) -> Unit
+        dispatchNewAction: (Action) -> Unit,
+        dispatchSideEffect: (SideEffect) -> Unit
     ): TaskAssistantState {
         if(state.session.screen !is TaskNavDestination.Dashboard) return state
         val dashboardState = state.components.dashboard

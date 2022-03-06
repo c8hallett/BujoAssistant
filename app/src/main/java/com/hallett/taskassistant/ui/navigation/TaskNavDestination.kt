@@ -5,15 +5,11 @@ import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.material.icons.filled.ErrorOutline
 import androidx.compose.material.icons.filled.List
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.navigation.NavBackStackEntry
-import androidx.navigation.NavType
-import androidx.navigation.navArgument
 import com.hallett.taskassistant.R
-import com.hallett.domain.model.Task
-import com.hallett.taskassistant.corndux.BottomNavigationClicked
-import com.hallett.taskassistant.corndux.DashboardClicked
-import com.hallett.taskassistant.corndux.OverdueTasksClicked
-import com.hallett.taskassistant.corndux.TaskListClicked
+import com.hallett.taskassistant.corndux.actions.BottomNavigationClicked
+import com.hallett.taskassistant.corndux.actions.DashboardClicked
+import com.hallett.taskassistant.corndux.actions.OverdueTasksClicked
+import com.hallett.taskassistant.corndux.actions.TaskListClicked
 
 sealed class TaskNavDestination(val route: String) {
 

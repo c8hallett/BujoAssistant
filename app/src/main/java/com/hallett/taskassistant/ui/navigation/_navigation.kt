@@ -19,7 +19,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.hallett.logging.logI
-import com.hallett.taskassistant.corndux.FabClicked
+import com.hallett.taskassistant.corndux.actions.FabClicked
 import com.hallett.taskassistant.ui.composables.TaskDashboard
 import com.hallett.taskassistant.ui.composables.OpenTaskList
 import com.hallett.taskassistant.ui.composables.OverdueTasks
