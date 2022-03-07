@@ -14,9 +14,7 @@ import kotlinx.coroutines.launch
 
 abstract class Store<State: IState>(
     initialState: State,
-    performers: List<Reducer<State>>,
-    middlewares: List<Middleware<State>>,
-    sideEffectPerformers: List<SideEffectPerformer> = listOf(),
+    actors: List<Actor<out State>>,
     private val scope: CoroutineScope,
 ) {
     private val stateFlow = MutableStateFlow(initialState)
@@ -27,28 +25,36 @@ abstract class Store<State: IState>(
     private val sideEffectChannel = Channel<SideEffect>()
 
     init {
-        val preMiddleWares = middlewares.filterIsInstance<PreMiddleware<State>>()
-        val interMiddlewares = middlewares.filterIsInstance<InterMiddleware<State>>()
-        val postMiddlewares = middlewares.filterIsInstance<PostMiddleware<State>>()
+        val performer = actors.filterIsInstance<ActionPerformer<State>>()
+        val reducers = actors.filterIsInstance<Reducer<State>>()
+        val middleware = actors.filterIsInstance<Middleware<State>>()
+        val sideEffectPerformers = actors.filterIsInstance<SideEffectPerformer>()
 
         scope.launch(customDispatcher) {
             actionChannel.consumeEach { newAction ->
-                preMiddleWares.forEach{
-                    it.beforeActionPerformed(stateFlow.value, newAction, ::dispatch, ::dispatch)
+                // pass actions to pre-middlewares first
+                performer.forEach{
+                    it.performAction(stateFlow.value, newAction, ::dispatch)
                 }
-                stateFlow.value = performers.fold(stateFlow.value) { state, performer ->
-                    interMiddlewares.forEach { it.afterEachReduce(state, newAction, performer::class.java) }
-                    performer.performAction(newAction, state).also { newState ->
-                        interMiddlewares.forEach {
-                            it.afterEachReduce(newState, newAction, performer::class.java)
+                middleware.forEach {
+                    it.before(stateFlow.value, newAction)
+                }
+
+                // pass actions through each reducer
+                stateFlow.value = reducers.fold(stateFlow.value) { state, reducer ->
+                    reducer.reduce(state, newAction, ::dispatch).also { newState ->
+                        middleware.forEach {
+                            it.afterEachReduce(newState, newAction, reducer::class.java)
                         }
                     }
                 }
-                postMiddlewares.forEach{
-                    it.afterActionPerformed(stateFlow.value, newAction, ::dispatch, ::dispatch)
+
+                middleware.forEach {
+                    it.after(stateFlow.value, newAction)
                 }
             }
         }
+
         scope.launch(customDispatcher) {
             sideEffectChannel.consumeEach { newSideEffect ->
                 sideEffectPerformers.forEach { performer ->
