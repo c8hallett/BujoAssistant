@@ -24,12 +24,12 @@ class DashboardScreenActor(
     private val scopeCalculator: IScopeCalculator
     ): IActionPerformer, IReducer {
 
-    private val pagingConfig = PagingConfig(pageSize = 20)
-
     private data class DisplayNewDashboardList(
         val scopeType: ScopeType,
         val taskList: Flow<PagingData<Task>>
     ): Action
+
+    private val pagingConfig = PagingConfig(pageSize = 20)
 
     override suspend fun performAction(
         state: TaskAssistantState,
@@ -104,7 +104,7 @@ class DashboardScreenActor(
         getOrElse(ordinal + 1) { last() }
     }
 
-    private inline fun TaskAssistantState.updateDashboard( update: DashboardState.() -> DashboardState): TaskAssistantState {
+    private inline fun TaskAssistantState.updateDashboard(update: DashboardState.() -> DashboardState): TaskAssistantState {
         return updateComponents { copy(dashboard = dashboard.update()) }
     }
 }

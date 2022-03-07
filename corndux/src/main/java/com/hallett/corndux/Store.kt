@@ -62,6 +62,7 @@ abstract class Store<State: IState>(
                 }
             }
         }
+        dispatch(Init)
     }
 
     fun dispatch(action: Action) {

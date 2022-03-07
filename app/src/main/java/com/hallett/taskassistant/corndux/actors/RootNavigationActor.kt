@@ -1,6 +1,7 @@
 package com.hallett.taskassistant.corndux.actors
 
 import com.hallett.corndux.Action
+import com.hallett.corndux.Init
 import com.hallett.corndux.SideEffect
 import com.hallett.taskassistant.corndux.actions.BottomNavigationClicked
 import com.hallett.taskassistant.corndux.CreateTaskState
@@ -20,6 +21,7 @@ class RootNavigationActor: IReducer, IActionPerformer {
         dispatchNewAction: (Action) -> Unit
     ) {
         when(action) {
+            is Init -> dispatchNewAction(PerformInitialSetup)
             is BottomNavigationClicked -> dispatchNewAction(PerformInitialSetup)
         }
     }

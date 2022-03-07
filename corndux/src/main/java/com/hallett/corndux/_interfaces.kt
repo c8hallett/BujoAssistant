@@ -2,6 +2,7 @@ package com.hallett.corndux
 
 interface IState
 interface Action
+object Init: Action
 interface SideEffect
 
 sealed interface Actor<State: IState>

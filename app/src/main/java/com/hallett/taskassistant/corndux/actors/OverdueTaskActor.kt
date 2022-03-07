@@ -34,10 +34,7 @@ class OverdueTaskActor(private val taskRepository: ITaskRepository): IActionPerf
         if(state.session.screen is TaskNavDestination.OverdueTasks) {
             when(action) {
                 is PerformInitialSetup -> {
-                    val newOverdueTaskList = taskRepository.getOverdueTasks(
-                        pagingConfig = pagingConfig,
-                        cutoff = LocalDate.now()
-                    )
+                    val newOverdueTaskList = taskRepository.getOverdueTasks(pagingConfig, LocalDate.now())
                     dispatchNewAction(
                         UpdateOverdueTaskList(taskList = newOverdueTaskList)
                     )
@@ -54,7 +51,7 @@ class OverdueTaskActor(private val taskRepository: ITaskRepository): IActionPerf
         action: Action,
         dispatchSideEffect: (SideEffect) -> Unit
     ): TaskAssistantState = when(action) {
-        is UpdateOverdueTaskList -> state.updateOverdueTask { copy(taskList = taskList) }
+        is UpdateOverdueTaskList -> state.updateOverdueTask { copy(taskList = taskList) }.also { logI("Updated overdue task list") }
         else -> state
     }
 

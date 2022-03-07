@@ -18,6 +18,7 @@ import com.hallett.taskassistant.corndux.actors.DashboardScreenActor
 import com.hallett.taskassistant.corndux.actors.CreateTaskScreenActor
 import com.hallett.taskassistant.corndux.actors.OverdueTaskActor
 import com.hallett.taskassistant.corndux.actors.ScopeSelectionActor
+import com.hallett.taskassistant.corndux.actors.TaskListPerformer
 import com.hallett.taskassistant.corndux.sideeffects.NavigationSideEffectPerformer
 import com.hallett.taskassistant.ui.formatters.Formatter
 import com.hallett.taskassistant.ui.formatters.ScopeOffsetLabelFormatter
@@ -65,7 +66,7 @@ val cornduxModule = DI.Module("corndux_module") {
             OverdueTaskActor(instance()),
             RootNavigationActor(),
             ScopeSelectionActor(factory(), instance()),
-            CreateTaskScreenActor(instance()),
+            TaskListPerformer(instance(), instance()),
             NavigationSideEffectPerformer(instance(), instance(), instance())
         )
     }

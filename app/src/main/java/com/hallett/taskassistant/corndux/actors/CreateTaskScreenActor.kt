@@ -21,7 +21,7 @@ class CreateTaskScreenActor(
         action: Action,
         dispatchNewAction: (Action) -> Unit,
     ) {
-        if(state.session.screen !is TaskNavDestination.CreateTask) {
+        if(state.session.screen is TaskNavDestination.CreateTask) {
             when(action) {
                 is SubmitTask -> taskRepository.createNewTask(action.taskName, state.components.createTask.scope)
             }
@@ -33,7 +33,7 @@ class CreateTaskScreenActor(
         action: Action,
         dispatchSideEffect: (SideEffect) -> Unit
     ): TaskAssistantState {
-        if(state.session.screen !is TaskNavDestination.CreateTask) {
+        if(state.session.screen is TaskNavDestination.CreateTask) {
             when(action) {
                 is SubmitTask -> dispatchSideEffect(NavigateUp)
                 is CancelTask -> dispatchSideEffect(NavigateUp)
