@@ -48,6 +48,6 @@ internal class ScopeCalculator: IScopeCalculator {
     }
 
     override fun getOffset(scope: Scope, startDate: LocalDate): Int = scope.chronoUnit
-        .between(startDate, scope.value)
+        .between(scope.type.truncate(startDate), scope.value)
         .toInt()
 }

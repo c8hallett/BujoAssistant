@@ -4,14 +4,16 @@ import androidx.navigation.NavController
 import com.hallett.corndux.SideEffect
 import com.hallett.corndux.SideEffectPerformer
 import com.hallett.domain.coroutines.DispatchersWrapper
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
-class TaskAssistantSideEffectPerformer(
+class NavigationSideEffectPerformer(
     private val navController: NavController,
-    private val dispatchers: DispatchersWrapper
+    private val dispatchers: DispatchersWrapper,
+    private val scope: CoroutineScope
 ): SideEffectPerformer {
-    override suspend fun performSideEffect(sideEffect: SideEffect) {
-        withContext(dispatchers.main){
+    override fun performSideEffect(sideEffect: SideEffect) {
+        scope.launch(dispatchers.main){
             when(sideEffect) {
                 is NavigateUp -> navController.popBackStack()
                 is NavigateToRootDestination -> navController.navigate(sideEffect.destination.route) {

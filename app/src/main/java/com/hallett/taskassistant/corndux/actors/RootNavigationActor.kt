@@ -1,43 +1,37 @@
-package com.hallett.taskassistant.corndux.actionperformers
+package com.hallett.taskassistant.corndux.actors
 
 import com.hallett.corndux.Action
 import com.hallett.corndux.SideEffect
 import com.hallett.taskassistant.corndux.actions.BottomNavigationClicked
 import com.hallett.taskassistant.corndux.CreateTaskState
-import com.hallett.taskassistant.corndux.actions.DashboardClicked
-import com.hallett.taskassistant.corndux.actions.FabClicked
 import com.hallett.taskassistant.corndux.IActionPerformer
+import com.hallett.taskassistant.corndux.actions.FabClicked
+import com.hallett.taskassistant.corndux.IReducer
 import com.hallett.taskassistant.corndux.sideeffects.NavigateSingleTop
 import com.hallett.taskassistant.corndux.sideeffects.NavigateToRootDestination
-import com.hallett.taskassistant.corndux.actions.OverdueTasksClicked
 import com.hallett.taskassistant.corndux.actions.PerformInitialSetup
 import com.hallett.taskassistant.corndux.TaskAssistantState
-import com.hallett.taskassistant.corndux.actions.TaskListClicked
 import com.hallett.taskassistant.ui.navigation.TaskNavDestination
 
-class RootNavigationReducer: IActionPerformer {
+class RootNavigationActor: IReducer, IActionPerformer {
     override suspend fun performAction(
-        action: Action,
         state: TaskAssistantState,
-        dispatchNewAction: (Action) -> Unit,
+        action: Action,
+        dispatchNewAction: (Action) -> Unit
+    ) {
+        when(action) {
+            is BottomNavigationClicked -> dispatchNewAction(PerformInitialSetup)
+        }
+    }
+
+    override fun reduce(
+        state: TaskAssistantState,
+        action: Action,
         dispatchSideEffect: (SideEffect) -> Unit
     ): TaskAssistantState = when(action) {
         is BottomNavigationClicked -> {
             dispatchSideEffect(NavigateToRootDestination(action.destination))
-            when(action) {
-                is TaskListClicked -> {
-                    dispatchNewAction(PerformInitialSetup)
-                    state.updateDestination(action.destination)
-                }
-                is OverdueTasksClicked -> {
-                    dispatchNewAction(PerformInitialSetup)
-                    state.updateDestination(action.destination)
-                }
-                is DashboardClicked -> {
-                    dispatchNewAction(PerformInitialSetup)
-                    state.updateDestination(action.destination)
-                }
-            }
+            state.updateDestination(action.destination)
         }
         is FabClicked -> {
             dispatchSideEffect(NavigateSingleTop(action.destination))
