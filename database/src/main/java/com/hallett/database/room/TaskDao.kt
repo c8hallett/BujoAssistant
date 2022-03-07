@@ -12,6 +12,8 @@ import com.hallett.database.room.TaskEntity.Companion.ID
 import com.hallett.database.room.TaskEntity.Companion.TABLE_NAME
 import com.hallett.database.room.TaskEntity.Companion.TASK_SCOPE_TYPE
 import com.hallett.database.room.TaskEntity.Companion.TASK_SCOPE_VALUE
+import com.hallett.database.room.TaskEntity.Companion.TASK_STATUS
+import com.hallett.domain.model.TaskStatus
 import com.hallett.scopes.model.ScopeType
 import java.time.LocalDate
 
@@ -50,8 +52,8 @@ internal interface TaskDao {
     @Query("SELECT * FROM $TABLE_NAME WHERE $TASK_SCOPE_TYPE IS :scopeType AND $TASK_SCOPE_VALUE IS :value")
     fun getAllTaskForScope(scopeType: ScopeType?, value: LocalDate?): PagingSource<Int, TaskEntity>
 
-    @Query("SELECT * FROM $TABLE_NAME WHERE $TASK_SCOPE_VALUE < :value")
-    fun getAllOverdueTasks(value: LocalDate): PagingSource<Int, TaskEntity>
+    @Query("SELECT * FROM $TABLE_NAME WHERE $TASK_SCOPE_VALUE < :value AND $TASK_STATUS IS NOT :excludeStatus")
+    fun getAllOverdueTasks(value: Long, excludeStatus: TaskStatus = TaskStatus.COMPLETE): PagingSource<Int, TaskEntity>
 
     @Update(entity = TaskEntity::class)
     suspend fun updateTaskStatus(update: TaskEntity.StatusUpdate)

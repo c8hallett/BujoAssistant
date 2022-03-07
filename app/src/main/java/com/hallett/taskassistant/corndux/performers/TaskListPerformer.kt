@@ -37,9 +37,9 @@ class TaskListPerformer(
     override suspend fun performAction(
         state: TaskAssistantState,
         action: Action,
-        dispatchAction: (Action) -> Unit,
-        dispatchCommit: (Commit) -> Unit,
-        dispatchSideEffect: (SideEffect) -> Unit
+        dispatchAction: suspend (Action) -> Unit,
+        dispatchCommit: suspend (Commit) -> Unit,
+        dispatchSideEffect: suspend (SideEffect) -> Unit
     ) {
         if (state.session.screen !is TaskNavDestination.TaskList) return
         val taskListState = state.components.taskList

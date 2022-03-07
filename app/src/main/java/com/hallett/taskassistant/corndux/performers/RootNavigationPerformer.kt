@@ -4,6 +4,7 @@ import com.hallett.corndux.Action
 import com.hallett.corndux.Commit
 import com.hallett.corndux.Init
 import com.hallett.corndux.SideEffect
+import com.hallett.logging.logI
 import com.hallett.taskassistant.corndux.performers.actions.BottomNavigationClicked
 import com.hallett.taskassistant.corndux.IPerformer
 import com.hallett.taskassistant.corndux.performers.actions.FabClicked
@@ -17,20 +18,20 @@ class RootNavigationPerformer: IPerformer {
     override suspend fun performAction(
         state: TaskAssistantState,
         action: Action,
-        dispatchAction: (Action) -> Unit,
-        dispatchCommit: (Commit) -> Unit,
-        dispatchSideEffect: (SideEffect) -> Unit
+        dispatchAction: suspend (Action) -> Unit,
+        dispatchCommit: suspend (Commit) -> Unit,
+        dispatchSideEffect: suspend (SideEffect) -> Unit
     ) {
         when(action) {
             is Init -> dispatchAction(PerformInitialSetup)
             is BottomNavigationClicked -> {
+                dispatchCommit(UpdateCurrentScreen(action.destination))
                 dispatchAction(PerformInitialSetup)
                 dispatchSideEffect(NavigateToRootDestination(action.destination))
-                dispatchCommit(UpdateCurrentScreen(action.destination))
             }
             is FabClicked -> {
-                dispatchSideEffect(NavigateSingleTop(action.destination))
                 dispatchCommit(UpdateCurrentScreen(action.destination))
+                dispatchSideEffect(NavigateSingleTop(action.destination))
             }
         }
     }

@@ -27,7 +27,7 @@ internal class TaskRepository(
     override fun getOverdueTasks(
         pagingConfig: PagingConfig,
         cutoff: LocalDate
-    ): Flow<PagingData<Task>> = Pager(pagingConfig){ taskDao.getAllOverdueTasks(cutoff) }
+    ): Flow<PagingData<Task>> = Pager(pagingConfig){ taskDao.getAllOverdueTasks(cutoff.toEpochDay()) }
         .flow
         .flowOn(dispatchers.io)
         .map { data -> data.map { entity -> entity.toTask() } }

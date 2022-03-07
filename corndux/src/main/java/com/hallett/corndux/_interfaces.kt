@@ -15,9 +15,9 @@ interface Performer<State: IState>: Actor<State> {
     suspend fun performAction(
         state: State,
         action: Action,
-        dispatchAction: (Action) -> Unit,
-        dispatchCommit: (Commit) -> Unit,
-        dispatchSideEffect: (SideEffect) -> Unit,
+        dispatchAction: suspend (Action) -> Unit,
+        dispatchCommit: suspend (Commit) -> Unit,
+        dispatchSideEffect: suspend (SideEffect) -> Unit,
     )
 }
 
