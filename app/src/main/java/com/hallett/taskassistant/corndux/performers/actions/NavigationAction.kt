@@ -1,4 +1,4 @@
-package com.hallett.taskassistant.corndux.actions
+package com.hallett.taskassistant.corndux.performers.actions
 
 import com.hallett.corndux.Action
 import com.hallett.taskassistant.ui.navigation.TaskNavDestination

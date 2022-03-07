@@ -48,11 +48,11 @@ import androidx.paging.compose.items
 import com.hallett.scopes.model.Scope
 import com.hallett.scopes.model.ScopeType
 import com.hallett.scopes.scope_generator.IScopeCalculator
-import com.hallett.taskassistant.corndux.actions.EnterScopeSelection
-import com.hallett.taskassistant.corndux.actions.CancelScopeSelection
+import com.hallett.taskassistant.corndux.performers.actions.EnterScopeSelection
+import com.hallett.taskassistant.corndux.performers.actions.CancelScopeSelection
 import com.hallett.taskassistant.corndux.ScopeSelectionInfo
-import com.hallett.taskassistant.corndux.actions.SelectNewScopeType
-import com.hallett.taskassistant.corndux.actions.SelectNewScope
+import com.hallett.taskassistant.corndux.performers.actions.SelectNewScopeType
+import com.hallett.taskassistant.corndux.performers.actions.SelectNewScope
 import com.hallett.taskassistant.ui.formatters.Formatter
 import kotlinx.coroutines.flow.Flow
 import org.kodein.di.compose.rememberInstance

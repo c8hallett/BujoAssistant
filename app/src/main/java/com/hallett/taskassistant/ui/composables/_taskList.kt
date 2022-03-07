@@ -35,9 +35,10 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.hallett.domain.model.Task
 import com.hallett.domain.model.TaskStatus
-import com.hallett.taskassistant.corndux.actions.ToggleTaskComplete
-import com.hallett.taskassistant.corndux.actions.DeferTask
-import com.hallett.taskassistant.corndux.actions.DeleteTask
+import com.hallett.taskassistant.corndux.performers.actions.ToggleTaskComplete
+import com.hallett.taskassistant.corndux.performers.actions.DeferTask
+import com.hallett.taskassistant.corndux.performers.actions.DeleteTask
+import com.hallett.taskassistant.corndux.performers.actions.TaskClickedInList
 import taskAssistantStore
 
 @Composable
@@ -72,7 +73,8 @@ fun OpenTaskList() {
 
 @Composable
 fun TaskList(pagedTasks: LazyPagingItems<Task>, expandedOptions: @Composable (Task) -> Unit) {
-    var expandedTask by remember { mutableStateOf<Task?>(null) }
+    val store by taskAssistantStore()
+    val expandedTask by store.observeState { it.components.taskList.currentlyExpandedTask }.collectAsState()
     
     LazyColumn(verticalArrangement = SpaceBetween) {
         items(pagedTasks) { task ->
@@ -86,7 +88,7 @@ fun TaskList(pagedTasks: LazyPagingItems<Task>, expandedOptions: @Composable (Ta
                     task = task,
                     expandedOptions = if(expandedTask == task) expandedOptions else null,
                 ) {
-                    expandedTask = if(expandedTask == task) null else task
+                    store.dispatch(TaskClickedInList(task))
                 }
             }
         }

@@ -6,7 +6,7 @@ import androidx.compose.material.icons.filled.ErrorOutline
 import androidx.compose.material.icons.filled.List
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.hallett.taskassistant.R
-import com.hallett.taskassistant.corndux.actions.BottomNavigationClicked
+import com.hallett.taskassistant.corndux.performers.actions.BottomNavigationClicked
 
 sealed class TaskNavDestination(val route: String) {
 

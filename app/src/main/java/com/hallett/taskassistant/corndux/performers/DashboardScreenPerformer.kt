@@ -1,40 +1,34 @@
-package com.hallett.taskassistant.corndux.actors
+package com.hallett.taskassistant.corndux.performers
 
 import androidx.paging.PagingConfig
-import androidx.paging.PagingData
 import com.hallett.corndux.Action
+import com.hallett.corndux.Commit
 import com.hallett.corndux.SideEffect
 import com.hallett.database.ITaskRepository
-import com.hallett.domain.model.Task
 import com.hallett.scopes.model.ScopeType
 import com.hallett.scopes.scope_generator.IScopeCalculator
-import com.hallett.taskassistant.corndux.DashboardState
-import com.hallett.taskassistant.corndux.IActionPerformer
-import com.hallett.taskassistant.corndux.IReducer
-import com.hallett.taskassistant.corndux.actions.LoadLargerScope
-import com.hallett.taskassistant.corndux.actions.LoadSmallerScope
-import com.hallett.taskassistant.corndux.actions.PerformInitialSetup
+import com.hallett.taskassistant.corndux.IPerformer
 import com.hallett.taskassistant.corndux.TaskAssistantState
+import com.hallett.taskassistant.corndux.performers.actions.LoadLargerScope
+import com.hallett.taskassistant.corndux.performers.actions.LoadSmallerScope
+import com.hallett.taskassistant.corndux.performers.actions.PerformInitialSetup
+import com.hallett.taskassistant.corndux.reducers.UpdateDashboardTaskList
 import com.hallett.taskassistant.ui.navigation.TaskNavDestination
 import java.time.LocalDate
-import kotlinx.coroutines.flow.Flow
 
-class DashboardScreenActor(
+class DashboardScreenPerformer(
     private val taskRepo: ITaskRepository,
     private val scopeCalculator: IScopeCalculator
-    ): IActionPerformer, IReducer {
-
-    private data class DisplayNewDashboardList(
-        val scopeType: ScopeType,
-        val taskList: Flow<PagingData<Task>>
-    ): Action
+    ): IPerformer {
 
     private val pagingConfig = PagingConfig(pageSize = 20)
 
     override suspend fun performAction(
         state: TaskAssistantState,
         action: Action,
-        dispatchNewAction: (Action) -> Unit,
+        dispatchAction: (Action) -> Unit,
+        dispatchCommit: (Commit) -> Unit,
+        dispatchSideEffect: (SideEffect) -> Unit,
     ) {
         if(state.session.screen !is TaskNavDestination.Dashboard) return
 
@@ -44,8 +38,8 @@ class DashboardScreenActor(
             is PerformInitialSetup -> {
                 val currentScope = scopeCalculator.generateScope(dashboardState.scopeType, LocalDate.now())
 
-                dispatchNewAction(
-                    DisplayNewDashboardList(
+                dispatchCommit(
+                    UpdateDashboardTaskList(
                         scopeType = dashboardState.scopeType,
                         taskList = taskRepo.observeTasksForScope(pagingConfig, currentScope)
                     )
@@ -56,8 +50,8 @@ class DashboardScreenActor(
                 if(nextScopeType != dashboardState.scopeType) {
                     val nextScope = scopeCalculator.generateScope(nextScopeType, LocalDate.now())
 
-                    dispatchNewAction(
-                        DisplayNewDashboardList(
+                    dispatchCommit(
+                        UpdateDashboardTaskList(
                             scopeType = nextScopeType,
                             taskList = taskRepo.observeTasksForScope(pagingConfig, nextScope)
                         )
@@ -69,8 +63,8 @@ class DashboardScreenActor(
                 if(prevScopeType != dashboardState.scopeType) {
                     val prevScope = scopeCalculator.generateScope(prevScopeType, LocalDate.now())
 
-                    dispatchNewAction(
-                        DisplayNewDashboardList(
+                    dispatchCommit(
+                        UpdateDashboardTaskList(
                             scopeType = prevScopeType,
                             taskList = taskRepo.observeTasksForScope(pagingConfig, prevScope)
                         )
@@ -80,31 +74,11 @@ class DashboardScreenActor(
         }
     }
 
-    override fun reduce(
-        state: TaskAssistantState,
-        action: Action,
-        dispatchSideEffect: (SideEffect) -> Unit
-    ): TaskAssistantState {
-        return when(action) {
-            is DisplayNewDashboardList -> state.updateDashboard {
-                copy(
-                    scopeType = action.scopeType,
-                    taskList = action.taskList
-                )
-            }
-            else -> state
-        }
-    }
-
     private fun ScopeType.previous(): ScopeType = ScopeType.values().run{
         getOrElse(ordinal - 1) { first() }
     }
 
     private fun ScopeType.next(): ScopeType = ScopeType.values().run {
         getOrElse(ordinal + 1) { last() }
-    }
-
-    private inline fun TaskAssistantState.updateDashboard(update: DashboardState.() -> DashboardState): TaskAssistantState {
-        return updateComponents { copy(dashboard = dashboard.update()) }
     }
 }

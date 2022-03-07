@@ -11,6 +11,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
@@ -19,15 +20,21 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.hallett.logging.logI
-import com.hallett.taskassistant.corndux.actions.FabClicked
+import com.hallett.taskassistant.corndux.performers.actions.FabClicked
+import com.hallett.taskassistant.corndux.sideeffects.NavigateSingleTop
+import com.hallett.taskassistant.corndux.sideeffects.NavigateToRootDestination
+import com.hallett.taskassistant.corndux.sideeffects.NavigateUp
 import com.hallett.taskassistant.ui.composables.TaskDashboard
 import com.hallett.taskassistant.ui.composables.OpenTaskList
 import com.hallett.taskassistant.ui.composables.OverdueTasks
 import com.hallett.taskassistant.ui.composables.TaskCreation
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.collect
 import org.kodein.di.compose.rememberInstance
 import taskAssistantStore
 
 
+@FlowPreview
 @ExperimentalMaterialApi
 @Composable
 fun MainNavHost(innerPadding: PaddingValues, navController: NavHostController) {
@@ -50,6 +57,24 @@ fun MainNavHost(innerPadding: PaddingValues, navController: NavHostController) {
         }
         composable(TaskNavDestination.OverdueTasks.route) {
             OverdueTasks()
+        }
+    }
+
+    val store by taskAssistantStore()
+
+    LaunchedEffect(key1 = store) {
+        store.observeSideEffects().collect { sideEffect ->
+            when(sideEffect) {
+                is NavigateUp -> navController.popBackStack()
+                is NavigateToRootDestination -> navController.navigate(sideEffect.destination.route) {
+                    popUpTo(navController.graph.startDestinationId) { inclusive = true }
+                    launchSingleTop = true
+                    restoreState = true
+                }
+                is NavigateSingleTop -> navController.navigate(sideEffect.destination.route) {
+                    launchSingleTop = true
+                }
+            }
         }
     }
 }

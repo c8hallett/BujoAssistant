@@ -8,18 +8,18 @@ import com.hallett.domain.coroutines.DispatchersWrapper
 import com.hallett.scopes.model.Scope
 import com.hallett.scopes.model.ScopeType
 import com.hallett.scopes.scope_generator.IScopeCalculator
-import com.hallett.taskassistant.corndux.IReducer
 import com.hallett.taskassistant.corndux.IStore
-import com.hallett.taskassistant.corndux.actors.LoggingMiddleware
-import com.hallett.taskassistant.corndux.actors.RootNavigationActor
+import com.hallett.taskassistant.corndux.middleware.LoggingMiddleware
+import com.hallett.taskassistant.corndux.performers.RootNavigationPerformer
 import com.hallett.taskassistant.corndux.TaskAssistantState
 import com.hallett.taskassistant.corndux.TaskAssistantStore
-import com.hallett.taskassistant.corndux.actors.DashboardScreenActor
-import com.hallett.taskassistant.corndux.actors.CreateTaskScreenActor
-import com.hallett.taskassistant.corndux.actors.OverdueTaskActor
-import com.hallett.taskassistant.corndux.actors.ScopeSelectionActor
-import com.hallett.taskassistant.corndux.actors.TaskListPerformer
-import com.hallett.taskassistant.corndux.sideeffects.NavigationSideEffectPerformer
+import com.hallett.taskassistant.corndux.performers.DashboardScreenPerformer
+import com.hallett.taskassistant.corndux.performers.CreateTaskScreenPerformer
+import com.hallett.taskassistant.corndux.performers.OverdueTaskPerformer
+import com.hallett.taskassistant.corndux.performers.ScopeSelectionInfoGenerator
+import com.hallett.taskassistant.corndux.performers.TaskListPerformer
+import com.hallett.taskassistant.corndux.reducers.ComponentReducer
+import com.hallett.taskassistant.corndux.reducers.SessionReducer
 import com.hallett.taskassistant.ui.formatters.Formatter
 import com.hallett.taskassistant.ui.formatters.ScopeOffsetLabelFormatter
 import com.hallett.taskassistant.ui.formatters.ScopeScaleFormatter
@@ -30,7 +30,6 @@ import kotlinx.coroutines.Dispatchers
 import org.kodein.di.DI
 import org.kodein.di.bindFactory
 import org.kodein.di.bindSingleton
-import org.kodein.di.compose.instance
 import org.kodein.di.factory
 import org.kodein.di.instance
 
@@ -60,15 +59,18 @@ val cornduxModule = DI.Module("corndux_module") {
 
     bindSingleton<List<Actor<out TaskAssistantState>>> {
         listOf(
-            CreateTaskScreenActor(instance()),
-            DashboardScreenActor(instance(), instance()),
+            CreateTaskScreenPerformer(instance(), instance()),
+            DashboardScreenPerformer(instance(), instance()),
+            OverdueTaskPerformer(instance()),
+            RootNavigationPerformer(),
+            TaskListPerformer(instance(), instance(), instance()),
             LoggingMiddleware(),
-            OverdueTaskActor(instance()),
-            RootNavigationActor(),
-            ScopeSelectionActor(factory(), instance()),
-            TaskListPerformer(instance(), instance()),
-            NavigationSideEffectPerformer(instance(), instance(), instance())
+            ComponentReducer(),
+            SessionReducer()
         )
+    }
+    bindSingleton<ScopeSelectionInfoGenerator> {
+        ScopeSelectionInfoGenerator(factory(), instance())
     }
 }
 

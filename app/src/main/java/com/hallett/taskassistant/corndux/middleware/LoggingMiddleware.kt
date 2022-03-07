@@ -1,6 +1,6 @@
-package com.hallett.taskassistant.corndux.actors
+package com.hallett.taskassistant.corndux.middleware
 
-import com.hallett.corndux.Action
+import com.hallett.corndux.Commit
 import com.hallett.corndux.Reducer
 import com.hallett.corndux.IState
 import com.hallett.corndux.Middleware
@@ -9,15 +9,15 @@ import com.hallett.logging.logD
 class LoggingMiddleware<State: IState>: Middleware<State> {
     private lateinit var prevState: State
     private lateinit var prevPerformerState: State
-    override suspend fun before(state: State, action: Action) {
+    override suspend fun before(state: State, commit: Commit) {
         prevState = state
         prevPerformerState = state
-        logD("<${action::class.java.simpleName} = $action> $state -> ")
+        logD("<${commit::class.java.simpleName} = $commit> $state -> ")
     }
 
     override suspend fun afterEachReduce(
         state: State,
-        action: Action,
+        commit: Commit,
         reducer: Class<out Reducer<State>>
     ) {
         when(state) {
@@ -29,7 +29,7 @@ class LoggingMiddleware<State: IState>: Middleware<State> {
         }
     }
 
-    override suspend fun after(state: State, action: Action) {
-        logD("$state </${action::class.java.simpleName}> ")
+    override suspend fun after(state: State, commit: Commit) {
+        logD("$state </${commit::class.java.simpleName}> ")
     }
 }

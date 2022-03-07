@@ -47,6 +47,7 @@ data class CreateTaskState(
 )
 
 data class TasksListState(
+    val currentlyExpandedTask: Task? = null,
     val taskList: Flow<PagingData<Task>> = flowOf(),
     val scope: Scope? = null,
     val scopeSelectionInfo: ScopeSelectionInfo? = null,

@@ -1,34 +1,35 @@
 package com.hallett.corndux
 
 interface IState
+interface SideEffect
+
 interface Action
 object Init: Action
-interface SideEffect
+
+interface Commit
+
 
 sealed interface Actor<State: IState>
 
-interface ActionPerformer<State: IState>: Actor<State> {
+interface Performer<State: IState>: Actor<State> {
     suspend fun performAction(
         state: State,
         action: Action,
-        dispatchNewAction: (Action) -> Unit,
+        dispatchAction: (Action) -> Unit,
+        dispatchCommit: (Commit) -> Unit,
+        dispatchSideEffect: (SideEffect) -> Unit,
     )
 }
 
 interface Reducer<State: IState>: Actor<State> {
     fun reduce(
         state: State,
-        action: Action,
-        dispatchSideEffect: (SideEffect) -> Unit
+        commit: Commit
     ): State
 }
 
-interface SideEffectPerformer: Actor<Nothing> {
-    fun performSideEffect(sideEffect: SideEffect)
-}
-
 interface Middleware<State: IState>: Actor<State> {
-    suspend fun before(state: State, action: Action)
-    suspend fun afterEachReduce(state: State, action: Action, reducer: Class<out Reducer<State>>)
-    suspend fun after(state: State, action: Action)
+    suspend fun before(state: State, commit: Commit)
+    suspend fun afterEachReduce(state: State, commit: Commit, reducer: Class<out Reducer<State>>)
+    suspend fun after(state: State, commit: Commit)
 }
