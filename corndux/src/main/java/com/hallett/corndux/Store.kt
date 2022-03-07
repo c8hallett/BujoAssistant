@@ -24,44 +24,26 @@ abstract class Store<State: IState>(
     private val sideEffectFlow = MutableSharedFlow<SideEffect>()
 
     private val customDispatcher = Executors.newFixedThreadPool(2).asCoroutineDispatcher()
-
     private val actionChannel = Channel<Action>()
-    private val commitChannel = Channel<Commit>()
+
+    private val reducers = actors.filterIsInstance<Reducer<State>>()
+    private val middleware = actors.filterIsInstance<Middleware<State>>()
 
     init {
-        val performer = actors.filterIsInstance<Performer<State>>()
-        val reducers = actors.filterIsInstance<Reducer<State>>()
-        val middleware = actors.filterIsInstance<Middleware<State>>()
-
-        // consuming commits
-        scope.launch(customDispatcher) {
-            commitChannel.consumeEach { newCommit ->
-
-                middleware.forEach {
-                    it.before(stateFlow.value, newCommit)
-                }
-
-                // pass actions through each reducer
-                stateFlow.value = reducers.fold(stateFlow.value) { state, reducer ->
-                    reducer.reduce(state, newCommit).also { newState ->
-                        middleware.forEach {
-                            it.afterEachReduce(newState, newCommit, reducer::class.java)
-                        }
-                    }
-                }
-
-                middleware.forEach {
-                    it.after(stateFlow.value, newCommit)
-                }
-            }
-        }
+        val performers = actors.filterIsInstance<Performer<State>>()
 
         // consuming actions
         scope.launch(customDispatcher) {
             actionChannel.consumeEach { newAction ->
                 // pass actions to pre-middlewares first
-                performer.forEach{
-                    it.performAction(stateFlow.value, newAction, ::dispatch, ::dispatch, ::dispatch)
+                performers.forEach{ performer ->
+                    performer.performAction(
+                        state = stateFlow.value,
+                        action = newAction,
+                        dispatchAction = { dispatch(it) },
+                        dispatchCommit = { dispatchCommit(it) },
+                        dispatchSideEffect = { sideEffectFlow.emit(it) }
+                    )
                 }
             }
         }
@@ -75,15 +57,20 @@ abstract class Store<State: IState>(
         }
     }
 
-    private fun dispatch(commit: Commit) {
-        scope.launch(customDispatcher) {
-            commitChannel.send(commit)
+    private suspend fun dispatchCommit(newCommit: Commit) {
+        middleware.forEach {
+            it.before(stateFlow.value, newCommit)
         }
-    }
 
-    private fun dispatch(sideEffect: SideEffect) {
-        scope.launch(customDispatcher) {
-            sideEffectFlow.emit(sideEffect)
+        stateFlow.value = reducers.fold(stateFlow.value) { state, reducer ->
+            reducer.reduce(state, newCommit).also { newState ->
+                middleware.forEach {
+                    it.afterEachReduce(newState, newCommit, reducer::class.java)
+                }
+            }
+        }
+        middleware.forEach {
+            it.after(stateFlow.value, newCommit)
         }
     }
 
