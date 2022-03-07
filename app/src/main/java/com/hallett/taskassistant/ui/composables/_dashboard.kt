@@ -44,7 +44,7 @@ fun TaskDashboard() {
             )
         } else {
             LazyColumn(
-                verticalArrangement = Arrangement.SpaceBetween,
+                verticalArrangement = Arrangement.Top,
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f)

@@ -3,24 +3,22 @@ package com.hallett.taskassistant.di
 import androidx.compose.ui.unit.Dp
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
-import com.hallett.corndux.SideEffectPerformer
+import com.hallett.corndux.Actor
 import com.hallett.domain.coroutines.DispatchersWrapper
 import com.hallett.scopes.model.Scope
 import com.hallett.scopes.model.ScopeType
 import com.hallett.scopes.scope_generator.IScopeCalculator
-import com.hallett.taskassistant.corndux.IActionPerformer
-import com.hallett.taskassistant.corndux.IMiddleware
+import com.hallett.taskassistant.corndux.IReducer
 import com.hallett.taskassistant.corndux.IStore
-import com.hallett.taskassistant.corndux.LoggingMiddleware
-import com.hallett.taskassistant.corndux.actionperformers.CreateTaskReducer
-import com.hallett.taskassistant.corndux.actionperformers.RootNavigationReducer
-import com.hallett.taskassistant.corndux.sideeffects.TaskAssistantSideEffectPerformer
+import com.hallett.taskassistant.corndux.actors.LoggingMiddleware
+import com.hallett.taskassistant.corndux.actors.RootNavigationActor
 import com.hallett.taskassistant.corndux.TaskAssistantState
 import com.hallett.taskassistant.corndux.TaskAssistantStore
-import com.hallett.taskassistant.corndux.actionperformers.DashboardReducer
-import com.hallett.taskassistant.corndux.actionperformers.OverdueTaskReducer
-import com.hallett.taskassistant.corndux.actionperformers.SelectScopeReducer
-import com.hallett.taskassistant.corndux.actionperformers.TaskListReducer
+import com.hallett.taskassistant.corndux.actors.DashboardScreenActor
+import com.hallett.taskassistant.corndux.actors.CreateTaskScreenActor
+import com.hallett.taskassistant.corndux.actors.OverdueTaskActor
+import com.hallett.taskassistant.corndux.actors.ScopeSelectionActor
+import com.hallett.taskassistant.corndux.sideeffects.NavigationSideEffectPerformer
 import com.hallett.taskassistant.ui.formatters.Formatter
 import com.hallett.taskassistant.ui.formatters.ScopeOffsetLabelFormatter
 import com.hallett.taskassistant.ui.formatters.ScopeScaleFormatter
@@ -31,6 +29,7 @@ import kotlinx.coroutines.Dispatchers
 import org.kodein.di.DI
 import org.kodein.di.bindFactory
 import org.kodein.di.bindSingleton
+import org.kodein.di.compose.instance
 import org.kodein.di.factory
 import org.kodein.di.instance
 
@@ -53,33 +52,21 @@ val cornduxModule = DI.Module("corndux_module") {
     bindSingleton<IStore> {
         TaskAssistantStore(
             initialState = TaskAssistantState(),
-            performers = instance(),
-            middlewares = instance(),
-            sideEffectPerformers = instance(),
+            actors = instance(),
             scope = instance()
         )
     }
 
-    bindSingleton<List<IMiddleware>> {
+    bindSingleton<List<Actor<out TaskAssistantState>>> {
         listOf(
-            LoggingMiddleware()
-        )
-    }
-
-    bindSingleton<List<IActionPerformer>> {
-        listOf(
-            SelectScopeReducer(factory(), instance()),
-            CreateTaskReducer(instance()),
-            OverdueTaskReducer(instance()),
-            TaskListReducer(instance(), instance()),
-            DashboardReducer(instance(), instance()),
-            RootNavigationReducer(),
-        )
-    }
-
-    bindSingleton<List<SideEffectPerformer>> {
-        listOf(
-            TaskAssistantSideEffectPerformer(instance(), instance())
+            CreateTaskScreenActor(instance()),
+            DashboardScreenActor(instance(), instance()),
+            LoggingMiddleware(),
+            OverdueTaskActor(instance()),
+            RootNavigationActor(),
+            ScopeSelectionActor(factory(), instance()),
+            CreateTaskScreenActor(instance()),
+            NavigationSideEffectPerformer(instance(), instance(), instance())
         )
     }
 }
