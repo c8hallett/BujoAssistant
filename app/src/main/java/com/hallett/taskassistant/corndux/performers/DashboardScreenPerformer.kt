@@ -11,7 +11,6 @@ import com.hallett.taskassistant.corndux.IPerformer
 import com.hallett.taskassistant.corndux.TaskAssistantState
 import com.hallett.taskassistant.corndux.performers.actions.LoadLargerScope
 import com.hallett.taskassistant.corndux.performers.actions.LoadSmallerScope
-import com.hallett.taskassistant.corndux.performers.actions.PerformInitialSetup
 import com.hallett.taskassistant.corndux.reducers.UpdateDashboardTaskList
 import com.hallett.taskassistant.ui.navigation.TaskNavDestination
 import java.time.LocalDate
@@ -35,16 +34,6 @@ class DashboardScreenPerformer(
         val dashboardState = state.components.dashboard
 
         when(action) {
-            is PerformInitialSetup -> {
-                val currentScope = scopeCalculator.generateScope(dashboardState.scopeType, LocalDate.now())
-
-                dispatchCommit(
-                    UpdateDashboardTaskList(
-                        scopeType = dashboardState.scopeType,
-                        taskList = taskRepo.observeTasksForScope(pagingConfig, currentScope)
-                    )
-                )
-            }
             is LoadLargerScope -> {
                 val nextScopeType = dashboardState.scopeType.next()
                 if(nextScopeType != dashboardState.scopeType) {

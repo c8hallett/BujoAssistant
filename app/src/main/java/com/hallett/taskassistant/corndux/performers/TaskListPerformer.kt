@@ -19,7 +19,6 @@ import com.hallett.taskassistant.corndux.performers.actions.SelectNewScope
 import com.hallett.taskassistant.corndux.performers.actions.SelectNewScopeType
 import com.hallett.taskassistant.corndux.performers.actions.DeferTask
 import com.hallett.taskassistant.corndux.performers.actions.DeleteTask
-import com.hallett.taskassistant.corndux.performers.actions.PerformInitialSetup
 import com.hallett.taskassistant.corndux.performers.actions.RescheduleTask
 import com.hallett.taskassistant.corndux.performers.actions.TaskClickedInList
 import com.hallett.taskassistant.corndux.performers.actions.ToggleTaskComplete
@@ -42,11 +41,9 @@ class TaskListPerformer(
         dispatchSideEffect: suspend (SideEffect) -> Unit
     ) {
         if (state.session.screen !is TaskNavDestination.TaskList) return
+
         val taskListState = state.components.taskList
         when(action) {
-            is PerformInitialSetup -> dispatchAction(
-                SelectNewScope(scopeCalculator.generateScope(ScopeType.DAY))
-            )
             is EnterScopeSelection -> {
                 val scopeSelectionInfo = ssiGenerator.generateInfo(taskListState.scope?.type ?: ScopeType.DAY)
                 dispatchCommit(

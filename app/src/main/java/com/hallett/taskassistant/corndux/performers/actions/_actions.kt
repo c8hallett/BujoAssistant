@@ -3,8 +3,6 @@ package com.hallett.taskassistant.corndux.performers.actions
 import com.hallett.corndux.Action
 import com.hallett.domain.model.Task
 
-object PerformInitialSetup: Action
-
 class SubmitTask(val taskName: String): Action
 object CancelTask: Action
 
