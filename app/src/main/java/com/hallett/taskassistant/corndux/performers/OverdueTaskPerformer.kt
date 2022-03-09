@@ -10,7 +10,7 @@ import com.hallett.taskassistant.corndux.TaskAssistantState
 import com.hallett.taskassistant.corndux.performers.actions.AddRandomOverdueTask
 import com.hallett.taskassistant.ui.navigation.TaskNavDestination
 
-class OverdueTaskPerformer(private val taskRepository: ITaskRepository): IPerformer {
+class OverdueTaskPerformer(private val taskRepo: ITaskRepository): IPerformer {
 
     override suspend fun performAction(
         state: TaskAssistantState,
@@ -22,7 +22,7 @@ class OverdueTaskPerformer(private val taskRepository: ITaskRepository): IPerfor
         if(state.session.screen is TaskNavDestination.OverdueTasks) {
             when(action) {
                 is AddRandomOverdueTask -> {
-                    taskRepository.randomTask(ScopeType.values().random(), overdue = true)
+                    taskRepo.randomTask(ScopeType.values().random(), overdue = true)
                 }
             }
         }

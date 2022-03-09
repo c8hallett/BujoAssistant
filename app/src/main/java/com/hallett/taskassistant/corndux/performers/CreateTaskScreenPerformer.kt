@@ -19,7 +19,7 @@ import com.hallett.taskassistant.corndux.sideeffects.NavigateUp
 import com.hallett.taskassistant.ui.navigation.TaskNavDestination
 
 class CreateTaskScreenPerformer(
-    private val taskRepository: ITaskRepository,
+    private val taskRepo: ITaskRepository,
     private val ssiGenerator: ScopeSelectionInfoGenerator,
 ): IPerformer {
 
@@ -34,7 +34,7 @@ class CreateTaskScreenPerformer(
             val createTaskState = state.components.createTask
             when(action) {
                 is SubmitTask -> {
-                    taskRepository.createNewTask(action.taskName, createTaskState.scope)
+                    taskRepo.createNewTask(action.taskName, createTaskState.scope)
                     dispatchSideEffect(NavigateUp)
                 }
                 is CancelTask -> dispatchSideEffect(NavigateUp)

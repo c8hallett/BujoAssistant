@@ -55,6 +55,9 @@ internal interface TaskDao {
     @Query("SELECT * FROM $TABLE_NAME WHERE $TASK_SCOPE_VALUE < :value AND $TASK_STATUS IS NOT :excludeStatus")
     fun getAllOverdueTasks(value: Long, excludeStatus: TaskStatus = TaskStatus.COMPLETE): PagingSource<Int, TaskEntity>
 
+    @Query("SELECT * FROM $TABLE_NAME WHERE $TASK_SCOPE_VALUE > :value AND $TASK_STATUS IS NOT :excludeStatus ORDER BY $TASK_SCOPE_VALUE ASC, $TASK_SCOPE_TYPE DESC")
+    fun getFutureTasks(value: Long, excludeStatus: TaskStatus = TaskStatus.COMPLETE): PagingSource<Int, TaskEntity>
+
     @Update(entity = TaskEntity::class)
     suspend fun updateTaskStatus(update: TaskEntity.StatusUpdate)
 

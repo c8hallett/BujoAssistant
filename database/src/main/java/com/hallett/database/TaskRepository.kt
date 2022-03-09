@@ -32,6 +32,14 @@ internal class TaskRepository(
         .flowOn(dispatchers.io)
         .map { data -> data.map { entity -> entity.toTask() } }
 
+    override fun getFutureTasks(
+        pagingConfig: PagingConfig,
+        cutoff: LocalDate
+    ): Flow<PagingData<Task>> = Pager(pagingConfig){ taskDao.getFutureTasks(cutoff.toEpochDay()) }
+        .flow
+        .flowOn(dispatchers.io)
+        .map { data -> data.map { entity -> entity.toTask() } }
+
     override fun observeTasksForScope(
         pagingConfig: PagingConfig,
         scope: Scope?

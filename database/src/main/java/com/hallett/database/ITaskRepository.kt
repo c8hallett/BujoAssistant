@@ -12,6 +12,8 @@ import kotlinx.coroutines.flow.Flow
 interface ITaskRepository {
     fun getOverdueTasks(pagingConfig: PagingConfig, cutoff: LocalDate): Flow<PagingData<Task>>
 
+    fun getFutureTasks(pagingConfig: PagingConfig, cutoff: LocalDate): Flow<PagingData<Task>>
+
     fun observeTasksForScope(pagingConfig: PagingConfig, scope: Scope?): Flow<PagingData<Task>>
 
     suspend fun upsert(task: Task)
