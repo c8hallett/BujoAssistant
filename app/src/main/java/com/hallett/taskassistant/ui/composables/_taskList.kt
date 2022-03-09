@@ -3,6 +3,7 @@ package com.hallett.taskassistant.ui.composables
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement.SpaceBetween
+import androidx.compose.foundation.layout.Arrangement.spacedBy
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -72,11 +73,11 @@ fun OpenTaskList() {
 }
 
 @Composable
-fun TaskList(pagedTasks: LazyPagingItems<Task>, expandedOptions: @Composable (Task) -> Unit) {
+fun TaskList(pagedTasks: LazyPagingItems<Task>, modifier: Modifier = Modifier, expandedOptions: @Composable (Task) -> Unit) {
     val store by taskAssistantStore()
     val expandedTask by store.observeState { it.components.taskList.currentlyExpandedTask }.collectAsState()
     
-    LazyColumn(verticalArrangement = SpaceBetween) {
+    LazyColumn(verticalArrangement = spacedBy(12.dp), modifier = modifier.padding(vertical = 12.dp, horizontal = 12.dp)) {
         items(pagedTasks) { task ->
             when (task) {
                 null -> Spacer(
@@ -98,16 +99,14 @@ fun TaskList(pagedTasks: LazyPagingItems<Task>, expandedOptions: @Composable (Ta
 @Composable
 fun TaskItem(task: Task, expandedOptions: @Composable ((Task) -> Unit)?, onClick: (Task) -> Unit) {
     Card(modifier = Modifier
-        .clickable { onClick(task) }
         .fillMaxWidth()
-        .padding(horizontal = 12.dp)
         .animateContentSize()
     ) {
         Column {
             val textDecoration = if(task.status == TaskStatus.COMPLETE) TextDecoration.LineThrough else TextDecoration.None
             Text(
                 text = task.taskName,
-                style = MaterialTheme.typography.h3.copy(textDecoration = textDecoration),
+                style = MaterialTheme.typography.h6.copy(textDecoration = textDecoration),
                 modifier = Modifier.padding(12.dp)
             )
             expandedOptions?.invoke(task)

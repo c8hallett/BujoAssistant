@@ -85,11 +85,11 @@ fun TaskCreation() {
             Column(modifier = Modifier.padding(12.dp)) {
                 BasicTextField(
                     value = taskName,
-                    onValueChange = { newTaskName ->
+                    onValueChange = { newTaskName: String ->
                         taskName = newTaskName
                     },
+                    textStyle = MaterialTheme.typography.h6.copy(color = MaterialTheme.colors.onSurface),
                     modifier = Modifier.fillMaxWidth(),
-                    visualTransformation = TaskNameVisualizer(),
                 )
                 ScopeSelection(createTaskInfo.scope, createTaskInfo.scopeSelectionInfo)
             }

@@ -3,6 +3,7 @@ package com.hallett.taskassistant.corndux.reducers
 import com.hallett.corndux.Commit
 import com.hallett.taskassistant.corndux.CreateTaskState
 import com.hallett.taskassistant.corndux.DashboardState
+import com.hallett.taskassistant.corndux.FutureTaskListState
 import com.hallett.taskassistant.corndux.IReducer
 import com.hallett.taskassistant.corndux.OverdueTasksState
 import com.hallett.taskassistant.corndux.TaskAssistantState
@@ -19,6 +20,8 @@ class ComponentReducer: IReducer {
         is UpdateTaskListSelectedScope -> state.updateTaskList { copy(scope = commit.scope) }
         is UpdateTaskListScopeSelectionInfo -> state.updateTaskList { copy(scopeSelectionInfo = commit.scopeSelectionInfo) }
         is UpdateTaskListCurrentlySelectedTask -> state.updateTaskList { copy(currentlyExpandedTask = commit.task) }
+        is UpdateCurrentlyExpandedList -> state.updateFutureTaskList { copy(expandedList = commit.list) }
+        is UpdateFutureTaskLists -> state.updateFutureTaskList { copy(unscheduledList = commit.unscheduled, scheduledList = commit.scheduled) }
         else -> state
     }
 
@@ -36,5 +39,8 @@ class ComponentReducer: IReducer {
 
     private inline fun TaskAssistantState.updateOverdueTask(update: OverdueTasksState.() -> OverdueTasksState): TaskAssistantState {
         return updateComponents { copy(overdueTask = overdueTask.update()) }
+    }
+    private inline fun TaskAssistantState.updateFutureTaskList(update: FutureTaskListState.() -> FutureTaskListState): TaskAssistantState {
+        return updateComponents { copy(futureTasks = futureTasks.update()) }
     }
 }

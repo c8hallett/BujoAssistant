@@ -30,7 +30,8 @@ data class Components(
     val dashboard: DashboardState = DashboardState(),
     val createTask: CreateTaskState = CreateTaskState(),
     val overdueTask: OverdueTasksState = OverdueTasksState(),
-    val taskList: TasksListState = TasksListState()
+    val taskList: TasksListState = TasksListState(),
+    val futureTasks: FutureTaskListState = FutureTaskListState()
 )
 
 
@@ -39,6 +40,17 @@ data class DashboardState(
     val taskList: Flow<PagingData<Task>> = flowOf(),
     val scopeType: ScopeType = ScopeType.DAY // eventually make this nullable?
 )
+
+data class FutureTaskListState(
+    val unscheduledList: Flow<PagingData<Task>> = flowOf(),
+    val scheduledList: Flow<PagingData<Task>> = flowOf(),
+    val expandedList: ExpandedList = ExpandedList.UNSCHEDULED
+) {
+    enum class ExpandedList {
+        SCHEDULED,
+        UNSCHEDULED
+    }
+}
 
 data class CreateTaskState(
     val taskName: String = "",

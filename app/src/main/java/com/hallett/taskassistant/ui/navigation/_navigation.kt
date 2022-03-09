@@ -24,6 +24,7 @@ import com.hallett.taskassistant.corndux.performers.actions.FabClicked
 import com.hallett.taskassistant.corndux.sideeffects.NavigateSingleTop
 import com.hallett.taskassistant.corndux.sideeffects.NavigateToRootDestination
 import com.hallett.taskassistant.corndux.sideeffects.NavigateUp
+import com.hallett.taskassistant.ui.composables.FutureTaskList
 import com.hallett.taskassistant.ui.composables.TaskDashboard
 import com.hallett.taskassistant.ui.composables.OpenTaskList
 import com.hallett.taskassistant.ui.composables.OverdueTasks
@@ -58,6 +59,9 @@ fun MainNavHost(innerPadding: PaddingValues, navController: NavHostController) {
         composable(TaskNavDestination.OverdueTasks.route) {
             OverdueTasks()
         }
+        composable(TaskNavDestination.FutureTaskList.route) {
+            FutureTaskList()
+        }
     }
 
     val store by taskAssistantStore()
@@ -83,6 +87,7 @@ fun MainNavHost(innerPadding: PaddingValues, navController: NavHostController) {
 fun TaskBottomAppBar() {
     val items = listOf(
         TaskNavDestination.TaskList,
+        TaskNavDestination.FutureTaskList,
         TaskNavDestination.Dashboard,
         TaskNavDestination.OverdueTasks
     )

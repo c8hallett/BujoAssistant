@@ -12,6 +12,7 @@ import com.hallett.taskassistant.corndux.IPerformer
 import com.hallett.taskassistant.corndux.TaskAssistantState
 import com.hallett.taskassistant.corndux.performers.actions.SelectNewScope
 import com.hallett.taskassistant.corndux.reducers.UpdateDashboardTaskList
+import com.hallett.taskassistant.corndux.reducers.UpdateFutureTaskLists
 import com.hallett.taskassistant.corndux.reducers.UpdateOverdueTaskList
 import java.time.LocalDate
 
@@ -49,6 +50,12 @@ class InitialSetupPerformer(
             val newOverdueTaskList = taskRepo.getOverdueTasks(pagingConfig, LocalDate.now())
             dispatchCommit(
                 UpdateOverdueTaskList(taskList = newOverdueTaskList)
+            )
+
+            val unscheduledList = taskRepo.observeTasksForScope(pagingConfig, null, false)
+            val scheduledList = taskRepo.observeFutureTasks(pagingConfig, LocalDate.now())
+            dispatchCommit(
+                UpdateFutureTaskLists(unscheduled = unscheduledList, scheduled = scheduledList)
             )
         }
     }

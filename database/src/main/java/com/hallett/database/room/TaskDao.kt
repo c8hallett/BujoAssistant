@@ -49,8 +49,8 @@ internal interface TaskDao {
     @Query("SELECT * FROM $TABLE_NAME WHERE $ID = :taskId")
     suspend fun getTask(taskId: Long): TaskEntity?
 
-    @Query("SELECT * FROM $TABLE_NAME WHERE $TASK_SCOPE_TYPE IS :scopeType AND $TASK_SCOPE_VALUE IS :value")
-    fun getAllTaskForScope(scopeType: ScopeType?, value: LocalDate?): PagingSource<Int, TaskEntity>
+    @Query("SELECT * FROM $TABLE_NAME WHERE $TASK_SCOPE_TYPE IS :scopeType AND $TASK_SCOPE_VALUE IS :value AND $TASK_STATUS IS NOT :excludeStatus")
+    fun getAllTaskForScope(scopeType: ScopeType?, value: LocalDate?, excludeStatus: TaskStatus? = null): PagingSource<Int, TaskEntity>
 
     @Query("SELECT * FROM $TABLE_NAME WHERE $TASK_SCOPE_VALUE < :value AND $TASK_STATUS IS NOT :excludeStatus")
     fun getAllOverdueTasks(value: Long, excludeStatus: TaskStatus = TaskStatus.COMPLETE): PagingSource<Int, TaskEntity>

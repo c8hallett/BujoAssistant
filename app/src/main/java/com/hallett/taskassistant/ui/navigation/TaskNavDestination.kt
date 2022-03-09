@@ -4,6 +4,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.material.icons.filled.ErrorOutline
 import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.hallett.taskassistant.R
 import com.hallett.taskassistant.corndux.performers.actions.BottomNavigationClicked
@@ -33,5 +34,11 @@ sealed class TaskNavDestination(val route: String) {
         override val labelResId: Int = R.string.navigation_label_overdue_tasks
         override val icon: ImageVector = Icons.Filled.ErrorOutline
         override val action = BottomNavigationClicked(this)
+    }
+
+    object FutureTaskList: TaskNavDestination("futureTasks"), BottomNavigationScreen {
+        override val labelResId: Int = R.string.navigation_label_future_tasks
+        override val icon: ImageVector = Icons.Filled.Schedule
+        override val action: BottomNavigationClicked = BottomNavigationClicked(this)
     }
 }
