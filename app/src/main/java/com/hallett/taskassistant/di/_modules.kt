@@ -64,7 +64,7 @@ val cornduxModule = DI.Module("corndux_module") {
             CreateTaskScreenPerformer(instance(), instance()),
             DashboardScreenPerformer(instance(), instance()),
             FutureTaskPerformer(),
-            InitialSetupPerformer(instance(), instance()),
+            InitialSetupPerformer(instance(), instance(), instance(tag = Formatter.SIMPLE_LABEL)),
             OverdueTaskPerformer(instance()),
             RootNavigationPerformer(),
             TaskListPerformer(instance(), instance(), instance()),

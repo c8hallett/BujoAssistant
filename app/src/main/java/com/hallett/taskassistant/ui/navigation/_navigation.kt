@@ -86,10 +86,10 @@ fun MainNavHost(innerPadding: PaddingValues, navController: NavHostController) {
 @Composable
 fun TaskBottomAppBar() {
     val items = listOf(
-        TaskNavDestination.TaskList,
-        TaskNavDestination.FutureTaskList,
         TaskNavDestination.Dashboard,
-        TaskNavDestination.OverdueTasks
+        TaskNavDestination.FutureTaskList,
+        TaskNavDestination.OverdueTasks,
+        TaskNavDestination.TaskList,
     )
     TaskBottomAppBarImpl(items = items)
 }

@@ -13,7 +13,7 @@ sealed class TaskNavDestination(val route: String) {
 
     companion object {
         val startDestination: TaskNavDestination
-            get() = TaskList
+            get() = Dashboard
     }
 
     object CreateTask: TaskNavDestination("taskCreate")

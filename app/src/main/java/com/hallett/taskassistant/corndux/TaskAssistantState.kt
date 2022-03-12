@@ -5,6 +5,7 @@ import com.hallett.corndux.IState
 import com.hallett.domain.model.Task
 import com.hallett.scopes.model.Scope
 import com.hallett.scopes.model.ScopeType
+import com.hallett.taskassistant.ui.model.TaskView
 import com.hallett.taskassistant.ui.navigation.TaskNavDestination
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
@@ -42,8 +43,8 @@ data class DashboardState(
 )
 
 data class FutureTaskListState(
-    val unscheduledList: Flow<PagingData<Task>> = flowOf(),
-    val scheduledList: Flow<PagingData<Task>> = flowOf(),
+    val unscheduledList: Flow<PagingData<TaskView>> = flowOf(),
+    val scheduledList: Flow<PagingData<TaskView>> = flowOf(),
     val expandedList: ExpandedList = ExpandedList.UNSCHEDULED
 ) {
     enum class ExpandedList {

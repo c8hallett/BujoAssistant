@@ -7,6 +7,7 @@ import com.hallett.scopes.model.Scope
 import com.hallett.scopes.model.ScopeType
 import com.hallett.taskassistant.corndux.FutureTaskListState
 import com.hallett.taskassistant.corndux.ScopeSelectionInfo
+import com.hallett.taskassistant.ui.model.TaskView
 import com.hallett.taskassistant.ui.navigation.TaskNavDestination
 import kotlinx.coroutines.flow.Flow
 
@@ -25,5 +26,5 @@ data class UpdateTaskListCurrentlySelectedTask(val task: Task?): Commit
 
 data class UpdateCurrentScreen(val screen: TaskNavDestination): Commit
 
-data class UpdateFutureTaskLists(val scheduled: Flow<PagingData<Task>>, val unscheduled: Flow<PagingData<Task>>): Commit
+data class UpdateFutureTaskLists(val scheduled: Flow<PagingData<TaskView>>, val unscheduled: Flow<PagingData<TaskView>>): Commit
 data class UpdateCurrentlyExpandedList(val list: FutureTaskListState.ExpandedList): Commit

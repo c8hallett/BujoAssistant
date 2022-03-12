@@ -16,7 +16,6 @@ fun OverdueTasks() {
     val pagedTasks = store.observeState { it.components.overdueTask.taskList }
         .collectAsState().value.collectAsLazyPagingItems()
 
-
     Column {
         Text("Overdue tasks", style = MaterialTheme.typography.h6)
         Button(onClick = {store.dispatch(AddRandomOverdueTask)}){

@@ -7,9 +7,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -23,9 +26,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.items
 import com.hallett.domain.model.Task
 import com.hallett.taskassistant.corndux.FutureTaskListState.ExpandedList
 import com.hallett.taskassistant.corndux.performers.actions.ExpandList
+import com.hallett.taskassistant.corndux.performers.actions.TaskClickedInList
+import com.hallett.taskassistant.ui.model.TaskView
 import taskAssistantStore
 
 
@@ -58,7 +64,7 @@ fun FutureTaskList() {
 fun ColumnScope.ExpandableTaskList(
     label: String,
     isExpanded: Boolean,
-    items: LazyPagingItems<Task>,
+    items: LazyPagingItems<TaskView>,
     onHeaderClicked: () -> Unit
 ) {
     Row(
@@ -73,7 +79,7 @@ fun ColumnScope.ExpandableTaskList(
         Text(
             label,
             color = MaterialTheme.colors.onPrimary,
-            style = MaterialTheme.typography.h5,
+            style = MaterialTheme.typography.h3,
             modifier = Modifier.padding(12.dp)
         )
 
@@ -88,6 +94,25 @@ fun ColumnScope.ExpandableTaskList(
     if(isExpanded) {
         // TODO: noItems composable funcion?
         // tODO: onExpanded composable function
-        TaskList(pagedTasks = items, modifier = Modifier.weight(1f).animateContentSize()) {}
+        LazyColumn(
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = Modifier.weight(1.0f)
+                .padding(vertical = 12.dp, horizontal = 12.dp)
+        ) {
+            items(items) { item ->
+                when (item) {
+                    is TaskView.TaskHolder -> TaskItem(
+                        task = item.task,
+                        expandedOptions = null,
+                    ) {
+                    }
+                    is TaskView.HeaderHolder -> Text(
+                        item.text,
+                        style = MaterialTheme.typography.h6
+                    )
+                    else -> {}
+                }
+            }
+        }
     }
 }

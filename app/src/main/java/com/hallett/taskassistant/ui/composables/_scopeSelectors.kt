@@ -59,32 +59,6 @@ import org.kodein.di.compose.rememberInstance
 import taskAssistantStore
 
 @Composable
-fun ActiveScopeTypeSelector(
-    scopeType: ScopeType,
-    isExpanded: Boolean,
-    setIsExpanded: (Boolean) -> Unit,
-    onScopeTypeSelected: (ScopeType) -> Unit,
-) {
-    Row(
-        horizontalArrangement = SpaceBetween,
-        modifier = Modifier.fillMaxWidth()
-    ) {
-
-        ScopeTypeSelectorLabel(
-            scopeType = scopeType,
-            isExpanded = isExpanded,
-            setIsExpanded = setIsExpanded
-        )
-
-        ScopeTypeDropDownMenu(
-            isExpanded = isExpanded,
-            onDismiss = { setIsExpanded(false) },
-            onScopeTypeSelected = onScopeTypeSelected
-        )
-    }
-}
-
-@Composable
 fun ScopeTypeSelectorLabel(
     scopeType: ScopeType,
     isExpanded: Boolean,
@@ -292,27 +266,5 @@ fun ScopeListItemPreview() {
     ScopeListItem(
         scope = scopeCalculator.generateScope(),
         onScopeSelected = {}
-    )
-}
-
-@Composable
-@Preview
-fun ExpandedActiveScopeTypeSelectorPreview() {
-    ActiveScopeTypeSelector(
-        scopeType = ScopeType.DAY,
-        isExpanded = true,
-        setIsExpanded = {},
-        onScopeTypeSelected = {},
-    )
-}
-
-@Composable
-@Preview
-fun CollapsedActiveScopeTypeSelectorPreview() {
-    ActiveScopeTypeSelector(
-        scopeType = ScopeType.DAY,
-        isExpanded = false,
-        setIsExpanded = {},
-        onScopeTypeSelected = {},
     )
 }
