@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
+import com.hallett.corndux.Action
 import com.hallett.domain.model.Task
 import com.hallett.taskassistant.corndux.FutureTaskListState.ExpandedList
 import com.hallett.taskassistant.corndux.performers.actions.ExpandList
@@ -43,7 +44,9 @@ fun FutureTaskList() {
     val scheduledTasks = state.scheduledList.collectAsLazyPagingItems()
 
 
-    Column(modifier = Modifier.fillMaxWidth().fillMaxHeight()) {
+    Column(modifier = Modifier
+        .fillMaxWidth()
+        .fillMaxHeight()) {
         ExpandableTaskList(
             label = "Sometime",
             isExpanded = state.expandedList == ExpandedList.UNSCHEDULED,
@@ -92,27 +95,11 @@ fun ColumnScope.ExpandableTaskList(
         }
     }
     if(isExpanded) {
-        // TODO: noItems composable funcion?
-        // tODO: onExpanded composable function
-        LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-            modifier = Modifier.weight(1.0f)
-                .padding(vertical = 12.dp, horizontal = 12.dp)
-        ) {
-            items(items) { item ->
-                when (item) {
-                    is TaskView.TaskHolder -> TaskItem(
-                        task = item.task,
-                        expandedOptions = null,
-                    ) {
-                    }
-                    is TaskView.HeaderHolder -> Text(
-                        item.text,
-                        style = MaterialTheme.typography.h6
-                    )
-                    else -> {}
-                }
-            }
-        }
+        TaskList(
+            pagedTasks = items,
+            isTaskExpanded = { false },
+            onTaskClickedAction = { TaskClickedInList(it) },
+            modifier = Modifier.weight(1.0f),
+        )
     }
 }

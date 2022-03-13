@@ -23,6 +23,7 @@ import androidx.paging.compose.items
 import com.hallett.scopes.model.ScopeType
 import com.hallett.taskassistant.corndux.performers.actions.LoadLargerScope
 import com.hallett.taskassistant.corndux.performers.actions.LoadSmallerScope
+import com.hallett.taskassistant.corndux.performers.actions.TaskClickedInList
 import taskAssistantStore
 
 @Composable
@@ -43,26 +44,12 @@ fun TaskDashboard() {
                     .weight(1f)
             )
         } else {
-            LazyColumn(
-                verticalArrangement = Arrangement.Top,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-            ){
-                items(taskList) { task ->
-                    when (task) {
-                        null -> Spacer(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(12.dp)
-                        )
-                        else -> TaskItem(
-                            task = task,
-                            expandedOptions = null,
-                        ) {}
-                    }
-                }
-            }
+            TaskList(
+                pagedTasks = taskList,
+                isTaskExpanded = {false},
+                onTaskClickedAction = { TaskClickedInList(it)},
+                modifier = Modifier.weight(1.0f)
+            )
         }
         TaskDashboardFooter(scopeType = state.scopeType) {
             store.dispatch(LoadLargerScope)

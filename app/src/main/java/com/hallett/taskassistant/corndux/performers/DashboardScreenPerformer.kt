@@ -3,6 +3,7 @@ package com.hallett.taskassistant.corndux.performers
 import androidx.paging.PagingConfig
 import com.hallett.corndux.Action
 import com.hallett.corndux.Commit
+import com.hallett.corndux.Init
 import com.hallett.corndux.SideEffect
 import com.hallett.database.ITaskRepository
 import com.hallett.scopes.model.ScopeType
@@ -11,13 +12,16 @@ import com.hallett.taskassistant.corndux.IPerformer
 import com.hallett.taskassistant.corndux.TaskAssistantState
 import com.hallett.taskassistant.corndux.performers.actions.LoadLargerScope
 import com.hallett.taskassistant.corndux.performers.actions.LoadSmallerScope
+import com.hallett.taskassistant.corndux.performers.utils.TaskListTransformer
 import com.hallett.taskassistant.corndux.reducers.UpdateDashboardTaskList
 import com.hallett.taskassistant.ui.navigation.TaskNavDestination
 import java.time.LocalDate
+import kotlinx.coroutines.flow.map
 
 class DashboardScreenPerformer(
     private val taskRepo: ITaskRepository,
-    private val scopeCalculator: IScopeCalculator
+    private val scopeCalculator: IScopeCalculator,
+    private val transformer: TaskListTransformer,
     ): IPerformer {
 
     private val pagingConfig = PagingConfig(pageSize = 20)
@@ -29,11 +33,21 @@ class DashboardScreenPerformer(
         dispatchCommit: suspend (Commit) -> Unit,
         dispatchSideEffect: suspend (SideEffect) -> Unit,
     ) {
-        if(state.session.screen !is TaskNavDestination.Dashboard) return
-
         val dashboardState = state.components.dashboard
 
         when(action) {
+            is Init -> {
+                val currentScope = scopeCalculator.generateScope(state.components.dashboard.scopeType, LocalDate.now())
+                dispatchCommit(
+                    UpdateDashboardTaskList(
+                        scopeType = state.components.dashboard.scopeType,
+                        taskList = transformer.transform(
+                            tasks = taskRepo.observeTasksForScope(pagingConfig, currentScope),
+                            includeHeaders = false
+                        )
+                    )
+                )
+            }
             is LoadLargerScope -> {
                 val nextScopeType = dashboardState.scopeType.next()
                 if(nextScopeType != dashboardState.scopeType) {
@@ -42,7 +56,10 @@ class DashboardScreenPerformer(
                     dispatchCommit(
                         UpdateDashboardTaskList(
                             scopeType = nextScopeType,
-                            taskList = taskRepo.observeTasksForScope(pagingConfig, nextScope)
+                            taskList = transformer.transform(
+                                tasks = taskRepo.observeTasksForScope(pagingConfig, nextScope),
+                                includeHeaders = false
+                            )
                         )
                     )
                 }
@@ -55,7 +72,10 @@ class DashboardScreenPerformer(
                     dispatchCommit(
                         UpdateDashboardTaskList(
                             scopeType = prevScopeType,
-                            taskList = taskRepo.observeTasksForScope(pagingConfig, prevScope)
+                            taskList = transformer.transform(
+                                tasks = taskRepo.observeTasksForScope(pagingConfig, prevScope),
+                                includeHeaders = false
+                            )
                         )
                     )
                 }

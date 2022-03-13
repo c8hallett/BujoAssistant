@@ -15,6 +15,7 @@ import com.hallett.taskassistant.corndux.performers.actions.SelectNewScope
 import com.hallett.taskassistant.corndux.performers.actions.SelectNewScopeType
 import com.hallett.taskassistant.corndux.performers.actions.CancelTask
 import com.hallett.taskassistant.corndux.performers.actions.SubmitTask
+import com.hallett.taskassistant.corndux.performers.utils.ScopeSelectionInfoGenerator
 import com.hallett.taskassistant.corndux.sideeffects.NavigateUp
 import com.hallett.taskassistant.ui.navigation.TaskNavDestination
 

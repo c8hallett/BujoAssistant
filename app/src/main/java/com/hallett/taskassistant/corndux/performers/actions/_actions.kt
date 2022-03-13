@@ -13,9 +13,11 @@ object LoadSmallerScope: Action
 object AddRandomOverdueTask: Action
 
 data class ExpandList(val list: FutureTaskListState.ExpandedList): Action
-
 data class TaskClickedInList(val task: Task): Action
-data class DeleteTask(val task: Task): Action
-data class DeferTask(val task: Task): Action
-data class RescheduleTask(val task: Task): Action
-data class ToggleTaskComplete(val task: Task): Action
+
+sealed interface TaskAction: Action
+data class DeleteTask(val task: Task): TaskAction
+data class DeferTask(val task: Task): TaskAction
+data class RescheduleTask(val task: Task): TaskAction
+data class MarkTaskAsComplete(val task: Task): TaskAction
+data class MarkTaskAsIncomplete(val task: Task): TaskAction

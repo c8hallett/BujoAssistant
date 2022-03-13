@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.hallett.taskassistant.corndux.performers.actions.AddRandomOverdueTask
+import com.hallett.taskassistant.corndux.performers.actions.TaskClickedInList
 import taskAssistantStore
 
 @Composable
@@ -25,7 +26,11 @@ fun OverdueTasks() {
         if(pagedTasks.itemCount == 0) {
             Text("No overdue tasks!")
         } else {
-            TaskList(pagedTasks = pagedTasks) {}
+            TaskList(
+                pagedTasks = pagedTasks,
+                isTaskExpanded = { false },
+                onTaskClickedAction = { TaskClickedInList(it) }
+            )
         }
     }
 }

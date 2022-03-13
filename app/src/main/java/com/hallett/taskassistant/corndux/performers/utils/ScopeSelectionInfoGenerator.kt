@@ -1,4 +1,4 @@
-package com.hallett.taskassistant.corndux.performers
+package com.hallett.taskassistant.corndux.performers.utils
 
 import androidx.paging.Pager
 import androidx.paging.PagingConfig

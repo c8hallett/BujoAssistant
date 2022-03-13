@@ -16,10 +16,11 @@ import com.hallett.taskassistant.corndux.TaskAssistantStore
 import com.hallett.taskassistant.corndux.performers.DashboardScreenPerformer
 import com.hallett.taskassistant.corndux.performers.CreateTaskScreenPerformer
 import com.hallett.taskassistant.corndux.performers.FutureTaskPerformer
-import com.hallett.taskassistant.corndux.performers.InitialSetupPerformer
 import com.hallett.taskassistant.corndux.performers.OverdueTaskPerformer
-import com.hallett.taskassistant.corndux.performers.ScopeSelectionInfoGenerator
+import com.hallett.taskassistant.corndux.performers.utils.ScopeSelectionInfoGenerator
+import com.hallett.taskassistant.corndux.performers.TaskActionPerformer
 import com.hallett.taskassistant.corndux.performers.TaskListPerformer
+import com.hallett.taskassistant.corndux.performers.utils.TaskListTransformer
 import com.hallett.taskassistant.corndux.reducers.ComponentReducer
 import com.hallett.taskassistant.corndux.reducers.SessionReducer
 import com.hallett.taskassistant.ui.formatters.Formatter
@@ -62,12 +63,12 @@ val cornduxModule = DI.Module("corndux_module") {
     bindSingleton<List<Actor<out TaskAssistantState>>> {
         listOf(
             CreateTaskScreenPerformer(instance(), instance()),
-            DashboardScreenPerformer(instance(), instance()),
-            FutureTaskPerformer(),
-            InitialSetupPerformer(instance(), instance(), instance(tag = Formatter.SIMPLE_LABEL)),
-            OverdueTaskPerformer(instance()),
+            DashboardScreenPerformer(instance(), instance(), instance()),
+            FutureTaskPerformer(instance(), instance()),
+            OverdueTaskPerformer(instance(), instance()),
             RootNavigationPerformer(),
-            TaskListPerformer(instance(), instance(), instance()),
+            TaskActionPerformer(instance(), instance()),
+            TaskListPerformer(instance(), instance(), instance(), instance()),
             LoggingMiddleware(),
             ComponentReducer(),
             SessionReducer()
@@ -75,6 +76,9 @@ val cornduxModule = DI.Module("corndux_module") {
     }
     bindSingleton<ScopeSelectionInfoGenerator> {
         ScopeSelectionInfoGenerator(factory(), instance())
+    }
+    bindSingleton<TaskListTransformer> {
+        TaskListTransformer(instance(), instance(tag = Formatter.SIMPLE_LABEL))
     }
 }
 

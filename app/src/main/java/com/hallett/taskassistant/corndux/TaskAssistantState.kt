@@ -38,7 +38,7 @@ data class Components(
 
 // TODO: each component might have an error state?
 data class DashboardState(
-    val taskList: Flow<PagingData<Task>> = flowOf(),
+    val taskList: Flow<PagingData<TaskView>> = flowOf(),
     val scopeType: ScopeType = ScopeType.DAY // eventually make this nullable?
 )
 
@@ -53,6 +53,7 @@ data class FutureTaskListState(
     }
 }
 
+
 data class CreateTaskState(
     val taskName: String = "",
     val scope: Scope? = null,
@@ -61,20 +62,19 @@ data class CreateTaskState(
 
 data class TasksListState(
     val currentlyExpandedTask: Task? = null,
-    val taskList: Flow<PagingData<Task>> = flowOf(),
+    val taskList: Flow<PagingData<TaskView>> = flowOf(),
     val scope: Scope? = null,
     val scopeSelectionInfo: ScopeSelectionInfo? = null,
 )
 
 data class OverdueTasksState(
-    val taskList: Flow<PagingData<Task>> = flowOf(),
+    val taskList: Flow<PagingData<TaskView>> = flowOf(),
 )
 
 data class ScopeSelectionInfo(
     val scopeType: ScopeType,
     val scopes: Flow<PagingData<Scope>>
 )
-
 
 sealed class Error(message: String) {
     object EmptyTaskName: Error("Task name cannot be blank.")

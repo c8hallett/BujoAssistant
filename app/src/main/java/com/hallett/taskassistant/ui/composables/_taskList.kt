@@ -22,6 +22,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.RemoveCircleOutline
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -36,7 +37,6 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.hallett.domain.model.Task
 import com.hallett.domain.model.TaskStatus
-import com.hallett.taskassistant.corndux.performers.actions.ToggleTaskComplete
 import com.hallett.taskassistant.corndux.performers.actions.DeferTask
 import com.hallett.taskassistant.corndux.performers.actions.DeleteTask
 import com.hallett.taskassistant.corndux.performers.actions.TaskClickedInList
@@ -65,72 +65,11 @@ fun OpenTaskList() {
         if(pagedTasks.itemCount == 0) {
             Text("No tasks!")
         } else {
-            TaskList(pagedTasks = pagedTasks) { task ->
-                TaskOperations(task = task)
-            }
-        }
-    }
-}
-
-@Composable
-fun TaskList(pagedTasks: LazyPagingItems<Task>, modifier: Modifier = Modifier, expandedOptions: @Composable (Task) -> Unit) {
-    val store by taskAssistantStore()
-    val expandedTask by store.observeState { it.components.taskList.currentlyExpandedTask }.collectAsState()
-    
-    LazyColumn(verticalArrangement = spacedBy(12.dp), modifier = modifier.padding(vertical = 12.dp, horizontal = 12.dp)) {
-        items(pagedTasks) { task ->
-            when (task) {
-                null -> Spacer(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(12.dp)
-                )
-                else -> TaskItem(
-                    task = task,
-                    expandedOptions = if(expandedTask == task) expandedOptions else null,
-                ) {
-                    store.dispatch(TaskClickedInList(task))
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun TaskItem(task: Task, expandedOptions: @Composable ((Task) -> Unit)?, onClick: (Task) -> Unit) {
-    Card(modifier = Modifier
-        .fillMaxWidth()
-        .animateContentSize()
-    ) {
-        Column {
-            val textDecoration = if(task.status == TaskStatus.COMPLETE) TextDecoration.LineThrough else TextDecoration.None
-            Text(
-                text = task.taskName,
-                style = MaterialTheme.typography.h6.copy(textDecoration = textDecoration),
-                modifier = Modifier.padding(12.dp)
+            TaskList(
+                pagedTasks = pagedTasks,
+                isTaskExpanded = { it == state.currentlyExpandedTask },
+                onTaskClickedAction = { TaskClickedInList(it) }
             )
-            expandedOptions?.invoke(task)
-        }
-    }
-}
-
-@Composable
-fun TaskOperations(task: Task) {
-    val store by taskAssistantStore()
-    Row(
-        horizontalArrangement = SpaceBetween,
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        IconButton(onClick = { store.dispatch(DeleteTask(task)) }) {
-            Icon(Icons.Default.Delete, contentDescription = "delete task")
-        }
-        if(task.scope != null) {
-            IconButton(onClick = { store.dispatch(DeferTask(task)) }) {
-                Icon(Icons.Default.KeyboardArrowRight, contentDescription = "defer task")
-            }
-        }
-        IconButton(onClick = { store.dispatch(ToggleTaskComplete(task)) }) {
-            Icon(Icons.Default.CheckCircle, contentDescription = "complete task")
         }
     }
 }

@@ -11,15 +11,15 @@ import com.hallett.taskassistant.ui.model.TaskView
 import com.hallett.taskassistant.ui.navigation.TaskNavDestination
 import kotlinx.coroutines.flow.Flow
 
-data class UpdateDashboardTaskList(val scopeType: ScopeType, val taskList: Flow<PagingData<Task>>): Commit
+data class UpdateDashboardTaskList(val scopeType: ScopeType, val taskList: Flow<PagingData<TaskView>>): Commit
 
 data class UpdateCreateTaskSelectedScope(val scope: Scope?): Commit
 data class UpdateCreateTaskScopeSelectionInfo(val scopeSelectionInfo: ScopeSelectionInfo?): Commit
 object ClearCreateTaskState: Commit
 
-data class UpdateOverdueTaskList(val taskList: Flow<PagingData<Task>>): Commit
+data class UpdateOverdueTaskList(val taskList: Flow<PagingData<TaskView>>): Commit
 
-data class UpdateTaskListTaskList(val taskList: Flow<PagingData<Task>>): Commit
+data class UpdateTaskListTaskList(val taskList: Flow<PagingData<TaskView>>): Commit
 data class UpdateTaskListSelectedScope(val scope: Scope?): Commit
 data class UpdateTaskListScopeSelectionInfo(val scopeSelectionInfo: ScopeSelectionInfo?): Commit
 data class UpdateTaskListCurrentlySelectedTask(val task: Task?): Commit
