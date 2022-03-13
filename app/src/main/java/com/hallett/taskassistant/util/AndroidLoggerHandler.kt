@@ -7,7 +7,7 @@ import java.util.logging.Level
 import java.util.logging.LogManager
 import java.util.logging.LogRecord
 
-class AndroidLoggerHandler: Handler() {
+class AndroidLoggerHandler : Handler() {
 
     companion object {
         fun setup() = LogManager.getLogManager().getLogger("").run {
@@ -20,14 +20,14 @@ class AndroidLoggerHandler: Handler() {
     override fun isLoggable(record: LogRecord?): Boolean =
         super.isLoggable(record) && BuildConfig.DEBUG
 
-    override fun close() { }
+    override fun close() {}
 
-    override fun flush() { }
+    override fun flush() {}
 
     override fun publish(record: LogRecord) {
         val tag = record.loggerName
         val level = getAndroidLevel(record.level)
-        val message = when(val throwable = record.thrown) {
+        val message = when (val throwable = record.thrown) {
             null -> record.message
             else -> "${record.message}: ${Log.getStackTraceString(throwable)}"
         }
@@ -39,7 +39,7 @@ class AndroidLoggerHandler: Handler() {
         }
     }
 
-    private fun getAndroidLevel(level: Level): Int = when(level) {
+    private fun getAndroidLevel(level: Level): Int = when (level) {
         Level.SEVERE -> Log.ERROR
         Level.WARNING -> Log.WARN
         Level.INFO -> Log.INFO

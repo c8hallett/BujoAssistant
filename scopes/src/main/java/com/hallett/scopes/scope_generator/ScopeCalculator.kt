@@ -5,7 +5,7 @@ import com.hallett.scopes.model.ScopeType
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 
-internal class ScopeCalculator: IScopeCalculator {
+internal class ScopeCalculator : IScopeCalculator {
 
     private val truncateMap: Map<ScopeType, (LocalDate) -> LocalDate> = mapOf(
         ScopeType.DAY to { date -> date },

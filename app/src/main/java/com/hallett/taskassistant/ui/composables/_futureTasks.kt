@@ -1,18 +1,14 @@
 package com.hallett.taskassistant.ui.composables
 
-import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -26,9 +22,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.paging.compose.items
-import com.hallett.corndux.Action
-import com.hallett.domain.model.Task
 import com.hallett.taskassistant.corndux.FutureTaskListState.ExpandedList
 import com.hallett.taskassistant.corndux.performers.actions.ExpandList
 import com.hallett.taskassistant.corndux.performers.actions.TaskClickedInList
@@ -44,19 +37,23 @@ fun FutureTaskList() {
     val scheduledTasks = state.scheduledList.collectAsLazyPagingItems()
 
 
-    Column(modifier = Modifier
-        .fillMaxWidth()
-        .fillMaxHeight()) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight()
+    ) {
         ExpandableTaskList(
             label = "Sometime",
             isExpanded = state.expandedList == ExpandedList.UNSCHEDULED,
-            items = unscheduledTasks) {
+            items = unscheduledTasks
+        ) {
             store.dispatch(ExpandList(ExpandedList.UNSCHEDULED))
         }
         ExpandableTaskList(
             label = "Scheduled",
             isExpanded = state.expandedList == ExpandedList.SCHEDULED,
-            items = scheduledTasks) {
+            items = scheduledTasks
+        ) {
             store.dispatch(ExpandList(ExpandedList.SCHEDULED))
         }
     }
@@ -78,7 +75,7 @@ fun ColumnScope.ExpandableTaskList(
             .background(color = MaterialTheme.colors.primaryVariant)
             .padding(12.dp)
             .clickable { onHeaderClicked() },
-    ){
+    ) {
         Text(
             label,
             color = MaterialTheme.colors.onPrimary,
@@ -86,7 +83,7 @@ fun ColumnScope.ExpandableTaskList(
             modifier = Modifier.padding(12.dp)
         )
 
-        if(!isExpanded) {
+        if (!isExpanded) {
             Icon(
                 Icons.Default.ExpandMore,
                 "",
@@ -94,7 +91,7 @@ fun ColumnScope.ExpandableTaskList(
             )
         }
     }
-    if(isExpanded) {
+    if (isExpanded) {
         TaskList(
             pagedTasks = items,
             isTaskExpanded = { false },

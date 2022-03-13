@@ -19,11 +19,11 @@ fun OverdueTasks() {
 
     Column {
         Text("Overdue tasks", style = MaterialTheme.typography.h6)
-        Button(onClick = {store.dispatch(AddRandomOverdueTask)}){
+        Button(onClick = { store.dispatch(AddRandomOverdueTask) }) {
             Text("Random Overdue Task")
         }
 
-        if(pagedTasks.itemCount == 0) {
+        if (pagedTasks.itemCount == 0) {
             Text("No overdue tasks!")
         } else {
             TaskList(

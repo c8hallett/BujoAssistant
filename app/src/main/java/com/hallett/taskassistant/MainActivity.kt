@@ -18,8 +18,8 @@ import com.hallett.taskassistant.di.cornduxModule
 import com.hallett.taskassistant.di.formatterModule
 import com.hallett.taskassistant.di.pagingModule
 import com.hallett.taskassistant.di.utilModule
-import com.hallett.taskassistant.ui.navigation.MainNavHost
 import com.hallett.taskassistant.ui.composables.ScopeTypeDropDownMenu
+import com.hallett.taskassistant.ui.navigation.MainNavHost
 import com.hallett.taskassistant.ui.navigation.TaskBottomAppBar
 import com.hallett.taskassistant.ui.navigation.TaskFloatingActionBar
 import com.hallett.taskassistant.ui.theme.TaskAssistantTheme
@@ -27,12 +27,10 @@ import com.hallett.taskassistant.util.AndroidLoggerHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.collect
 import org.kodein.di.DI
 import org.kodein.di.android.x.androidXModule
 import org.kodein.di.bindProvider
 import org.kodein.di.compose.withDI
-import taskAssistantStore
 
 @ExperimentalCoroutinesApi
 @ExperimentalMaterialApi
@@ -65,7 +63,7 @@ class MainActivity : ComponentActivity() {
             cornduxModule,
             androidXModule(application),
             runtimeModule
-        ){
+        ) {
             Scaffold(
                 bottomBar = { TaskBottomAppBar() },
                 floatingActionButton = { TaskFloatingActionBar() },

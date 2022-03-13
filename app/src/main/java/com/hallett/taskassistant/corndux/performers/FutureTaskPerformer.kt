@@ -1,8 +1,6 @@
 package com.hallett.taskassistant.corndux.performers
 
 import androidx.paging.PagingConfig
-import androidx.paging.PagingData
-import androidx.paging.map
 import com.hallett.corndux.Action
 import com.hallett.corndux.Commit
 import com.hallett.corndux.Init
@@ -14,16 +12,12 @@ import com.hallett.taskassistant.corndux.performers.actions.ExpandList
 import com.hallett.taskassistant.corndux.performers.utils.TaskListTransformer
 import com.hallett.taskassistant.corndux.reducers.UpdateCurrentlyExpandedList
 import com.hallett.taskassistant.corndux.reducers.UpdateFutureTaskLists
-import com.hallett.taskassistant.ui.model.TaskAction
-import com.hallett.taskassistant.ui.model.TaskView
 import java.time.LocalDate
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 
 class FutureTaskPerformer(
     private val taskRepo: ITaskRepository,
     private val transformer: TaskListTransformer
-): IPerformer {
+) : IPerformer {
 
     private val pagingConfig = PagingConfig(pageSize = 20)
 
@@ -34,7 +28,7 @@ class FutureTaskPerformer(
         dispatchCommit: suspend (Commit) -> Unit,
         dispatchSideEffect: suspend (SideEffect) -> Unit
     ) {
-        when(action) {
+        when (action) {
             is Init -> {
                 val unscheduledList = taskRepo.observeTasksForScope(pagingConfig, null, false)
                 val scheduledList = taskRepo.observeFutureTasks(pagingConfig, LocalDate.now())

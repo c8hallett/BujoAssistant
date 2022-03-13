@@ -5,7 +5,6 @@ import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.hallett.domain.model.TaskStatus
-import com.hallett.scopes.model.Scope
 import com.hallett.scopes.model.ScopeType
 import java.time.LocalDate
 import java.util.Date

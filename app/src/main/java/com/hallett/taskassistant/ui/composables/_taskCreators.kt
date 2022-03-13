@@ -76,10 +76,10 @@ fun TaskCreation() {
     val createTaskInfo by store.observeState { it.components.createTask }.collectAsState()
     val shouldExpandCard = createTaskInfo.scopeSelectionInfo == null
 
-    var taskName by remember{ mutableStateOf("") }
+    var taskName by remember { mutableStateOf("") }
 
     Column(verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically)) {
-        val cardModifier = if(shouldExpandCard) Modifier else Modifier.weight(1.0f)
+        val cardModifier = if (shouldExpandCard) Modifier else Modifier.weight(1.0f)
 
         Card(backgroundColor = MaterialTheme.colors.surface, modifier = cardModifier) {
             Column(modifier = Modifier.padding(12.dp)) {
@@ -162,20 +162,20 @@ private fun String.trimExtraSpaces(): String {
     return this
         .trimStart()
         .foldRightIndexed("") { index, character, acc ->
-        when {
-            foundChar -> character + acc
-            character.isWhitespace() -> when {
-                // current character is a double space
-                this.getOrNull(index - 1)?.isWhitespace() == true -> acc
+            when {
+                foundChar -> character + acc
+                character.isWhitespace() -> when {
+                    // current character is a double space
+                    this.getOrNull(index - 1)?.isWhitespace() == true -> acc
+                    else -> {
+                        foundChar = true
+                        character + acc
+                    }
+                }
                 else -> {
                     foundChar = true
                     character + acc
                 }
             }
-            else -> {
-                foundChar = true
-                character + acc
-            }
         }
-    }
 }

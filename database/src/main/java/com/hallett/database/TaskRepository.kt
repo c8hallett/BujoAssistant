@@ -22,20 +22,21 @@ internal class TaskRepository(
     private val taskDao: TaskDao,
     private val dispatchers: DispatchersWrapper,
     private val scopeCalculator: IScopeCalculator
-): ITaskRepository {
+) : ITaskRepository {
 
     override fun getOverdueTasks(
         pagingConfig: PagingConfig,
         cutoff: LocalDate
-    ): Flow<PagingData<Task>> = Pager(pagingConfig){ taskDao.getAllOverdueTasks(cutoff.toEpochDay()) }
-        .flow
-        .flowOn(dispatchers.io)
-        .map { data -> data.map { entity -> entity.toTask() } }
+    ): Flow<PagingData<Task>> =
+        Pager(pagingConfig) { taskDao.getAllOverdueTasks(cutoff.toEpochDay()) }
+            .flow
+            .flowOn(dispatchers.io)
+            .map { data -> data.map { entity -> entity.toTask() } }
 
     override fun observeFutureTasks(
         pagingConfig: PagingConfig,
         cutoff: LocalDate
-    ): Flow<PagingData<Task>> = Pager(pagingConfig){ taskDao.getFutureTasks(cutoff.toEpochDay()) }
+    ): Flow<PagingData<Task>> = Pager(pagingConfig) { taskDao.getFutureTasks(cutoff.toEpochDay()) }
         .flow
         .flowOn(dispatchers.io)
         .map { data -> data.map { entity -> entity.toTask() } }
@@ -44,12 +45,12 @@ internal class TaskRepository(
         pagingConfig: PagingConfig,
         scope: Scope?,
         includeCompleted: Boolean
-    ): Flow<PagingData<Task>> = Pager(pagingConfig){
-            when(includeCompleted){
-                true -> taskDao.getAllTaskForScope(scope?.type, scope?.value)
-                false -> taskDao.getAllTaskForScope(scope?.type, scope?.value, TaskStatus.COMPLETE)
-            }
+    ): Flow<PagingData<Task>> = Pager(pagingConfig) {
+        when (includeCompleted) {
+            true -> taskDao.getAllTaskForScope(scope?.type, scope?.value)
+            false -> taskDao.getAllTaskForScope(scope?.type, scope?.value, TaskStatus.COMPLETE)
         }
+    }
         .flow
         .flowOn(dispatchers.io)
         .map { data -> data.map { entity -> entity.toTask() } }
@@ -68,10 +69,11 @@ internal class TaskRepository(
         )
     }
 
-    override suspend fun getTask(taskId: Long): Task? = when(val entity = taskDao.getTask(taskId)) {
-        null -> null
-        else -> entity.toTask()
-    }
+    override suspend fun getTask(taskId: Long): Task? =
+        when (val entity = taskDao.getTask(taskId)) {
+            null -> null
+            else -> entity.toTask()
+        }
 
     override suspend fun updateStatus(task: Task, status: TaskStatus) {
         val statusUpdate = TaskEntity.StatusUpdate(task.id, status)

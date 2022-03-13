@@ -17,7 +17,10 @@ class TaskListTransformer(
     private val scopeCalculator: IScopeCalculator,
     private val scopeLabelFormatter: Formatter<Scope?, String>
 ) {
-    fun transform(tasks: Flow<PagingData<Task>>, includeHeaders: Boolean): Flow<PagingData<TaskView>> {
+    fun transform(
+        tasks: Flow<PagingData<Task>>,
+        includeHeaders: Boolean
+    ): Flow<PagingData<TaskView>> {
         return tasks.map { pagingData ->
             pagingData.map {
                 TaskView.TaskHolder(it, getActionsForTask(it))
@@ -34,20 +37,21 @@ class TaskListTransformer(
     }
 
 
-    private fun getActionsForTask(task: Task): List<TaskAction> = mutableListOf<TaskAction>().apply {
-        add(TaskAction.DELETE)
+    private fun getActionsForTask(task: Task): List<TaskAction> =
+        mutableListOf<TaskAction>().apply {
+            add(TaskAction.DELETE)
 
-        when(task.status) {
-            TaskStatus.INCOMPLETE -> {
-                task.scope?.let { scope ->
-                    if(scopeCalculator.isCurrentOrFutureScope(scope)) {
-                        add(TaskAction.DEFER)
+            when (task.status) {
+                TaskStatus.INCOMPLETE -> {
+                    task.scope?.let { scope ->
+                        if (scopeCalculator.isCurrentOrFutureScope(scope)) {
+                            add(TaskAction.DEFER)
+                        }
                     }
+                    add(TaskAction.RESCHEDULE)
+                    add(TaskAction.COMPLETE)
                 }
-                add(TaskAction.RESCHEDULE)
-                add(TaskAction.COMPLETE)
+                TaskStatus.COMPLETE -> add(TaskAction.UNCOMPLETE)
             }
-            TaskStatus.COMPLETE -> add(TaskAction.UNCOMPLETE)
         }
-    }
 }

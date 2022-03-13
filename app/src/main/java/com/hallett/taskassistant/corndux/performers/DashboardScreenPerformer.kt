@@ -14,15 +14,13 @@ import com.hallett.taskassistant.corndux.performers.actions.LoadLargerScope
 import com.hallett.taskassistant.corndux.performers.actions.LoadSmallerScope
 import com.hallett.taskassistant.corndux.performers.utils.TaskListTransformer
 import com.hallett.taskassistant.corndux.reducers.UpdateDashboardTaskList
-import com.hallett.taskassistant.ui.navigation.TaskNavDestination
 import java.time.LocalDate
-import kotlinx.coroutines.flow.map
 
 class DashboardScreenPerformer(
     private val taskRepo: ITaskRepository,
     private val scopeCalculator: IScopeCalculator,
     private val transformer: TaskListTransformer,
-    ): IPerformer {
+) : IPerformer {
 
     private val pagingConfig = PagingConfig(pageSize = 20)
 
@@ -35,9 +33,12 @@ class DashboardScreenPerformer(
     ) {
         val dashboardState = state.components.dashboard
 
-        when(action) {
+        when (action) {
             is Init -> {
-                val currentScope = scopeCalculator.generateScope(state.components.dashboard.scopeType, LocalDate.now())
+                val currentScope = scopeCalculator.generateScope(
+                    state.components.dashboard.scopeType,
+                    LocalDate.now()
+                )
                 dispatchCommit(
                     UpdateDashboardTaskList(
                         scopeType = state.components.dashboard.scopeType,
@@ -50,7 +51,7 @@ class DashboardScreenPerformer(
             }
             is LoadLargerScope -> {
                 val nextScopeType = dashboardState.scopeType.next()
-                if(nextScopeType != dashboardState.scopeType) {
+                if (nextScopeType != dashboardState.scopeType) {
                     val nextScope = scopeCalculator.generateScope(nextScopeType, LocalDate.now())
 
                     dispatchCommit(
@@ -66,7 +67,7 @@ class DashboardScreenPerformer(
             }
             is LoadSmallerScope -> {
                 val prevScopeType = dashboardState.scopeType.previous()
-                if(prevScopeType != dashboardState.scopeType) {
+                if (prevScopeType != dashboardState.scopeType) {
                     val prevScope = scopeCalculator.generateScope(prevScopeType, LocalDate.now())
 
                     dispatchCommit(
@@ -83,7 +84,7 @@ class DashboardScreenPerformer(
         }
     }
 
-    private fun ScopeType.previous(): ScopeType = ScopeType.values().run{
+    private fun ScopeType.previous(): ScopeType = ScopeType.values().run {
         getOrElse(ordinal - 1) { first() }
     }
 

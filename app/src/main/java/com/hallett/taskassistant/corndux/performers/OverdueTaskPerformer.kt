@@ -12,14 +12,12 @@ import com.hallett.taskassistant.corndux.TaskAssistantState
 import com.hallett.taskassistant.corndux.performers.actions.AddRandomOverdueTask
 import com.hallett.taskassistant.corndux.performers.utils.TaskListTransformer
 import com.hallett.taskassistant.corndux.reducers.UpdateOverdueTaskList
-import com.hallett.taskassistant.ui.navigation.TaskNavDestination
 import java.time.LocalDate
-import kotlinx.coroutines.flow.map
 
 class OverdueTaskPerformer(
     private val taskRepo: ITaskRepository,
     private val transformer: TaskListTransformer,
-): IPerformer {
+) : IPerformer {
 
     private val pagingConfig = PagingConfig(pageSize = 20)
 
@@ -30,13 +28,15 @@ class OverdueTaskPerformer(
         dispatchCommit: suspend (Commit) -> Unit,
         dispatchSideEffect: suspend (SideEffect) -> Unit
     ) {
-        when(action) {
+        when (action) {
             is Init -> {
                 dispatchCommit(
-                    UpdateOverdueTaskList(taskList = transformer.transform(
-                        tasks = taskRepo.getOverdueTasks(pagingConfig, LocalDate.now()),
-                        includeHeaders = false
-                    ))
+                    UpdateOverdueTaskList(
+                        taskList = transformer.transform(
+                            tasks = taskRepo.getOverdueTasks(pagingConfig, LocalDate.now()),
+                            includeHeaders = false
+                        )
+                    )
                 )
             }
             is AddRandomOverdueTask -> {

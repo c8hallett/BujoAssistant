@@ -45,7 +45,7 @@ class ScopePagingSource(
             .filter { scopeCalculator.isCurrentOrFutureScope(it) }
 
         val firstItem = items.firstOrNull()
-        logI("First item in list: $firstItem (${firstItem?.let{ scopeCalculator.isCurrentScope(it)}})")
+        logI("First item in list: $firstItem (${firstItem?.let { scopeCalculator.isCurrentScope(it) }})")
         val prevKey = when {
             firstItem == null -> null
             scopeCalculator.isCurrentScope(firstItem) -> null

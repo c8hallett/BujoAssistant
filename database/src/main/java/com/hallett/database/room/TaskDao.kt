@@ -50,13 +50,23 @@ internal interface TaskDao {
     suspend fun getTask(taskId: Long): TaskEntity?
 
     @Query("SELECT * FROM $TABLE_NAME WHERE $TASK_SCOPE_TYPE IS :scopeType AND $TASK_SCOPE_VALUE IS :value AND $TASK_STATUS IS NOT :excludeStatus")
-    fun getAllTaskForScope(scopeType: ScopeType?, value: LocalDate?, excludeStatus: TaskStatus? = null): PagingSource<Int, TaskEntity>
+    fun getAllTaskForScope(
+        scopeType: ScopeType?,
+        value: LocalDate?,
+        excludeStatus: TaskStatus? = null
+    ): PagingSource<Int, TaskEntity>
 
     @Query("SELECT * FROM $TABLE_NAME WHERE $TASK_SCOPE_VALUE < :value AND $TASK_STATUS IS NOT :excludeStatus")
-    fun getAllOverdueTasks(value: Long, excludeStatus: TaskStatus = TaskStatus.COMPLETE): PagingSource<Int, TaskEntity>
+    fun getAllOverdueTasks(
+        value: Long,
+        excludeStatus: TaskStatus = TaskStatus.COMPLETE
+    ): PagingSource<Int, TaskEntity>
 
     @Query("SELECT * FROM $TABLE_NAME WHERE $TASK_SCOPE_VALUE > :value AND $TASK_STATUS IS NOT :excludeStatus ORDER BY $TASK_SCOPE_VALUE ASC, $TASK_SCOPE_TYPE DESC")
-    fun getFutureTasks(value: Long, excludeStatus: TaskStatus = TaskStatus.COMPLETE): PagingSource<Int, TaskEntity>
+    fun getFutureTasks(
+        value: Long,
+        excludeStatus: TaskStatus = TaskStatus.COMPLETE
+    ): PagingSource<Int, TaskEntity>
 
     @Update(entity = TaskEntity::class)
     suspend fun updateTaskStatus(update: TaskEntity.StatusUpdate)

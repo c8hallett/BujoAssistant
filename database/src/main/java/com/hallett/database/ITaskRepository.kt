@@ -14,7 +14,11 @@ interface ITaskRepository {
 
     fun observeFutureTasks(pagingConfig: PagingConfig, cutoff: LocalDate): Flow<PagingData<Task>>
 
-    fun observeTasksForScope(pagingConfig: PagingConfig, scope: Scope?, includeCompleted: Boolean = true): Flow<PagingData<Task>>
+    fun observeTasksForScope(
+        pagingConfig: PagingConfig,
+        scope: Scope?,
+        includeCompleted: Boolean = true
+    ): Flow<PagingData<Task>>
 
     suspend fun upsert(task: Task)
 

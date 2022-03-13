@@ -18,7 +18,7 @@ import com.hallett.taskassistant.corndux.performers.actions.TaskAction
 class TaskActionPerformer(
     private val taskRepo: ITaskRepository,
     private val scopeCalculator: IScopeCalculator,
-): IPerformer {
+) : IPerformer {
     override suspend fun performAction(
         state: TaskAssistantState,
         action: Action,
@@ -26,10 +26,10 @@ class TaskActionPerformer(
         dispatchCommit: suspend (Commit) -> Unit,
         dispatchSideEffect: suspend (SideEffect) -> Unit
     ) {
-        when(action) {
+        when (action) {
             !is TaskAction -> {}
             is DeleteTask -> taskRepo.deleteTask(action.task)
-            is DeferTask ->  {
+            is DeferTask -> {
                 val nextScope = action.task.scope?.let {
                     scopeCalculator.add(it, 1)
                 }
@@ -37,7 +37,7 @@ class TaskActionPerformer(
             }
             is RescheduleTask -> {} // trigger side effect to show dialog and prompt for new scope
             //  taskRepo.moveToNewScope(action.task, taskListState.scope)
-            is MarkTaskAsComplete ->  {
+            is MarkTaskAsComplete -> {
                 taskRepo.moveToNewScope(action.task, scopeCalculator.generateScope())
                 taskRepo.updateStatus(action.task, TaskStatus.COMPLETE)
             }

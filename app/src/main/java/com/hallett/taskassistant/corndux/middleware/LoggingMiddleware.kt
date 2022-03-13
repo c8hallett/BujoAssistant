@@ -1,12 +1,12 @@
 package com.hallett.taskassistant.corndux.middleware
 
 import com.hallett.corndux.Commit
-import com.hallett.corndux.Reducer
 import com.hallett.corndux.IState
 import com.hallett.corndux.Middleware
+import com.hallett.corndux.Reducer
 import com.hallett.logging.logD
 
-class LoggingMiddleware<State: IState>: Middleware<State> {
+class LoggingMiddleware<State : IState> : Middleware<State> {
     private lateinit var prevState: State
     private lateinit var prevPerformerState: State
     override suspend fun before(state: State, commit: Commit) {
@@ -20,7 +20,7 @@ class LoggingMiddleware<State: IState>: Middleware<State> {
         commit: Commit,
         reducer: Class<out Reducer<State>>
     ) {
-        when(state) {
+        when (state) {
             prevPerformerState -> logD("(${reducer.simpleName})")
             else -> {
                 logD("(${reducer.simpleName}) $state ->")

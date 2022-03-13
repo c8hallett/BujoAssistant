@@ -2,12 +2,9 @@ package com.hallett.taskassistant.ui.composables
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -19,7 +16,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.paging.compose.items
 import com.hallett.scopes.model.ScopeType
 import com.hallett.taskassistant.corndux.performers.actions.LoadLargerScope
 import com.hallett.taskassistant.corndux.performers.actions.LoadSmallerScope
@@ -36,7 +32,7 @@ fun TaskDashboard() {
         TaskDashboardHeader(scopeType = state.scopeType) {
             store.dispatch(LoadSmallerScope)
         }
-        if(taskList.itemCount == 0){
+        if (taskList.itemCount == 0) {
             Text(
                 "No current tasks!",
                 modifier = Modifier
@@ -46,8 +42,8 @@ fun TaskDashboard() {
         } else {
             TaskList(
                 pagedTasks = taskList,
-                isTaskExpanded = {false},
-                onTaskClickedAction = { TaskClickedInList(it)},
+                isTaskExpanded = { false },
+                onTaskClickedAction = { TaskClickedInList(it) },
                 modifier = Modifier.weight(1.0f)
             )
         }
@@ -70,6 +66,7 @@ fun TaskDashboardHeader(scopeType: ScopeType, onHeaderClicked: () -> Unit) {
         TaskDashboardLabel(scopeType = scopeType, highlighted = true)
     }
 }
+
 @Composable
 fun TaskDashboardFooter(scopeType: ScopeType, onFooterClicked: () -> Unit) {
     Column(modifier = Modifier
@@ -87,15 +84,15 @@ fun TaskDashboardFooter(scopeType: ScopeType, onFooterClicked: () -> Unit) {
 
 @Composable
 fun TaskDashboardLabel(scopeType: ScopeType, highlighted: Boolean) {
-    val label = when(scopeType) {
+    val label = when (scopeType) {
         ScopeType.DAY -> "today"
         ScopeType.WEEK -> "this week"
         ScopeType.MONTH -> "this month"
         ScopeType.YEAR -> "this year"
     }
 
-    val typography = if(highlighted) MaterialTheme.typography.h3 else MaterialTheme.typography.h6
-    val textColor = if(highlighted) MaterialTheme.colors.onSurface else Color.LightGray
+    val typography = if (highlighted) MaterialTheme.typography.h3 else MaterialTheme.typography.h6
+    val textColor = if (highlighted) MaterialTheme.colors.onSurface else Color.LightGray
     Text(
         label,
         style = typography,
@@ -111,9 +108,11 @@ fun HeaderFooterPreview() {
         TaskDashboardHeader(scopeType = selectedScopeType) {
 
         }
-        Surface(modifier = Modifier
-            .fillMaxWidth()
-            .height(120.dp), color = Color.White) {}
+        Surface(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(120.dp), color = Color.White
+        ) {}
         TaskDashboardFooter(scopeType = selectedScopeType) {
 
         }

@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-abstract class Store<State: IState>(
+abstract class Store<State : IState>(
     initialState: State,
     actors: List<Actor<out State>>,
     private val scope: CoroutineScope,
@@ -36,7 +36,7 @@ abstract class Store<State: IState>(
         scope.launch(customDispatcher) {
             actionChannel.consumeEach { newAction ->
                 // pass actions to pre-middlewares first
-                performers.forEach{ performer ->
+                performers.forEach { performer ->
                     performer.performAction(
                         state = stateFlow.value,
                         action = newAction,
@@ -76,7 +76,11 @@ abstract class Store<State: IState>(
 
     fun <T> observeState(select: (State) -> T): StateFlow<T> = stateFlow.map {
         select(it)
-    }.stateIn(scope, SharingStarted.WhileSubscribed(), select(stateFlow.value)) // this is so big sad, map{} takes away my ez peasy StateFlow type
+    }.stateIn(
+        scope,
+        SharingStarted.WhileSubscribed(),
+        select(stateFlow.value)
+    ) // this is so big sad, map{} takes away my ez peasy StateFlow type
 
 
     fun observeSideEffects(): Flow<SideEffect> = sideEffectFlow

@@ -25,10 +25,10 @@ import com.hallett.taskassistant.corndux.sideeffects.NavigateSingleTop
 import com.hallett.taskassistant.corndux.sideeffects.NavigateToRootDestination
 import com.hallett.taskassistant.corndux.sideeffects.NavigateUp
 import com.hallett.taskassistant.ui.composables.FutureTaskList
-import com.hallett.taskassistant.ui.composables.TaskDashboard
 import com.hallett.taskassistant.ui.composables.OpenTaskList
 import com.hallett.taskassistant.ui.composables.OverdueTasks
 import com.hallett.taskassistant.ui.composables.TaskCreation
+import com.hallett.taskassistant.ui.composables.TaskDashboard
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collect
 import org.kodein.di.compose.rememberInstance
@@ -68,7 +68,7 @@ fun MainNavHost(innerPadding: PaddingValues, navController: NavHostController) {
 
     LaunchedEffect(key1 = store) {
         store.observeSideEffects().collect { sideEffect ->
-            when(sideEffect) {
+            when (sideEffect) {
                 is NavigateUp -> navController.popBackStack()
                 is NavigateToRootDestination -> navController.navigate(sideEffect.destination.route) {
                     popUpTo(navController.graph.startDestinationId) { inclusive = true }
@@ -93,6 +93,7 @@ fun TaskBottomAppBar() {
     )
     TaskBottomAppBarImpl(items = items)
 }
+
 @Composable
 private fun TaskBottomAppBarImpl(items: List<BottomNavigationScreen>) {
     val store by taskAssistantStore()

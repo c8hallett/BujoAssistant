@@ -13,13 +13,13 @@ import kotlinx.coroutines.flow.flowOf
 data class TaskAssistantState(
     val session: Session = Session(),
     val components: Components = Components(),
-): IState {
+) : IState {
     inline fun updateSession(update: Session.() -> Session): TaskAssistantState {
-        return copy( session = session.update() )
+        return copy(session = session.update())
     }
 
     inline fun updateComponents(update: Components.() -> Components): TaskAssistantState {
-        return copy( components = components.update() )
+        return copy(components = components.update())
     }
 }
 
@@ -77,5 +77,5 @@ data class ScopeSelectionInfo(
 )
 
 sealed class Error(message: String) {
-    object EmptyTaskName: Error("Task name cannot be blank.")
+    object EmptyTaskName : Error("Task name cannot be blank.")
 }

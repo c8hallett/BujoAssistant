@@ -7,22 +7,22 @@ import com.hallett.database.ITaskRepository
 import com.hallett.scopes.model.ScopeType
 import com.hallett.taskassistant.corndux.IPerformer
 import com.hallett.taskassistant.corndux.TaskAssistantState
-import com.hallett.taskassistant.corndux.reducers.UpdateCreateTaskScopeSelectionInfo
-import com.hallett.taskassistant.corndux.reducers.UpdateCreateTaskSelectedScope
 import com.hallett.taskassistant.corndux.performers.actions.CancelScopeSelection
+import com.hallett.taskassistant.corndux.performers.actions.CancelTask
 import com.hallett.taskassistant.corndux.performers.actions.EnterScopeSelection
 import com.hallett.taskassistant.corndux.performers.actions.SelectNewScope
 import com.hallett.taskassistant.corndux.performers.actions.SelectNewScopeType
-import com.hallett.taskassistant.corndux.performers.actions.CancelTask
 import com.hallett.taskassistant.corndux.performers.actions.SubmitTask
 import com.hallett.taskassistant.corndux.performers.utils.ScopeSelectionInfoGenerator
+import com.hallett.taskassistant.corndux.reducers.UpdateCreateTaskScopeSelectionInfo
+import com.hallett.taskassistant.corndux.reducers.UpdateCreateTaskSelectedScope
 import com.hallett.taskassistant.corndux.sideeffects.NavigateUp
 import com.hallett.taskassistant.ui.navigation.TaskNavDestination
 
 class CreateTaskScreenPerformer(
     private val taskRepo: ITaskRepository,
     private val ssiGenerator: ScopeSelectionInfoGenerator,
-): IPerformer {
+) : IPerformer {
 
     override suspend fun performAction(
         state: TaskAssistantState,
@@ -31,16 +31,17 @@ class CreateTaskScreenPerformer(
         dispatchCommit: suspend (Commit) -> Unit,
         dispatchSideEffect: suspend (SideEffect) -> Unit,
     ) {
-        if(state.session.screen is TaskNavDestination.CreateTask) {
+        if (state.session.screen is TaskNavDestination.CreateTask) {
             val createTaskState = state.components.createTask
-            when(action) {
+            when (action) {
                 is SubmitTask -> {
                     taskRepo.createNewTask(action.taskName, createTaskState.scope)
                     dispatchSideEffect(NavigateUp)
                 }
                 is CancelTask -> dispatchSideEffect(NavigateUp)
                 is EnterScopeSelection -> {
-                    val scopeSelectionInfo = ssiGenerator.generateInfo(createTaskState.scope?.type ?: ScopeType.DAY)
+                    val scopeSelectionInfo =
+                        ssiGenerator.generateInfo(createTaskState.scope?.type ?: ScopeType.DAY)
                     dispatchCommit(
                         UpdateCreateTaskScopeSelectionInfo(scopeSelectionInfo = scopeSelectionInfo)
                     )

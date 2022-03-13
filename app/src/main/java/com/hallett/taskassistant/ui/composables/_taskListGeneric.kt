@@ -49,7 +49,7 @@ fun TaskList(
         modifier = modifier.padding(vertical = 12.dp, horizontal = 12.dp)
     ) {
         items(pagedTasks) { taskView ->
-            when(taskView) {
+            when (taskView) {
                 null -> {}
                 is TaskView.HeaderHolder -> Text(taskView.text, style = MaterialTheme.typography.h6)
                 is TaskView.TaskHolder -> TaskItem(
@@ -77,13 +77,14 @@ fun TaskItem(
     ) {
         taskHolder.run {
             Column {
-                val textDecoration = if(task.status == TaskStatus.COMPLETE) TextDecoration.LineThrough else TextDecoration.None
+                val textDecoration =
+                    if (task.status == TaskStatus.COMPLETE) TextDecoration.LineThrough else TextDecoration.None
                 Text(
                     text = task.taskName,
                     style = MaterialTheme.typography.h6.copy(textDecoration = textDecoration),
                     modifier = Modifier.padding(12.dp)
                 )
-                if(isExpanded) {
+                if (isExpanded) {
                     TaskActions(
                         task = task,
                         actions = actions
@@ -103,7 +104,7 @@ fun TaskActions(task: Task, actions: List<TaskAction>) {
         modifier = Modifier.fillMaxWidth()
     ) {
         actions.forEach { action ->
-            when(action) {
+            when (action) {
                 TaskAction.DEFER -> DeferTaskButton {
                     store.dispatch(DeferTask(task))
                 }

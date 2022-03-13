@@ -16,27 +16,27 @@ sealed class TaskNavDestination(val route: String) {
             get() = Dashboard
     }
 
-    object CreateTask: TaskNavDestination("taskCreate")
+    object CreateTask : TaskNavDestination("taskCreate")
 
-    object TaskList: TaskNavDestination("taskList"), BottomNavigationScreen {
+    object TaskList : TaskNavDestination("taskList"), BottomNavigationScreen {
         override val labelResId: Int = R.string.navigation_label_task_list
         override val icon: ImageVector = Icons.Filled.List
         override val action = BottomNavigationClicked(this)
     }
 
-    object Dashboard: TaskNavDestination("dashboard"), BottomNavigationScreen {
+    object Dashboard : TaskNavDestination("dashboard"), BottomNavigationScreen {
         override val labelResId: Int = R.string.navigation_label_dashboard
         override val icon: ImageVector = Icons.Filled.Dashboard
         override val action: BottomNavigationClicked = BottomNavigationClicked(this)
     }
 
-    object OverdueTasks: TaskNavDestination("overdueList"), BottomNavigationScreen {
+    object OverdueTasks : TaskNavDestination("overdueList"), BottomNavigationScreen {
         override val labelResId: Int = R.string.navigation_label_overdue_tasks
         override val icon: ImageVector = Icons.Filled.ErrorOutline
         override val action = BottomNavigationClicked(this)
     }
 
-    object FutureTaskList: TaskNavDestination("futureTasks"), BottomNavigationScreen {
+    object FutureTaskList : TaskNavDestination("futureTasks"), BottomNavigationScreen {
         override val labelResId: Int = R.string.navigation_label_future_tasks
         override val icon: ImageVector = Icons.Filled.Schedule
         override val action: BottomNavigationClicked = BottomNavigationClicked(this)
