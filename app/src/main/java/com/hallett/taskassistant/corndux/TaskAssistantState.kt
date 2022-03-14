@@ -35,14 +35,15 @@ data class Components(
     val futureTasks: FutureTaskListState = FutureTaskListState()
 )
 
-
 // TODO: each component might have an error state?
 data class DashboardState(
+    val currentlyExpandedTask: Task? = null,
     val taskList: Flow<PagingData<TaskView>> = flowOf(),
     val scopeType: ScopeType = ScopeType.DAY // eventually make this nullable?
 )
 
 data class FutureTaskListState(
+    val currentlyExpandedTask: Task? = null,
     val unscheduledList: Flow<PagingData<TaskView>> = flowOf(),
     val scheduledList: Flow<PagingData<TaskView>> = flowOf(),
     val expandedList: ExpandedList = ExpandedList.UNSCHEDULED
@@ -52,7 +53,6 @@ data class FutureTaskListState(
         UNSCHEDULED
     }
 }
-
 
 data class CreateTaskState(
     val taskName: String = "",
@@ -68,6 +68,7 @@ data class TasksListState(
 )
 
 data class OverdueTasksState(
+    val currentlyExpandedTask: Task? = null,
     val taskList: Flow<PagingData<TaskView>> = flowOf(),
 )
 

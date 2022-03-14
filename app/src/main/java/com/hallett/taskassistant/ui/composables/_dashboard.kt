@@ -17,9 +17,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.hallett.scopes.model.ScopeType
+import com.hallett.taskassistant.corndux.performers.actions.DashboardAction
 import com.hallett.taskassistant.corndux.performers.actions.LoadLargerScope
 import com.hallett.taskassistant.corndux.performers.actions.LoadSmallerScope
-import com.hallett.taskassistant.corndux.performers.actions.TaskClickedInList
 import taskAssistantStore
 
 @Composable
@@ -42,8 +42,8 @@ fun TaskDashboard() {
         } else {
             TaskList(
                 pagedTasks = taskList,
-                isTaskExpanded = { false },
-                onTaskClickedAction = { TaskClickedInList(it) },
+                isTaskExpanded = { state.currentlyExpandedTask == it },
+                onTaskClickedAction = { DashboardAction.TaskClickedInList(it) },
                 modifier = Modifier.weight(1.0f)
             )
         }

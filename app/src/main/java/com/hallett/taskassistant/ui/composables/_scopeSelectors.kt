@@ -45,18 +45,46 @@ import androidx.compose.ui.unit.dp
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
+import com.hallett.corndux.Action
 import com.hallett.scopes.model.Scope
 import com.hallett.scopes.model.ScopeType
 import com.hallett.scopes.scope_generator.IScopeCalculator
 import com.hallett.taskassistant.corndux.ScopeSelectionInfo
-import com.hallett.taskassistant.corndux.performers.actions.CancelScopeSelection
-import com.hallett.taskassistant.corndux.performers.actions.EnterScopeSelection
-import com.hallett.taskassistant.corndux.performers.actions.SelectNewScope
-import com.hallett.taskassistant.corndux.performers.actions.SelectNewScopeType
 import com.hallett.taskassistant.ui.formatters.Formatter
 import kotlinx.coroutines.flow.Flow
 import org.kodein.di.compose.rememberInstance
 import taskAssistantStore
+
+
+@Composable
+fun ScopeSelection(
+    scope: Scope?,
+    scopeSelectionInfo: ScopeSelectionInfo?,
+    enterScopeSelectionAction: Action,
+    cancelScopeSelectionAction: Action,
+    selectScopeAction: (Scope?) -> Action,
+    selectScopeTypeAction: (ScopeType) -> Action,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+            .animateContentSize()
+            .fillMaxWidth()
+    ) {
+        when (scopeSelectionInfo) {
+            null -> SelectableScopeLabel(
+                scope,
+                enterScopeSelectionAction
+            )
+            else -> ActiveScopeSelectionContent(
+                scopeSelectionInfo,
+                cancelScopeSelectionAction,
+                selectScopeAction,
+                selectScopeTypeAction,
+            )
+        }
+    }
+}
 
 @Composable
 fun ScopeTypeSelectorLabel(
@@ -138,13 +166,16 @@ fun ScopeTypeDropDownMenu(
 }
 
 @Composable
-fun SelectableScopeLabel(scope: Scope?) {
+fun SelectableScopeLabel(
+    scope: Scope?,
+    enterScopeSelectionAction: Action
+) {
     val store by taskAssistantStore()
     val labelFormatter: Formatter<Scope?, String> by rememberInstance(tag = Formatter.SIMPLE_LABEL)
 
     Text(
         text = labelFormatter.format(scope),
-        modifier = Modifier.clickable { store.dispatch(EnterScopeSelection) },
+        modifier = Modifier.clickable { store.dispatch(enterScopeSelectionAction) },
         style = MaterialTheme.typography.h5,
         color = MaterialTheme.colors.onSurface
     )
@@ -203,27 +234,14 @@ fun ScopeListItem(scope: Scope, onScopeSelected: (Scope) -> Unit) {
     }
 }
 
+
 @Composable
-fun ScopeSelection(
-    scope: Scope?,
-    scopeSelectionInfo: ScopeSelectionInfo?,
-    modifier: Modifier = Modifier
+fun ActiveScopeSelectionContent(
+    selectionInfo: ScopeSelectionInfo,
+    cancelScopeSelectionAction: Action,
+    selectScopeAction: (Scope?) -> Action,
+    selectScopeTypeAction: (ScopeType) -> Action,
 ) {
-    Column(
-        modifier = modifier
-            .animateContentSize()
-            .fillMaxWidth()
-    ) {
-        when (scopeSelectionInfo) {
-            null -> SelectableScopeLabel(scope)
-            else -> ActiveScopeSelectionContent(scopeSelectionInfo)
-        }
-    }
-}
-
-
-@Composable
-fun ActiveScopeSelectionContent(selectionInfo: ScopeSelectionInfo) {
     val store by taskAssistantStore()
     val (isExpanded, setIsExpanded) = remember { mutableStateOf(false) }
 
@@ -237,24 +255,24 @@ fun ActiveScopeSelectionContent(selectionInfo: ScopeSelectionInfo) {
                 .align(Alignment.CenterVertically)
         )
         IconButton(
-            onClick = { store.dispatch(SelectNewScope(null)) },
+            onClick = { store.dispatch(selectScopeAction(null)) },
         ) {
             Icon(Icons.Default.Delete, "remove scope", tint = MaterialTheme.colors.error)
         }
         IconButton(
-            onClick = { store.dispatch(CancelScopeSelection) },
+            onClick = { store.dispatch(cancelScopeSelectionAction) },
         ) {
             Icon(Icons.Default.Cancel, "cancel edit", tint = MaterialTheme.colors.error)
         }
         ScopeTypeDropDownMenu(
             isExpanded = isExpanded,
             onDismiss = { setIsExpanded(false) },
-            onScopeTypeSelected = { store.dispatch(SelectNewScopeType(it)) }
+            onScopeTypeSelected = { store.dispatch(selectScopeTypeAction(it)) }
         )
     }
     ScopeList(
         selectableScopes = selectionInfo.scopes,
-        onScopeSelected = { store.dispatch(SelectNewScope(it)) }
+        onScopeSelected = { store.dispatch(selectScopeAction(it)) }
     )
 }
 

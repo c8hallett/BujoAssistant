@@ -22,9 +22,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.hallett.domain.model.Task
 import com.hallett.taskassistant.corndux.FutureTaskListState.ExpandedList
 import com.hallett.taskassistant.corndux.performers.actions.ExpandList
-import com.hallett.taskassistant.corndux.performers.actions.TaskClickedInList
+import com.hallett.taskassistant.corndux.performers.actions.FutureTaskAction
 import com.hallett.taskassistant.ui.model.TaskView
 import taskAssistantStore
 
@@ -45,14 +46,16 @@ fun FutureTaskList() {
         ExpandableTaskList(
             label = "Sometime",
             isExpanded = state.expandedList == ExpandedList.UNSCHEDULED,
-            items = unscheduledTasks
+            items = unscheduledTasks,
+            expandedTask = state.currentlyExpandedTask
         ) {
             store.dispatch(ExpandList(ExpandedList.UNSCHEDULED))
         }
         ExpandableTaskList(
             label = "Scheduled",
             isExpanded = state.expandedList == ExpandedList.SCHEDULED,
-            items = scheduledTasks
+            items = scheduledTasks,
+            expandedTask = state.currentlyExpandedTask
         ) {
             store.dispatch(ExpandList(ExpandedList.SCHEDULED))
         }
@@ -64,6 +67,7 @@ fun FutureTaskList() {
 fun ColumnScope.ExpandableTaskList(
     label: String,
     isExpanded: Boolean,
+    expandedTask: Task?,
     items: LazyPagingItems<TaskView>,
     onHeaderClicked: () -> Unit
 ) {
@@ -94,8 +98,8 @@ fun ColumnScope.ExpandableTaskList(
     if (isExpanded) {
         TaskList(
             pagedTasks = items,
-            isTaskExpanded = { false },
-            onTaskClickedAction = { TaskClickedInList(it) },
+            isTaskExpanded = { expandedTask == it },
+            onTaskClickedAction = { FutureTaskAction.TaskClickedInList(it) },
             modifier = Modifier.weight(1.0f),
         )
     }

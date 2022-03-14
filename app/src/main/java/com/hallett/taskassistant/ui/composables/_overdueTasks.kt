@@ -6,16 +6,17 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.hallett.taskassistant.corndux.performers.actions.AddRandomOverdueTask
-import com.hallett.taskassistant.corndux.performers.actions.TaskClickedInList
+import com.hallett.taskassistant.corndux.performers.actions.OverdueTaskAction
 import taskAssistantStore
 
 @Composable
 fun OverdueTasks() {
     val store by taskAssistantStore()
-    val pagedTasks = store.observeState { it.components.overdueTask.taskList }
-        .collectAsState().value.collectAsLazyPagingItems()
+    val state by store.observeState { it.components.overdueTask }.collectAsState()
+    val pagedTasks = state.taskList.collectAsLazyPagingItems()
 
     Column {
         Text("Overdue tasks", style = MaterialTheme.typography.h6)
@@ -28,8 +29,8 @@ fun OverdueTasks() {
         } else {
             TaskList(
                 pagedTasks = pagedTasks,
-                isTaskExpanded = { false },
-                onTaskClickedAction = { TaskClickedInList(it) }
+                isTaskExpanded = { state.currentlyExpandedTask == it },
+                onTaskClickedAction = { OverdueTaskAction.TaskClickedInList(it) }
             )
         }
     }

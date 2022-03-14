@@ -11,7 +11,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.hallett.taskassistant.corndux.performers.actions.TaskClickedInList
+import com.hallett.taskassistant.corndux.performers.actions.TaskListAction
 import taskAssistantStore
 
 @Composable
@@ -31,6 +31,10 @@ fun OpenTaskList() {
         ScopeSelection(
             scope = state.scope,
             scopeSelectionInfo = state.scopeSelectionInfo,
+            enterScopeSelectionAction = TaskListAction.EnterScopeSelection,
+            cancelScopeSelectionAction = TaskListAction.CancelScopeSelection,
+            selectScopeAction = { TaskListAction.SelectNewScope(it) },
+            selectScopeTypeAction = { TaskListAction.SelectNewScopeType(it) },
             modifier = scopeSelectionHeight.padding(horizontal = 12.dp)
         )
 
@@ -40,7 +44,7 @@ fun OpenTaskList() {
             TaskList(
                 pagedTasks = pagedTasks,
                 isTaskExpanded = { it == state.currentlyExpandedTask },
-                onTaskClickedAction = { TaskClickedInList(it) }
+                onTaskClickedAction = { TaskListAction.TaskClickedInList(it) }
             )
         }
     }

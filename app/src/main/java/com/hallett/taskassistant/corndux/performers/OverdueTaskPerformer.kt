@@ -10,7 +10,9 @@ import com.hallett.scopes.model.ScopeType
 import com.hallett.taskassistant.corndux.IPerformer
 import com.hallett.taskassistant.corndux.TaskAssistantState
 import com.hallett.taskassistant.corndux.performers.actions.AddRandomOverdueTask
+import com.hallett.taskassistant.corndux.performers.actions.OverdueTaskAction
 import com.hallett.taskassistant.corndux.performers.utils.TaskListTransformer
+import com.hallett.taskassistant.corndux.reducers.UpdateOverdueExpandedTask
 import com.hallett.taskassistant.corndux.reducers.UpdateOverdueTaskList
 import java.time.LocalDate
 
@@ -37,6 +39,16 @@ class OverdueTaskPerformer(
                             includeHeaders = false
                         )
                     )
+                )
+            }
+            !is OverdueTaskAction -> {}
+            is OverdueTaskAction.TaskClickedInList -> {
+                val newTask = when(action.task){
+                    state.components.overdueTask.currentlyExpandedTask -> null
+                    else -> action.task
+                }
+                dispatchCommit(
+                    UpdateOverdueExpandedTask(newTask)
                 )
             }
             is AddRandomOverdueTask -> {

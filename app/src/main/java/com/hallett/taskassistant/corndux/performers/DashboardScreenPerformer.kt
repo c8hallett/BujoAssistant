@@ -10,9 +10,12 @@ import com.hallett.scopes.model.ScopeType
 import com.hallett.scopes.scope_generator.IScopeCalculator
 import com.hallett.taskassistant.corndux.IPerformer
 import com.hallett.taskassistant.corndux.TaskAssistantState
+import com.hallett.taskassistant.corndux.performers.actions.DashboardAction
 import com.hallett.taskassistant.corndux.performers.actions.LoadLargerScope
 import com.hallett.taskassistant.corndux.performers.actions.LoadSmallerScope
+import com.hallett.taskassistant.corndux.performers.actions.OverdueTaskAction
 import com.hallett.taskassistant.corndux.performers.utils.TaskListTransformer
+import com.hallett.taskassistant.corndux.reducers.UpdateDashboardExpandedTask
 import com.hallett.taskassistant.corndux.reducers.UpdateDashboardTaskList
 import java.time.LocalDate
 
@@ -47,6 +50,16 @@ class DashboardScreenPerformer(
                             includeHeaders = false
                         )
                     )
+                )
+            }
+            !is DashboardAction -> {}
+            is DashboardAction.TaskClickedInList -> {
+                val newTask = when(action.task){
+                    dashboardState.currentlyExpandedTask -> null
+                    else -> action.task
+                }
+                dispatchCommit(
+                    UpdateDashboardExpandedTask(newTask)
                 )
             }
             is LoadLargerScope -> {

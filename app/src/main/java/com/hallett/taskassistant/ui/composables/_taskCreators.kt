@@ -31,6 +31,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.hallett.taskassistant.corndux.performers.actions.CancelTask
+import com.hallett.taskassistant.corndux.performers.actions.CreateTaskAction
 import com.hallett.taskassistant.corndux.performers.actions.SubmitTask
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -91,7 +92,14 @@ fun TaskCreation() {
                     textStyle = MaterialTheme.typography.h6.copy(color = MaterialTheme.colors.onSurface),
                     modifier = Modifier.fillMaxWidth(),
                 )
-                ScopeSelection(createTaskInfo.scope, createTaskInfo.scopeSelectionInfo)
+                ScopeSelection(
+                    scope = createTaskInfo.scope,
+                    scopeSelectionInfo = createTaskInfo.scopeSelectionInfo,
+                    enterScopeSelectionAction = CreateTaskAction.EnterScopeSelection,
+                    cancelScopeSelectionAction = CreateTaskAction.CancelScopeSelection,
+                    selectScopeAction = { CreateTaskAction.SelectNewScope(it) },
+                    selectScopeTypeAction = { CreateTaskAction.SelectNewScopeType(it) }
+                )
             }
         }
 

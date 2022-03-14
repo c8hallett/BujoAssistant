@@ -25,7 +25,11 @@ data class UpdateOverdueTaskList(val taskList: Flow<PagingData<TaskView>>) : Com
 data class UpdateTaskListTaskList(val taskList: Flow<PagingData<TaskView>>) : Commit
 data class UpdateTaskListSelectedScope(val scope: Scope?) : Commit
 data class UpdateTaskListScopeSelectionInfo(val scopeSelectionInfo: ScopeSelectionInfo?) : Commit
-data class UpdateTaskListCurrentlySelectedTask(val task: Task?) : Commit
+
+data class UpdateTaskListExpandedTask(val task: Task?) : Commit
+data class UpdateDashboardExpandedTask(val task: Task?) : Commit
+data class UpdateOverdueExpandedTask(val task: Task?) : Commit
+data class UpdateFutureExpandedTask(val task: Task?) : Commit
 
 data class UpdateCurrentScreen(val screen: TaskNavDestination) : Commit
 

@@ -19,27 +19,37 @@ class ComponentReducer : IReducer {
                 )
             }
             is ClearCreateTaskState -> state.updateCreateTask { CreateTaskState() }
+
             is UpdateDashboardTaskList -> state.updateDashboard {
                 copy(
                     scopeType = commit.scopeType,
                     taskList = commit.taskList
                 )
             }
+            is UpdateDashboardExpandedTask -> state.updateDashboard {
+                copy(currentlyExpandedTask = commit.task)
+            }
+
             is UpdateOverdueTaskList -> state.updateOverdueTask { copy(taskList = commit.taskList) }
+            is UpdateOverdueExpandedTask -> state.updateOverdueTask {
+                copy(currentlyExpandedTask = commit.task)
+            }
             is UpdateTaskListTaskList -> state.updateTaskList { copy(taskList = commit.taskList) }
             is UpdateTaskListSelectedScope -> state.updateTaskList { copy(scope = commit.scope) }
             is UpdateTaskListScopeSelectionInfo -> state.updateTaskList { copy(scopeSelectionInfo = commit.scopeSelectionInfo) }
-            is UpdateTaskListCurrentlySelectedTask -> state.updateTaskList {
-                copy(
-                    currentlyExpandedTask = commit.task
-                )
+            is UpdateTaskListExpandedTask -> state.updateTaskList {
+                copy(currentlyExpandedTask = commit.task)
             }
+
             is UpdateCurrentlyExpandedList -> state.updateFutureTaskList { copy(expandedList = commit.list) }
             is UpdateFutureTaskLists -> state.updateFutureTaskList {
                 copy(
                     unscheduledList = commit.unscheduled,
                     scheduledList = commit.scheduled
                 )
+            }
+            is UpdateFutureExpandedTask -> state.updateFutureTaskList {
+                copy(currentlyExpandedTask = commit.task)
             }
             else -> state
         }

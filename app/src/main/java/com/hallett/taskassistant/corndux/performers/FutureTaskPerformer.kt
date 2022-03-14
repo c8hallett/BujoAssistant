@@ -9,8 +9,10 @@ import com.hallett.database.ITaskRepository
 import com.hallett.taskassistant.corndux.IPerformer
 import com.hallett.taskassistant.corndux.TaskAssistantState
 import com.hallett.taskassistant.corndux.performers.actions.ExpandList
+import com.hallett.taskassistant.corndux.performers.actions.FutureTaskAction
 import com.hallett.taskassistant.corndux.performers.utils.TaskListTransformer
 import com.hallett.taskassistant.corndux.reducers.UpdateCurrentlyExpandedList
+import com.hallett.taskassistant.corndux.reducers.UpdateFutureExpandedTask
 import com.hallett.taskassistant.corndux.reducers.UpdateFutureTaskLists
 import java.time.LocalDate
 
@@ -44,6 +46,14 @@ class FutureTaskPerformer(
                         )
                     )
                 )
+            }
+            !is FutureTaskAction -> {}
+            is FutureTaskAction.TaskClickedInList -> {
+                val newTask = when(action.task){
+                    state.components.futureTasks.currentlyExpandedTask -> null
+                    else -> action.task
+                }
+                dispatchCommit( UpdateFutureExpandedTask(newTask) )
             }
             is ExpandList -> dispatchCommit(UpdateCurrentlyExpandedList(action.list))
         }
