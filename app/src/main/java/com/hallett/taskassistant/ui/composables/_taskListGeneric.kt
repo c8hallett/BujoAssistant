@@ -29,6 +29,7 @@ import androidx.paging.compose.items
 import com.hallett.corndux.Action
 import com.hallett.domain.model.Task
 import com.hallett.domain.model.TaskStatus
+import com.hallett.taskassistant.corndux.interpreters.TaskInListClicked
 import com.hallett.taskassistant.corndux.performers.actions.DeferTask
 import com.hallett.taskassistant.corndux.performers.actions.DeleteTask
 import com.hallett.taskassistant.corndux.performers.actions.MarkTaskAsComplete
@@ -36,13 +37,13 @@ import com.hallett.taskassistant.corndux.performers.actions.MarkTaskAsIncomplete
 import com.hallett.taskassistant.corndux.performers.actions.RescheduleTask
 import com.hallett.taskassistant.ui.model.TaskAction
 import com.hallett.taskassistant.ui.model.TaskView
+import taskAssistantInterpreter
 import taskAssistantStore
 
 @Composable
 fun TaskList(
     pagedTasks: LazyPagingItems<TaskView>,
     isTaskExpanded: (Task) -> Boolean,
-    onTaskClickedAction: (Task) -> Action,
     modifier: Modifier = Modifier,
 ) {
     LazyColumn(
@@ -57,7 +58,6 @@ fun TaskList(
                 is TaskView.TaskHolder -> TaskItem(
                     taskHolder = taskView,
                     isExpanded = isTaskExpanded(taskView.task),
-                    onClickedAction = onTaskClickedAction(taskView.task),
                 )
             }
         }
@@ -68,12 +68,11 @@ fun TaskList(
 fun TaskItem(
     taskHolder: TaskView.TaskHolder,
     isExpanded: Boolean,
-    onClickedAction: Action,
     modifier: Modifier = Modifier,
 ) {
-    val store by taskAssistantStore()
+    val interpreter by taskAssistantInterpreter()
     Card(modifier = modifier
-        .clickable { store.dispatch(onClickedAction) }
+        .clickable { interpreter.dispatch(TaskInListClicked(taskHolder.task)) }
         .fillMaxWidth()
         .animateContentSize()
     ) {

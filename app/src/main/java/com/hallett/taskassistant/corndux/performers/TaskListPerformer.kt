@@ -75,7 +75,7 @@ class TaskListPerformer(
                     UpdateTaskListScopeSelectionInfo(scopeSelectionInfo = scopeSelectionInfo)
                 )
             }
-            is TaskListAction.TaskClickedInList -> when (action.task) {
+            is TaskListAction.ClickTaskInList -> when (action.task) {
                 taskListState.currentlyExpandedTask -> dispatchCommit(
                     UpdateTaskListExpandedTask(task = null)
                 )

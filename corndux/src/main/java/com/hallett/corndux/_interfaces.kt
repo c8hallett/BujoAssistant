@@ -8,6 +8,16 @@ object Init : Action
 
 interface Commit
 
+interface Event
+abstract class Interpreter<State: IState>(private val store: Store<State>) {
+    protected abstract fun mapEvent(event: Event): Action?
+    fun dispatch(event: Event) {
+        mapEvent(event)?.let { action ->
+            store.dispatch(action)
+        }
+    }
+}
+
 
 sealed interface Actor<State : IState>
 

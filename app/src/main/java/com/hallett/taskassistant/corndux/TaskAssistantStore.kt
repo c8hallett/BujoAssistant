@@ -1,6 +1,7 @@
 package com.hallett.taskassistant.corndux
 
 import com.hallett.corndux.Actor
+import com.hallett.corndux.Interpreter
 import com.hallett.corndux.Middleware
 import com.hallett.corndux.Performer
 import com.hallett.corndux.Reducer
@@ -17,3 +18,4 @@ typealias IStore = Store<TaskAssistantState>
 typealias IReducer = Reducer<TaskAssistantState>
 typealias IMiddleware = Middleware<TaskAssistantState>
 typealias IPerformer = Performer<TaskAssistantState>
+typealias IInterpreter = Interpreter<TaskAssistantState>

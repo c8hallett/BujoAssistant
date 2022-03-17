@@ -13,7 +13,6 @@ import com.hallett.taskassistant.corndux.TaskAssistantState
 import com.hallett.taskassistant.corndux.performers.actions.DashboardAction
 import com.hallett.taskassistant.corndux.performers.actions.LoadLargerScope
 import com.hallett.taskassistant.corndux.performers.actions.LoadSmallerScope
-import com.hallett.taskassistant.corndux.performers.actions.OverdueTaskAction
 import com.hallett.taskassistant.corndux.performers.utils.TaskListTransformer
 import com.hallett.taskassistant.corndux.reducers.UpdateDashboardExpandedTask
 import com.hallett.taskassistant.corndux.reducers.UpdateDashboardTaskList
@@ -53,7 +52,7 @@ class DashboardScreenPerformer(
                 )
             }
             !is DashboardAction -> {}
-            is DashboardAction.TaskClickedInList -> {
+            is DashboardAction.ClickTaskInList -> {
                 val newTask = when(action.task){
                     dashboardState.currentlyExpandedTask -> null
                     else -> action.task

@@ -30,9 +30,18 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.hallett.corndux.Action
+import com.hallett.corndux.Event
+import com.hallett.taskassistant.corndux.IInterpreter
+import com.hallett.taskassistant.corndux.IStore
+import com.hallett.taskassistant.corndux.interpreters.NewScopeClicked
+import com.hallett.taskassistant.corndux.interpreters.NewScopeTypeClicked
+import com.hallett.taskassistant.corndux.interpreters.ScopeSelectionCancelled
+import com.hallett.taskassistant.corndux.interpreters.ScopeSelectionEntered
 import com.hallett.taskassistant.corndux.performers.actions.CancelTask
 import com.hallett.taskassistant.corndux.performers.actions.CreateTaskAction
 import com.hallett.taskassistant.corndux.performers.actions.SubmitTask
+import java.util.Collections.singleton
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -40,7 +49,23 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.kodein.di.bindSingleton
+import org.kodein.di.compose.instance
+import org.kodein.di.compose.subDI
+import org.kodein.di.instance
+import org.kodein.di.singleton
 import taskAssistantStore
+
+
+class CreateTaskInterpreter(store: IStore): IInterpreter(store) {
+    override fun mapEvent(event: Event): Action? = when(event) {
+        is NewScopeClicked -> CreateTaskAction.SelectNewScope(event.newTaskScope)
+        is NewScopeTypeClicked -> CreateTaskAction.SelectNewScopeType(event.scopeType)
+        ScopeSelectionCancelled -> CreateTaskAction.CancelScopeSelection
+        ScopeSelectionEntered -> CreateTaskAction.EnterScopeSelection
+        else -> null
+    }
+}
 
 @Composable
 fun TaskSelectionButtons(onTaskSubmitted: () -> Unit, onTaskCancelled: () -> Unit) {
@@ -73,40 +98,40 @@ fun TaskSelectionButtons(onTaskSubmitted: () -> Unit, onTaskCancelled: () -> Uni
 @ObsoleteCoroutinesApi
 @Composable
 fun TaskCreation() {
-    val store by taskAssistantStore()
-    val createTaskInfo by store.observeState { it.components.createTask }.collectAsState()
-    val shouldExpandCard = createTaskInfo.scopeSelectionInfo == null
+    subDI(diBuilder = {
+        bindSingleton { CreateTaskInterpreter(instance()) }
+    }) {
+        val store by taskAssistantStore()
+        val createTaskInfo by store.observeState { it.components.createTask }.collectAsState()
+        val shouldExpandCard = createTaskInfo.scopeSelectionInfo == null
 
-    var taskName by remember { mutableStateOf("") }
+        var taskName by remember { mutableStateOf("") }
 
-    Column(verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically)) {
-        val cardModifier = if (shouldExpandCard) Modifier else Modifier.weight(1.0f)
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically)) {
+            val cardModifier = if (shouldExpandCard) Modifier else Modifier.weight(1.0f)
 
-        Card(backgroundColor = MaterialTheme.colors.surface, modifier = cardModifier) {
-            Column(modifier = Modifier.padding(12.dp)) {
-                BasicTextField(
-                    value = taskName,
-                    onValueChange = { newTaskName: String ->
-                        taskName = newTaskName
-                    },
-                    textStyle = MaterialTheme.typography.h6.copy(color = MaterialTheme.colors.onSurface),
-                    modifier = Modifier.fillMaxWidth(),
-                )
-                ScopeSelection(
-                    scope = createTaskInfo.scope,
-                    scopeSelectionInfo = createTaskInfo.scopeSelectionInfo,
-                    enterScopeSelectionAction = CreateTaskAction.EnterScopeSelection,
-                    cancelScopeSelectionAction = CreateTaskAction.CancelScopeSelection,
-                    selectScopeAction = { CreateTaskAction.SelectNewScope(it) },
-                    selectScopeTypeAction = { CreateTaskAction.SelectNewScopeType(it) }
-                )
+            Card(backgroundColor = MaterialTheme.colors.surface, modifier = cardModifier) {
+                Column(modifier = Modifier.padding(12.dp)) {
+                    BasicTextField(
+                        value = taskName,
+                        onValueChange = { newTaskName: String ->
+                            taskName = newTaskName
+                        },
+                        textStyle = MaterialTheme.typography.h6.copy(color = MaterialTheme.colors.onSurface),
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                    ScopeSelection(
+                        scope = createTaskInfo.scope,
+                        scopeSelectionInfo = createTaskInfo.scopeSelectionInfo,
+                    )
+                }
             }
-        }
 
-        TaskSelectionButtons(
-            onTaskSubmitted = { store.dispatch(SubmitTask(taskName.trimExtraSpaces())) },
-            onTaskCancelled = { store.dispatch(CancelTask) }
-        )
+            TaskSelectionButtons(
+                onTaskSubmitted = { store.dispatch(SubmitTask(taskName.trimExtraSpaces())) },
+                onTaskCancelled = { store.dispatch(CancelTask) }
+            )
+        }
     }
 }
 

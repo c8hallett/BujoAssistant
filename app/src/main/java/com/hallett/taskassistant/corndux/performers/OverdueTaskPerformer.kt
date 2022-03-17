@@ -42,7 +42,7 @@ class OverdueTaskPerformer(
                 )
             }
             !is OverdueTaskAction -> {}
-            is OverdueTaskAction.TaskClickedInList -> {
+            is OverdueTaskAction.ClickTaskInList -> {
                 val newTask = when(action.task){
                     state.components.overdueTask.currentlyExpandedTask -> null
                     else -> action.task

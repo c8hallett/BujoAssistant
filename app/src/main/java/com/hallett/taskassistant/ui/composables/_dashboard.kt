@@ -16,39 +16,57 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.hallett.corndux.Action
+import com.hallett.corndux.Event
 import com.hallett.scopes.model.ScopeType
+import com.hallett.taskassistant.corndux.IInterpreter
+import com.hallett.taskassistant.corndux.IStore
+import com.hallett.taskassistant.corndux.interpreters.TaskInListClicked
 import com.hallett.taskassistant.corndux.performers.actions.DashboardAction
 import com.hallett.taskassistant.corndux.performers.actions.LoadLargerScope
 import com.hallett.taskassistant.corndux.performers.actions.LoadSmallerScope
+import org.kodein.di.bindSingleton
+import org.kodein.di.compose.subDI
+import org.kodein.di.instance
 import taskAssistantStore
+
+class DashboardInterpreter(store: IStore): IInterpreter(store) {
+    override fun mapEvent(event: Event): Action? = when (event){
+        is TaskInListClicked -> DashboardAction.ClickTaskInList(event.task)
+        else -> null
+    }
+}
 
 @Composable
 fun TaskDashboard() {
-    val store by taskAssistantStore()
-    val state by store.observeState { it.components.dashboard }.collectAsState()
-    val taskList = state.taskList.collectAsLazyPagingItems()
+    subDI(diBuilder = {
+        bindSingleton { DashboardInterpreter(instance()) }
+    }) {
+        val store by taskAssistantStore()
+        val state by store.observeState { it.components.dashboard }.collectAsState()
+        val taskList = state.taskList.collectAsLazyPagingItems()
 
-    Column {
-        TaskDashboardHeader(scopeType = state.scopeType) {
-            store.dispatch(LoadSmallerScope)
-        }
-        if (taskList.itemCount == 0) {
-            Text(
-                "No current tasks!",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-            )
-        } else {
-            TaskList(
-                pagedTasks = taskList,
-                isTaskExpanded = { state.currentlyExpandedTask == it },
-                onTaskClickedAction = { DashboardAction.TaskClickedInList(it) },
-                modifier = Modifier.weight(1.0f)
-            )
-        }
-        TaskDashboardFooter(scopeType = state.scopeType) {
-            store.dispatch(LoadLargerScope)
+        Column {
+            TaskDashboardHeader(scopeType = state.scopeType) {
+                store.dispatch(LoadSmallerScope)
+            }
+            if (taskList.itemCount == 0) {
+                Text(
+                    "No current tasks!",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
+                )
+            } else {
+                TaskList(
+                    pagedTasks = taskList,
+                    isTaskExpanded = { state.currentlyExpandedTask == it },
+                    modifier = Modifier.weight(1.0f)
+                )
+            }
+            TaskDashboardFooter(scopeType = state.scopeType) {
+                store.dispatch(LoadLargerScope)
+            }
         }
     }
 }
@@ -105,16 +123,12 @@ fun TaskDashboardLabel(scopeType: ScopeType, highlighted: Boolean) {
 fun HeaderFooterPreview() {
     val selectedScopeType = ScopeType.WEEK
     Column {
-        TaskDashboardHeader(scopeType = selectedScopeType) {
-
-        }
+        TaskDashboardHeader(scopeType = selectedScopeType) {}
         Surface(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(120.dp), color = Color.White
         ) {}
-        TaskDashboardFooter(scopeType = selectedScopeType) {
-
-        }
+        TaskDashboardFooter(scopeType = selectedScopeType) {}
     }
 }

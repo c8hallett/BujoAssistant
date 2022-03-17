@@ -48,7 +48,7 @@ class FutureTaskPerformer(
                 )
             }
             !is FutureTaskAction -> {}
-            is FutureTaskAction.TaskClickedInList -> {
+            is FutureTaskAction.ClickTaskInList -> {
                 val newTask = when(action.task){
                     state.components.futureTasks.currentlyExpandedTask -> null
                     else -> action.task

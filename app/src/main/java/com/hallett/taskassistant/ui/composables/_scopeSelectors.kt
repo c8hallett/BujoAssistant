@@ -50,7 +50,12 @@ import com.hallett.scopes.model.Scope
 import com.hallett.scopes.model.ScopeType
 import com.hallett.scopes.scope_generator.IScopeCalculator
 import com.hallett.taskassistant.corndux.ScopeSelectionInfo
+import com.hallett.taskassistant.corndux.interpreters.NewScopeClicked
+import com.hallett.taskassistant.corndux.interpreters.NewScopeTypeClicked
+import com.hallett.taskassistant.corndux.interpreters.ScopeSelectionCancelled
+import com.hallett.taskassistant.corndux.interpreters.ScopeSelectionEntered
 import com.hallett.taskassistant.ui.formatters.Formatter
+import taskAssistantInterpreter
 import kotlinx.coroutines.flow.Flow
 import org.kodein.di.compose.rememberInstance
 import taskAssistantStore
@@ -60,10 +65,6 @@ import taskAssistantStore
 fun ScopeSelection(
     scope: Scope?,
     scopeSelectionInfo: ScopeSelectionInfo?,
-    enterScopeSelectionAction: Action,
-    cancelScopeSelectionAction: Action,
-    selectScopeAction: (Scope?) -> Action,
-    selectScopeTypeAction: (ScopeType) -> Action,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -72,15 +73,9 @@ fun ScopeSelection(
             .fillMaxWidth()
     ) {
         when (scopeSelectionInfo) {
-            null -> SelectableScopeLabel(
-                scope,
-                enterScopeSelectionAction
-            )
+            null -> SelectableScopeLabel(scope)
             else -> ActiveScopeSelectionContent(
-                scopeSelectionInfo,
-                cancelScopeSelectionAction,
-                selectScopeAction,
-                selectScopeTypeAction,
+                scopeSelectionInfo
             )
         }
     }
@@ -168,14 +163,13 @@ fun ScopeTypeDropDownMenu(
 @Composable
 fun SelectableScopeLabel(
     scope: Scope?,
-    enterScopeSelectionAction: Action
 ) {
-    val store by taskAssistantStore()
+    val interpreter by taskAssistantInterpreter()
     val labelFormatter: Formatter<Scope?, String> by rememberInstance(tag = Formatter.SIMPLE_LABEL)
 
     Text(
         text = labelFormatter.format(scope),
-        modifier = Modifier.clickable { store.dispatch(enterScopeSelectionAction) },
+        modifier = Modifier.clickable { interpreter.dispatch(ScopeSelectionEntered) },
         style = MaterialTheme.typography.h5,
         color = MaterialTheme.colors.onSurface
     )
@@ -238,11 +232,8 @@ fun ScopeListItem(scope: Scope, onScopeSelected: (Scope) -> Unit) {
 @Composable
 fun ActiveScopeSelectionContent(
     selectionInfo: ScopeSelectionInfo,
-    cancelScopeSelectionAction: Action,
-    selectScopeAction: (Scope?) -> Action,
-    selectScopeTypeAction: (ScopeType) -> Action,
 ) {
-    val store by taskAssistantStore()
+    val interpreter by taskAssistantInterpreter()
     val (isExpanded, setIsExpanded) = remember { mutableStateOf(false) }
 
     Row(horizontalArrangement = SpaceBetween) {
@@ -255,24 +246,24 @@ fun ActiveScopeSelectionContent(
                 .align(Alignment.CenterVertically)
         )
         IconButton(
-            onClick = { store.dispatch(selectScopeAction(null)) },
+            onClick = { interpreter.dispatch(NewScopeClicked(null)) },
         ) {
             Icon(Icons.Default.Delete, "remove scope", tint = MaterialTheme.colors.error)
         }
         IconButton(
-            onClick = { store.dispatch(cancelScopeSelectionAction) },
+            onClick = { interpreter.dispatch(ScopeSelectionCancelled) },
         ) {
             Icon(Icons.Default.Cancel, "cancel edit", tint = MaterialTheme.colors.error)
         }
         ScopeTypeDropDownMenu(
             isExpanded = isExpanded,
             onDismiss = { setIsExpanded(false) },
-            onScopeTypeSelected = { store.dispatch(selectScopeTypeAction(it)) }
+            onScopeTypeSelected = { interpreter.dispatch(NewScopeTypeClicked(it)) }
         )
     }
     ScopeList(
         selectableScopes = selectionInfo.scopes,
-        onScopeSelected = { store.dispatch(selectScopeAction(it)) }
+        onScopeSelected = { interpreter.dispatch(NewScopeClicked(it)) }
     )
 }
 
