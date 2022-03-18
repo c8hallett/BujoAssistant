@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.flowOf
 
 class DashboardStore(
     initialState: DashboardState = DashboardState(),
-    actors: List<Actor<DashboardState>>,
+    actors: List<Actor<out DashboardState>>,
     scope: CoroutineScope
 ) : Store<DashboardState>(
     initialState,

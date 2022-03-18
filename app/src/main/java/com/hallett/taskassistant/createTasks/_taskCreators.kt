@@ -24,8 +24,8 @@ import androidx.compose.ui.unit.dp
 import com.hallett.corndux.Store
 import com.hallett.taskassistant.corndux.CancelTask
 import com.hallett.taskassistant.corndux.SubmitTask
+import com.hallett.taskassistant.corndux.overrideStoreType
 import com.hallett.taskassistant.createTasks.corndux.CreateTaskState
-import com.hallett.taskassistant.createTasks.corndux.createTaskModule
 import com.hallett.taskassistant.ui.composables.ScopeSelection
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -41,8 +41,7 @@ import org.kodein.di.compose.subDI
 @Composable
 fun TaskCreation() {
     subDI(
-        allowSilentOverride = true,
-        diBuilder = { import(createTaskModule) }
+        diBuilder = { overrideStoreType<Store<CreateTaskState>>() }
     ) {
         val store by rememberInstance<Store<CreateTaskState>>()
         val createTaskInfo by store.observeState().collectAsState()

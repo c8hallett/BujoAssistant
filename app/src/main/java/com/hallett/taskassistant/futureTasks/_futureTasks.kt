@@ -24,10 +24,10 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.hallett.corndux.Store
 import com.hallett.domain.model.Task
+import com.hallett.taskassistant.corndux.overrideStoreType
 import com.hallett.taskassistant.futureTasks.corndux.ExpandList
 import com.hallett.taskassistant.futureTasks.corndux.FutureState
 import com.hallett.taskassistant.futureTasks.corndux.ListType
-import com.hallett.taskassistant.futureTasks.corndux.futureModule
 import com.hallett.taskassistant.ui.composables.TaskList
 import com.hallett.taskassistant.ui.model.TaskView
 import org.kodein.di.compose.rememberInstance
@@ -36,8 +36,7 @@ import org.kodein.di.compose.subDI
 @Composable
 fun FutureTaskList() {
     subDI(
-        allowSilentOverride = true,
-        diBuilder = { import(futureModule) }
+        diBuilder = { overrideStoreType<Store<FutureState>>() }
     ) {
         val store by rememberInstance<Store<FutureState>>()
         val state by store.observeState().collectAsState()

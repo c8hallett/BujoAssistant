@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.flowOf
 
 class OverdueStore(
     initialState: OverdueState = OverdueState(),
-    actors: List<Actor<OverdueState>>,
+    actors: List<Actor<out OverdueState>>,
     scope: CoroutineScope
 ) : Store<OverdueState>(
     initialState,

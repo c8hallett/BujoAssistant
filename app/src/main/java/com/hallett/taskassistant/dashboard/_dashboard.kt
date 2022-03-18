@@ -20,8 +20,8 @@ import com.hallett.corndux.Store
 import com.hallett.scopes.model.ScopeType
 import com.hallett.taskassistant.corndux.LoadLargerScope
 import com.hallett.taskassistant.corndux.LoadSmallerScope
+import com.hallett.taskassistant.corndux.overrideStoreType
 import com.hallett.taskassistant.dashboard.corndux.DashboardState
-import com.hallett.taskassistant.dashboard.corndux.dashboardModule
 import com.hallett.taskassistant.ui.composables.TaskList
 import org.kodein.di.compose.rememberInstance
 import org.kodein.di.compose.subDI
@@ -29,8 +29,7 @@ import org.kodein.di.compose.subDI
 @Composable
 fun TaskDashboard() {
     subDI(
-        allowSilentOverride = true,
-        diBuilder = { import(dashboardModule) }
+        diBuilder = { overrideStoreType<Store<DashboardState>>() }
     ) {
         val store by rememberInstance<Store<DashboardState>>()
         val state by store.observeState().collectAsState()
