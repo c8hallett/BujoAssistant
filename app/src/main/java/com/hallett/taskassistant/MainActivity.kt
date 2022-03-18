@@ -14,11 +14,11 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.hallett.database.di.databaseModule
 import com.hallett.scopes.di.scopeGeneratorModule
-import com.hallett.taskassistant.ui.composables.ScopeTypeDropDownMenu
 import com.hallett.taskassistant.mainNavigation.MainNavHost
 import com.hallett.taskassistant.mainNavigation.TaskBottomAppBar
 import com.hallett.taskassistant.mainNavigation.TaskFloatingActionBar
 import com.hallett.taskassistant.mainNavigation.corndux.navigationModule
+import com.hallett.taskassistant.ui.composables.ScopeTypeDropDownMenu
 import com.hallett.taskassistant.ui.theme.TaskAssistantTheme
 import com.hallett.taskassistant.util.AndroidLoggerHandler
 import kotlinx.coroutines.CoroutineScope
@@ -57,7 +57,6 @@ class MainActivity : ComponentActivity() {
             pagingModule,
             scopeGeneratorModule,
             utilModule,
-            cornduxModule,
             navigationModule,
             androidXModule(application),
             runtimeModule

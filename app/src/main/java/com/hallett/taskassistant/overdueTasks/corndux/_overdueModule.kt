@@ -1,6 +1,7 @@
 package com.hallett.taskassistant.overdueTasks.corndux
 
 import com.hallett.corndux.Actor
+import com.hallett.taskassistant.corndux.middleware.LoggingMiddleware
 import com.hallett.taskassistant.corndux.performers.TaskActionsPerformer
 import org.kodein.di.DI
 import org.kodein.di.bindSingleton
@@ -19,6 +20,7 @@ val overdueModule = DI.Module("overdueModule") {
             OverduePerformer(instance(), instance()),
             TaskActionsPerformer(instance(), instance()),
             OverdueReducer(),
+            LoggingMiddleware(),
         )
     }
 }

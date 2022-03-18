@@ -1,7 +1,7 @@
 package com.hallett.taskassistant.mainNavigation
 
 import androidx.compose.ui.graphics.vector.ImageVector
-import com.hallett.taskassistant.corndux.performers.actions.BottomNavigationClicked
+import com.hallett.taskassistant.corndux.BottomNavigationClicked
 
 sealed interface BottomNavigationScreen {
     val route: String

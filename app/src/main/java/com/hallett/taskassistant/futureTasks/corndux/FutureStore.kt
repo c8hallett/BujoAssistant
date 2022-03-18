@@ -16,13 +16,13 @@ class FutureStore(
     initialState: FutureState = FutureState(),
     actors: List<Actor<out FutureState>>,
     scope: CoroutineScope
-): Store<FutureState>(initialState, actors, scope)
+) : Store<FutureState>(initialState, actors, scope)
 
 data class FutureState(
     val currentlyExpandedTask: Task? = null,
     val currentList: Flow<PagingData<TaskView>> = flowOf(),
     val currentListType: ListType = ListType.UNSCHEDULED
-): IState
+) : IState
 
 enum class ListType {
     SCHEDULED,
@@ -34,4 +34,4 @@ data class ExpandList(val listType: ListType) : Action
 data class UpdateExpandedList(
     val taskList: Flow<PagingData<TaskView>>,
     val listType: ListType
-): Commit
+) : Commit

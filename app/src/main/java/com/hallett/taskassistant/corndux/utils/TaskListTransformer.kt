@@ -1,4 +1,4 @@
-package com.hallett.taskassistant.corndux.performers.utils
+package com.hallett.taskassistant.corndux.utils
 
 import androidx.paging.PagingData
 import androidx.paging.insertSeparators
@@ -8,7 +8,7 @@ import com.hallett.domain.model.TaskStatus
 import com.hallett.scopes.model.Scope
 import com.hallett.scopes.scope_generator.IScopeCalculator
 import com.hallett.taskassistant.ui.formatters.Formatter
-import com.hallett.taskassistant.ui.model.TaskAction
+import com.hallett.taskassistant.ui.model.TaskActionType
 import com.hallett.taskassistant.ui.model.TaskView
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -37,21 +37,21 @@ class TaskListTransformer(
     }
 
 
-    private fun getActionsForTask(task: Task): List<TaskAction> =
-        mutableListOf<TaskAction>().apply {
-            add(TaskAction.DELETE)
+    private fun getActionsForTask(task: Task): List<TaskActionType> =
+        mutableListOf<TaskActionType>().apply {
+            add(TaskActionType.DELETE)
 
             when (task.status) {
                 TaskStatus.INCOMPLETE -> {
                     task.scope?.let { scope ->
                         if (scopeCalculator.isCurrentOrFutureScope(scope)) {
-                            add(TaskAction.DEFER)
+                            add(TaskActionType.DEFER)
                         }
                     }
-                    add(TaskAction.RESCHEDULE)
-                    add(TaskAction.COMPLETE)
+                    add(TaskActionType.RESCHEDULE)
+                    add(TaskActionType.COMPLETE)
                 }
-                TaskStatus.COMPLETE -> add(TaskAction.UNCOMPLETE)
+                TaskStatus.COMPLETE -> add(TaskActionType.UNCOMPLETE)
             }
         }
 }

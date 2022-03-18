@@ -6,16 +6,16 @@ import androidx.compose.material.icons.filled.ErrorOutline
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.ui.graphics.vector.ImageVector
-import com.hallett.domain.model.Task
 import com.hallett.taskassistant.R
-import com.hallett.taskassistant.corndux.performers.actions.BottomNavigationClicked
+import com.hallett.taskassistant.corndux.BottomNavigationClicked
 
 sealed class TaskNavDestination(val route: String) {
 
     companion object {
         val startDestination: TaskNavDestination
             get() = Dashboard
-        fun fromRoute(route: String?): TaskNavDestination = when(route) {
+
+        fun fromRoute(route: String?): TaskNavDestination = when (route) {
             CreateTask.route -> CreateTask
             TaskList.route -> TaskList
             Dashboard.route -> Dashboard

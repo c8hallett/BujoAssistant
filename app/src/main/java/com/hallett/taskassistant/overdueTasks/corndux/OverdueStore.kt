@@ -1,9 +1,7 @@
 package com.hallett.taskassistant.overdueTasks.corndux
 
 import androidx.paging.PagingData
-import com.hallett.corndux.Action
 import com.hallett.corndux.Actor
-import com.hallett.corndux.Commit
 import com.hallett.corndux.IState
 import com.hallett.corndux.Store
 import com.hallett.domain.model.Task
@@ -16,7 +14,7 @@ class OverdueStore(
     initialState: OverdueState = OverdueState(),
     actors: List<Actor<OverdueState>>,
     scope: CoroutineScope
-): Store<OverdueState>(
+) : Store<OverdueState>(
     initialState,
     actors,
     scope
@@ -25,7 +23,4 @@ class OverdueStore(
 data class OverdueState(
     val currentlyExpandedTask: Task? = null,
     val taskList: Flow<PagingData<TaskView>> = flowOf(),
-): IState
-
-object AddRandomOverdueTask : Action
-data class UpdateTaskList(val taskList: Flow<PagingData<TaskView>>): Commit
+) : IState

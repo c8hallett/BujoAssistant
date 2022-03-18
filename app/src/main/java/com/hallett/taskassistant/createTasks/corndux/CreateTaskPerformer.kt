@@ -6,17 +6,22 @@ import com.hallett.corndux.SideEffect
 import com.hallett.corndux.StatefulPerformer
 import com.hallett.database.ITaskRepository
 import com.hallett.scopes.model.ScopeType
-import com.hallett.taskassistant.corndux.performers.actions.CancelScopeSelection
-import com.hallett.taskassistant.corndux.performers.actions.EnterScopeSelection
-import com.hallett.taskassistant.corndux.performers.actions.ClickNewScope
-import com.hallett.taskassistant.corndux.performers.actions.ClickNewScopeType
-import com.hallett.taskassistant.corndux.performers.utils.ScopeSelectionInfoGenerator
+import com.hallett.taskassistant.corndux.CancelScopeSelection
+import com.hallett.taskassistant.corndux.CancelTask
+import com.hallett.taskassistant.corndux.ClearCreateTaskState
+import com.hallett.taskassistant.corndux.ClickNewScope
+import com.hallett.taskassistant.corndux.ClickNewScopeType
+import com.hallett.taskassistant.corndux.EnterScopeSelection
+import com.hallett.taskassistant.corndux.SubmitTask
+import com.hallett.taskassistant.corndux.UpdateScopeSelectionInfo
+import com.hallett.taskassistant.corndux.UpdateSelectedScope
 import com.hallett.taskassistant.corndux.sideeffects.NavigateUp
+import com.hallett.taskassistant.corndux.utils.ScopeSelectionInfoGenerator
 
 class CreateTaskPerformer(
     private val taskRepo: ITaskRepository,
     private val ssiGenerator: ScopeSelectionInfoGenerator
-):  StatefulPerformer<CreateTaskState> {
+) : StatefulPerformer<CreateTaskState> {
     override suspend fun performAction(
         state: CreateTaskState,
         action: Action,
@@ -24,7 +29,7 @@ class CreateTaskPerformer(
         dispatchCommit: suspend (Commit) -> Unit,
         dispatchSideEffect: suspend (SideEffect) -> Unit
     ) {
-        when(action) {
+        when (action) {
             is SubmitTask -> {
                 taskRepo.createNewTask(action.taskName, state.scope)
                 dispatchCommit(ClearCreateTaskState)

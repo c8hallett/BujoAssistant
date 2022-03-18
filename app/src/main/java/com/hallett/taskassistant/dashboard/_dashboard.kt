@@ -18,8 +18,8 @@ import androidx.compose.ui.unit.dp
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.hallett.corndux.Store
 import com.hallett.scopes.model.ScopeType
-import com.hallett.taskassistant.corndux.performers.actions.LoadLargerScope
-import com.hallett.taskassistant.corndux.performers.actions.LoadSmallerScope
+import com.hallett.taskassistant.corndux.LoadLargerScope
+import com.hallett.taskassistant.corndux.LoadSmallerScope
 import com.hallett.taskassistant.dashboard.corndux.DashboardState
 import com.hallett.taskassistant.dashboard.corndux.dashboardModule
 import com.hallett.taskassistant.ui.composables.TaskList

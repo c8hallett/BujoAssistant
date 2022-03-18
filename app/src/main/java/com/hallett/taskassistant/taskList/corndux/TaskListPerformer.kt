@@ -9,23 +9,24 @@ import com.hallett.corndux.StatefulPerformer
 import com.hallett.database.ITaskRepository
 import com.hallett.scopes.model.ScopeType
 import com.hallett.scopes.scope_generator.IScopeCalculator
-import com.hallett.taskassistant.corndux.performers.actions.CancelScopeSelection
-import com.hallett.taskassistant.corndux.performers.actions.ClickNewScope
-import com.hallett.taskassistant.corndux.performers.actions.EnterScopeSelection
-import com.hallett.taskassistant.corndux.performers.actions.TaskListAction
-import com.hallett.taskassistant.corndux.performers.utils.ScopeSelectionInfoGenerator
-import com.hallett.taskassistant.corndux.performers.utils.TaskListTransformer
-import com.hallett.taskassistant.createTasks.corndux.UpdateScopeSelectionInfo
-import com.hallett.taskassistant.createTasks.corndux.UpdateSelectedScope
-import com.hallett.taskassistant.dashboard.corndux.UpdateExpandedTask
-import com.hallett.taskassistant.overdueTasks.corndux.UpdateTaskList
+import com.hallett.taskassistant.corndux.CancelScopeSelection
+import com.hallett.taskassistant.corndux.ClickNewScope
+import com.hallett.taskassistant.corndux.ClickNewScopeType
+import com.hallett.taskassistant.corndux.ClickTaskInList
+import com.hallett.taskassistant.corndux.EnterScopeSelection
+import com.hallett.taskassistant.corndux.UpdateExpandedTask
+import com.hallett.taskassistant.corndux.UpdateScopeSelectionInfo
+import com.hallett.taskassistant.corndux.UpdateSelectedScope
+import com.hallett.taskassistant.corndux.UpdateTaskList
+import com.hallett.taskassistant.corndux.utils.ScopeSelectionInfoGenerator
+import com.hallett.taskassistant.corndux.utils.TaskListTransformer
 
 class TaskListPerformer(
     private val taskRepo: ITaskRepository,
     private val scopeCalculator: IScopeCalculator,
     private val ssiGenerator: ScopeSelectionInfoGenerator,
     private val transformer: TaskListTransformer,
-): StatefulPerformer<TaskListState> {
+) : StatefulPerformer<TaskListState> {
 
     private val pagingConfig = PagingConfig(pageSize = 20)
 
@@ -40,7 +41,7 @@ class TaskListPerformer(
             is Init -> dispatchAction(
                 ClickNewScope(scopeCalculator.generateScope(ScopeType.DAY))
             )
-            is EnterScopeSelection ->{
+            is EnterScopeSelection -> {
                 val scopeSelectionInfo =
                     ssiGenerator.generateInfo(state.scope?.type ?: ScopeType.DAY)
                 dispatchCommit(
@@ -50,7 +51,7 @@ class TaskListPerformer(
             is CancelScopeSelection -> dispatchCommit(
                 UpdateScopeSelectionInfo(scopeSelectionInfo = null)
             )
-            is TaskListAction.SelectNewScope -> {
+            is ClickNewScope -> {
                 dispatchCommit(
                     UpdateSelectedScope(scope = action.newTaskScope, scopeSelectionInfo = null)
                 )
@@ -66,13 +67,13 @@ class TaskListPerformer(
                     )
                 )
             }
-            is TaskListAction.SelectNewScopeType -> {
+            is ClickNewScopeType -> {
                 val scopeSelectionInfo = ssiGenerator.generateInfo(action.scopeType)
                 dispatchCommit(
                     UpdateScopeSelectionInfo(scopeSelectionInfo = scopeSelectionInfo)
                 )
             }
-            is TaskListAction.ClickTaskInList -> dispatchCommit(UpdateExpandedTask(action.task))
+            is ClickTaskInList -> dispatchCommit(UpdateExpandedTask(action.task))
         }
     }
 }

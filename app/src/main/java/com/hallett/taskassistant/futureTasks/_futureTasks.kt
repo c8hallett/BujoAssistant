@@ -22,16 +22,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.hallett.domain.model.Task
-import com.hallett.taskassistant.ui.model.TaskView
-import org.kodein.di.compose.subDI
 import com.hallett.corndux.Store
+import com.hallett.domain.model.Task
 import com.hallett.taskassistant.futureTasks.corndux.ExpandList
 import com.hallett.taskassistant.futureTasks.corndux.FutureState
 import com.hallett.taskassistant.futureTasks.corndux.ListType
 import com.hallett.taskassistant.futureTasks.corndux.futureModule
 import com.hallett.taskassistant.ui.composables.TaskList
+import com.hallett.taskassistant.ui.model.TaskView
 import org.kodein.di.compose.rememberInstance
+import org.kodein.di.compose.subDI
 
 @Composable
 fun FutureTaskList() {
@@ -50,14 +50,14 @@ fun FutureTaskList() {
         ) {
             ExpandableTaskList(
                 label = "Sometime",
-                items = if(state.currentListType == ListType.UNSCHEDULED) taskList else null,
+                items = if (state.currentListType == ListType.UNSCHEDULED) taskList else null,
                 expandedTask = state.currentlyExpandedTask
             ) {
                 store.dispatch(ExpandList(ListType.UNSCHEDULED))
             }
             ExpandableTaskList(
                 label = "Scheduled",
-                items = if(state.currentListType == ListType.SCHEDULED) taskList else null,
+                items = if (state.currentListType == ListType.SCHEDULED) taskList else null,
                 expandedTask = state.currentlyExpandedTask
             ) {
                 store.dispatch(ExpandList(ListType.SCHEDULED))

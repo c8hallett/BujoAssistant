@@ -8,15 +8,17 @@ import com.hallett.corndux.Performer
 import com.hallett.corndux.SideEffect
 import com.hallett.database.ITaskRepository
 import com.hallett.scopes.model.ScopeType
-import com.hallett.taskassistant.corndux.performers.actions.ClickTaskInList
-import com.hallett.taskassistant.corndux.performers.utils.TaskListTransformer
-import com.hallett.taskassistant.dashboard.corndux.UpdateExpandedTask
+import com.hallett.taskassistant.corndux.AddRandomOverdueTask
+import com.hallett.taskassistant.corndux.ClickTaskInList
+import com.hallett.taskassistant.corndux.UpdateExpandedTask
+import com.hallett.taskassistant.corndux.UpdateTaskList
+import com.hallett.taskassistant.corndux.utils.TaskListTransformer
 import java.time.LocalDate
 
 class OverduePerformer(
     private val taskRepo: ITaskRepository,
     private val transformer: TaskListTransformer,
-): Performer {
+) : Performer {
 
     private val pagingConfig = PagingConfig(pageSize = 20)
 
@@ -26,7 +28,7 @@ class OverduePerformer(
         dispatchCommit: suspend (Commit) -> Unit,
         dispatchSideEffect: suspend (SideEffect) -> Unit
     ) {
-        when(action) {
+        when (action) {
             is Init -> dispatchCommit(
                 UpdateTaskList(
                     taskList = transformer.transform(

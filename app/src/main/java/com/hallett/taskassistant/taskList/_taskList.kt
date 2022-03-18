@@ -11,20 +11,20 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.collectAsLazyPagingItems
-import org.kodein.di.compose.subDI
 import com.hallett.corndux.Store
 import com.hallett.taskassistant.taskList.corndux.TaskListState
 import com.hallett.taskassistant.taskList.corndux._taskListModule
 import com.hallett.taskassistant.ui.composables.ScopeSelection
 import com.hallett.taskassistant.ui.composables.TaskList
 import org.kodein.di.compose.rememberInstance
+import org.kodein.di.compose.subDI
 
 
 @Composable
 fun OpenTaskList() {
     subDI(
         allowSilentOverride = true,
-        diBuilder = {import(_taskListModule)}
+        diBuilder = { import(_taskListModule) }
     ) {
         val store by rememberInstance<Store<TaskListState>>()
         val state by store.observeState().collectAsState()

@@ -26,19 +26,17 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.items
+import closestStore
 import com.hallett.domain.model.Task
 import com.hallett.domain.model.TaskStatus
-import com.hallett.taskassistant.corndux.interpreters.TaskInListClicked
-import com.hallett.taskassistant.corndux.performers.actions.DeferTask
-import com.hallett.taskassistant.corndux.performers.actions.DeleteTask
-import com.hallett.taskassistant.corndux.performers.actions.MarkTaskAsComplete
-import com.hallett.taskassistant.corndux.performers.actions.MarkTaskAsIncomplete
-import com.hallett.taskassistant.corndux.performers.actions.RescheduleTask
-import com.hallett.taskassistant.ui.model.TaskAction
+import com.hallett.taskassistant.corndux.ClickTaskInList
+import com.hallett.taskassistant.corndux.DeferTask
+import com.hallett.taskassistant.corndux.DeleteTask
+import com.hallett.taskassistant.corndux.MarkTaskAsComplete
+import com.hallett.taskassistant.corndux.MarkTaskAsIncomplete
+import com.hallett.taskassistant.corndux.RescheduleTask
+import com.hallett.taskassistant.ui.model.TaskActionType
 import com.hallett.taskassistant.ui.model.TaskView
-import taskAssistantInterpreter
-import closestStore
-import com.hallett.taskassistant.corndux.performers.actions.ClickTaskInList
 
 @Composable
 fun TaskList(
@@ -97,7 +95,7 @@ fun TaskItem(
 }
 
 @Composable
-fun TaskActions(task: Task, actions: List<TaskAction>) {
+fun TaskActions(task: Task, actions: List<TaskActionType>) {
     val store by closestStore()
 
     Row(
@@ -106,19 +104,19 @@ fun TaskActions(task: Task, actions: List<TaskAction>) {
     ) {
         actions.forEach { action ->
             when (action) {
-                TaskAction.DEFER -> DeferTaskButton {
+                TaskActionType.DEFER -> DeferTaskButton {
                     store.dispatch(DeferTask(task))
                 }
-                TaskAction.DELETE -> DeleteTaskButton {
+                TaskActionType.DELETE -> DeleteTaskButton {
                     store.dispatch(DeleteTask(task))
                 }
-                TaskAction.COMPLETE -> CompleteTaskButton {
+                TaskActionType.COMPLETE -> CompleteTaskButton {
                     store.dispatch(MarkTaskAsComplete(task))
                 }
-                TaskAction.UNCOMPLETE -> UncompleteTaskButton {
+                TaskActionType.UNCOMPLETE -> UncompleteTaskButton {
                     store.dispatch(MarkTaskAsIncomplete(task))
                 }
-                TaskAction.RESCHEDULE -> RescheduleTaskButton {
+                TaskActionType.RESCHEDULE -> RescheduleTaskButton {
                     store.dispatch(RescheduleTask(task))
                 }
             }

@@ -21,17 +21,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.hallett.taskassistant.corndux.performers.actions.CancelTask
-import com.hallett.taskassistant.corndux.performers.actions.SubmitTask
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.ObsoleteCoroutinesApi
-import org.kodein.di.compose.subDI
 import com.hallett.corndux.Store
+import com.hallett.taskassistant.corndux.CancelTask
+import com.hallett.taskassistant.corndux.SubmitTask
 import com.hallett.taskassistant.createTasks.corndux.CreateTaskState
 import com.hallett.taskassistant.createTasks.corndux.createTaskModule
 import com.hallett.taskassistant.ui.composables.ScopeSelection
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.ObsoleteCoroutinesApi
 import org.kodein.di.compose.rememberInstance
+import org.kodein.di.compose.subDI
 
 
 @FlowPreview
@@ -42,7 +42,7 @@ import org.kodein.di.compose.rememberInstance
 fun TaskCreation() {
     subDI(
         allowSilentOverride = true,
-        diBuilder = { import(createTaskModule)}
+        diBuilder = { import(createTaskModule) }
     ) {
         val store by rememberInstance<Store<CreateTaskState>>()
         val createTaskInfo by store.observeState().collectAsState()

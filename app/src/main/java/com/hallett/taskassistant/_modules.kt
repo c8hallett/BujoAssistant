@@ -3,26 +3,12 @@ package com.hallett.taskassistant
 import androidx.compose.ui.unit.Dp
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
-import com.hallett.corndux.Actor
 import com.hallett.domain.coroutines.DispatchersWrapper
 import com.hallett.scopes.model.Scope
 import com.hallett.scopes.model.ScopeType
 import com.hallett.scopes.scope_generator.IScopeCalculator
-import com.hallett.taskassistant.corndux.IStore
-import com.hallett.taskassistant.corndux.TaskAssistantState
-import com.hallett.taskassistant.corndux.TaskAssistantStore
-import com.hallett.taskassistant.corndux.middleware.LoggingMiddleware
-import com.hallett.taskassistant.corndux.performers.CreateTaskScreenPerformer
-import com.hallett.taskassistant.corndux.performers.DashboardScreenPerformer
-import com.hallett.taskassistant.corndux.performers.FutureTaskPerformer
-import com.hallett.taskassistant.corndux.performers.OverdueTaskPerformer
-import com.hallett.taskassistant.corndux.performers.RootNavigationPerformer
-import com.hallett.taskassistant.corndux.performers.TaskActionsPerformer
-import com.hallett.taskassistant.corndux.performers.TaskListPerformer
-import com.hallett.taskassistant.corndux.performers.utils.ScopeSelectionInfoGenerator
-import com.hallett.taskassistant.corndux.performers.utils.TaskListTransformer
-import com.hallett.taskassistant.corndux.reducers.ComponentReducer
-import com.hallett.taskassistant.corndux.reducers.SessionReducer
+import com.hallett.taskassistant.corndux.utils.ScopeSelectionInfoGenerator
+import com.hallett.taskassistant.corndux.utils.TaskListTransformer
 import com.hallett.taskassistant.ui.formatters.Formatter
 import com.hallett.taskassistant.ui.formatters.ScopeOffsetLabelFormatter
 import com.hallett.taskassistant.ui.formatters.ScopeScaleFormatter
@@ -47,31 +33,6 @@ val formatterModule = DI.Module("formatter_module") {
     bindSingleton<Formatter<Scope?, String>>(tag = Formatter.SIMPLE_LABEL) {
         ScopeSimpleLabelFormatter(
             instance()
-        )
-    }
-}
-
-val cornduxModule = DI.Module("corndux_module") {
-    bindSingleton<IStore> {
-        TaskAssistantStore(
-            initialState = TaskAssistantState(),
-            actors = instance(),
-            scope = instance()
-        )
-    }
-
-    bindSingleton<List<Actor<out TaskAssistantState>>> {
-        listOf(
-            CreateTaskScreenPerformer(instance(), instance()),
-            DashboardScreenPerformer(instance(), instance(), instance()),
-            FutureTaskPerformer(instance(), instance()),
-            OverdueTaskPerformer(instance(), instance()),
-            RootNavigationPerformer(),
-            TaskActionsPerformer(instance(), instance()),
-            TaskListPerformer(instance(), instance(), instance(), instance()),
-            LoggingMiddleware(),
-            ComponentReducer(),
-            SessionReducer()
         )
     }
 }

@@ -4,21 +4,24 @@ import androidx.paging.PagingConfig
 import com.hallett.corndux.Action
 import com.hallett.corndux.Commit
 import com.hallett.corndux.Init
-import com.hallett.corndux.StatefulPerformer
 import com.hallett.corndux.SideEffect
+import com.hallett.corndux.StatefulPerformer
 import com.hallett.database.ITaskRepository
 import com.hallett.scopes.model.ScopeType
 import com.hallett.scopes.scope_generator.IScopeCalculator
-import com.hallett.taskassistant.corndux.performers.actions.ClickTaskInList
-import com.hallett.taskassistant.corndux.performers.actions.LoadSmallerScope
-import com.hallett.taskassistant.corndux.performers.utils.TaskListTransformer
+import com.hallett.taskassistant.corndux.ClickTaskInList
+import com.hallett.taskassistant.corndux.LoadLargerScope
+import com.hallett.taskassistant.corndux.LoadSmallerScope
+import com.hallett.taskassistant.corndux.UpdateExpandedTask
+import com.hallett.taskassistant.corndux.UpdateTypedTaskList
+import com.hallett.taskassistant.corndux.utils.TaskListTransformer
 import java.time.LocalDate
 
 class DashboardPerformer(
     private val taskRepo: ITaskRepository,
     private val scopeCalculator: IScopeCalculator,
     private val transformer: TaskListTransformer,
-): StatefulPerformer<DashboardState> {
+) : StatefulPerformer<DashboardState> {
 
     private val pagingConfig = PagingConfig(pageSize = 20)
 
@@ -29,7 +32,7 @@ class DashboardPerformer(
         dispatchCommit: suspend (Commit) -> Unit,
         dispatchSideEffect: suspend (SideEffect) -> Unit
     ) {
-        when(action) {
+        when (action) {
             is Init -> {
                 val currentScope = scopeCalculator.generateScope(
                     state.scopeType,

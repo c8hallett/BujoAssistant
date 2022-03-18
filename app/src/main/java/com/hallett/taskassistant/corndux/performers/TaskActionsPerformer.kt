@@ -7,12 +7,12 @@ import com.hallett.corndux.SideEffect
 import com.hallett.database.ITaskRepository
 import com.hallett.domain.model.TaskStatus
 import com.hallett.scopes.scope_generator.IScopeCalculator
-import com.hallett.taskassistant.corndux.performers.actions.DeferTask
-import com.hallett.taskassistant.corndux.performers.actions.DeleteTask
-import com.hallett.taskassistant.corndux.performers.actions.MarkTaskAsComplete
-import com.hallett.taskassistant.corndux.performers.actions.MarkTaskAsIncomplete
-import com.hallett.taskassistant.corndux.performers.actions.RescheduleTask
-import com.hallett.taskassistant.corndux.performers.actions.TaskAction
+import com.hallett.taskassistant.corndux.DeferTask
+import com.hallett.taskassistant.corndux.DeleteTask
+import com.hallett.taskassistant.corndux.MarkTaskAsComplete
+import com.hallett.taskassistant.corndux.MarkTaskAsIncomplete
+import com.hallett.taskassistant.corndux.RescheduleTask
+import com.hallett.taskassistant.corndux.TaskAction
 
 class TaskActionsPerformer(
     private val taskRepo: ITaskRepository,

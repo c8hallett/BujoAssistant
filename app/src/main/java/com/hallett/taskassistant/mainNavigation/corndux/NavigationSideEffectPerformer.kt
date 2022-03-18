@@ -7,7 +7,8 @@ import com.hallett.taskassistant.corndux.sideeffects.NavigateSingleTop
 import com.hallett.taskassistant.corndux.sideeffects.NavigateToRootDestination
 import com.hallett.taskassistant.corndux.sideeffects.NavigateUp
 
-class NavigationSideEffectPerformer(private val navController: NavController): SideEffectPerformer {
+class NavigationSideEffectPerformer(private val navController: NavController) :
+    SideEffectPerformer {
     override fun performSideEffect(sideEffect: SideEffect) {
         when (sideEffect) {
             is NavigateUp -> navController.popBackStack()

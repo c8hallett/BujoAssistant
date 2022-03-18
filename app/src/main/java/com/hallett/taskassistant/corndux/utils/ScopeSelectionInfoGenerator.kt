@@ -1,12 +1,12 @@
-package com.hallett.taskassistant.corndux.performers.utils
+package com.hallett.taskassistant.corndux.utils
 
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import com.hallett.domain.coroutines.DispatchersWrapper
 import com.hallett.scopes.model.Scope
 import com.hallett.scopes.model.ScopeType
-import com.hallett.taskassistant.corndux.ScopeSelectionInfo
-import com.hallett.taskassistant.di.PagerParams
+import com.hallett.taskassistant.PagerParams
+import com.hallett.taskassistant.ui.model.ScopeSelectionInfo
 import kotlinx.coroutines.flow.flowOn
 
 class ScopeSelectionInfoGenerator(

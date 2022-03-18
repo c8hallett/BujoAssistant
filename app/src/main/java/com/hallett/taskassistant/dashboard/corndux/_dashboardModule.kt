@@ -1,6 +1,7 @@
 package com.hallett.taskassistant.dashboard.corndux
 
 import com.hallett.corndux.Actor
+import com.hallett.taskassistant.corndux.middleware.LoggingMiddleware
 import com.hallett.taskassistant.corndux.performers.TaskActionsPerformer
 import org.kodein.di.DI
 import org.kodein.di.bindSingleton
@@ -18,6 +19,7 @@ val dashboardModule = DI.Module("dashboardModule") {
             DashboardPerformer(instance(), instance(), instance()),
             TaskActionsPerformer(instance(), instance()),
             DashboardReducer(),
+            LoggingMiddleware(),
         )
     }
 }

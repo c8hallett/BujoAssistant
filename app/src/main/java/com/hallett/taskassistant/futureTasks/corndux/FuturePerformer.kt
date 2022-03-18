@@ -7,9 +7,9 @@ import com.hallett.corndux.Init
 import com.hallett.corndux.Performer
 import com.hallett.corndux.SideEffect
 import com.hallett.database.ITaskRepository
-import com.hallett.taskassistant.corndux.performers.actions.ClickTaskInList
-import com.hallett.taskassistant.corndux.performers.utils.TaskListTransformer
-import com.hallett.taskassistant.dashboard.corndux.UpdateExpandedTask
+import com.hallett.taskassistant.corndux.ClickTaskInList
+import com.hallett.taskassistant.corndux.UpdateExpandedTask
+import com.hallett.taskassistant.corndux.utils.TaskListTransformer
 import java.time.LocalDate
 
 class FuturePerformer(
@@ -37,7 +37,7 @@ class FuturePerformer(
             }
             is ClickTaskInList -> dispatchCommit(UpdateExpandedTask(action.task))
             is ExpandList -> {
-                val list = when(action.listType) {
+                val list = when (action.listType) {
                     ListType.SCHEDULED -> transformer.transform(
                         tasks = taskRepo.observeFutureTasks(pagingConfig, LocalDate.now()),
                         includeHeaders = true
@@ -49,10 +49,12 @@ class FuturePerformer(
                     )
                 }
 
-                dispatchCommit(UpdateExpandedList(
-                    taskList = list,
-                    listType = action.listType
-                ))
+                dispatchCommit(
+                    UpdateExpandedList(
+                        taskList = list,
+                        listType = action.listType
+                    )
+                )
             }
         }
     }

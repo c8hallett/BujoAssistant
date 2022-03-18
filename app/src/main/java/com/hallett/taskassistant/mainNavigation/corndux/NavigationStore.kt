@@ -8,6 +8,6 @@ import kotlinx.coroutines.CoroutineScope
 class NavigationStore(
     actors: List<Actor<out NavigationState>>,
     scope: CoroutineScope
-): Store<NavigationState>(NavigationState, actors, scope)
+) : Store<NavigationState>(NavigationState, actors, scope)
 
-object NavigationState: IState
+object NavigationState : IState

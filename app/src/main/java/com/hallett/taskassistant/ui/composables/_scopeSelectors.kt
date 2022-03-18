@@ -49,12 +49,12 @@ import closestStore
 import com.hallett.scopes.model.Scope
 import com.hallett.scopes.model.ScopeType
 import com.hallett.scopes.scope_generator.IScopeCalculator
-import com.hallett.taskassistant.corndux.ScopeSelectionInfo
-import com.hallett.taskassistant.corndux.performers.actions.CancelScopeSelection
-import com.hallett.taskassistant.corndux.performers.actions.EnterScopeSelection
-import com.hallett.taskassistant.corndux.performers.actions.ClickNewScope
-import com.hallett.taskassistant.corndux.performers.actions.ClickNewScopeType
+import com.hallett.taskassistant.corndux.CancelScopeSelection
+import com.hallett.taskassistant.corndux.ClickNewScope
+import com.hallett.taskassistant.corndux.ClickNewScopeType
+import com.hallett.taskassistant.corndux.EnterScopeSelection
 import com.hallett.taskassistant.ui.formatters.Formatter
+import com.hallett.taskassistant.ui.model.ScopeSelectionInfo
 import kotlinx.coroutines.flow.Flow
 import org.kodein.di.compose.rememberInstance
 
