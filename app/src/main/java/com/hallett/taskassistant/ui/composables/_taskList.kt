@@ -6,11 +6,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.paging.compose.collectAsLazyPagingItems
 import com.hallett.corndux.Action
 import com.hallett.corndux.Event
 import com.hallett.taskassistant.corndux.IInterpreter
@@ -24,7 +21,7 @@ import com.hallett.taskassistant.corndux.performers.actions.TaskListAction
 import org.kodein.di.bindSingleton
 import org.kodein.di.compose.subDI
 import org.kodein.di.instance
-import taskAssistantStore
+import closestStore
 
 
 class TaskListInterpreter(store: IStore): IInterpreter(store) {
@@ -42,7 +39,7 @@ fun OpenTaskList() {
     subDI(diBuilder = {
         bindSingleton { TaskListInterpreter(instance()) }
     }) {
-        val store by taskAssistantStore()
+        val store by closestStore()
         val state by store.observeState { it.components.taskList }.collectAsState()
         val pagedTasks = state.taskList.collectAsLazyPagingItems()
         val isSelectActive = state.scopeSelectionInfo != null

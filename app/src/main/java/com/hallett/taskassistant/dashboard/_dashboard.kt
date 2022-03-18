@@ -1,4 +1,4 @@
-package com.hallett.taskassistant.ui.composables
+package com.hallett.taskassistant.dashboard
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.clickable
@@ -16,34 +16,23 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.hallett.corndux.Action
-import com.hallett.corndux.Event
 import com.hallett.scopes.model.ScopeType
-import com.hallett.taskassistant.corndux.IInterpreter
-import com.hallett.taskassistant.corndux.IStore
-import com.hallett.taskassistant.corndux.interpreters.TaskInListClicked
-import com.hallett.taskassistant.corndux.performers.actions.DashboardAction
 import com.hallett.taskassistant.corndux.performers.actions.LoadLargerScope
 import com.hallett.taskassistant.corndux.performers.actions.LoadSmallerScope
-import org.kodein.di.bindSingleton
+import com.hallett.taskassistant.dashboard.corndux.DashboardStore
+import com.hallett.taskassistant.dashboard.corndux.dashboardModule
+import com.hallett.taskassistant.ui.composables.TaskList
+import org.kodein.di.compose.rememberInstance
 import org.kodein.di.compose.subDI
-import org.kodein.di.instance
-import taskAssistantStore
-
-class DashboardInterpreter(store: IStore): IInterpreter(store) {
-    override fun mapEvent(event: Event): Action? = when (event){
-        is TaskInListClicked -> DashboardAction.ClickTaskInList(event.task)
-        else -> null
-    }
-}
 
 @Composable
 fun TaskDashboard() {
-    subDI(diBuilder = {
-        bindSingleton { DashboardInterpreter(instance()) }
-    }) {
-        val store by taskAssistantStore()
-        val state by store.observeState { it.components.dashboard }.collectAsState()
+    subDI(
+        allowSilentOverride = true,
+        diBuilder = { import(dashboardModule) }
+    ) {
+        val store by rememberInstance<DashboardStore>()
+        val state by store.observeState().collectAsState()
         val taskList = state.taskList.collectAsLazyPagingItems()
 
         Column {

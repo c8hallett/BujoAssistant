@@ -32,7 +32,7 @@ import com.hallett.taskassistant.ui.composables.TaskDashboard
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collect
 import org.kodein.di.compose.rememberInstance
-import taskAssistantStore
+import closestStore
 
 
 @FlowPreview
@@ -64,7 +64,7 @@ fun MainNavHost(innerPadding: PaddingValues, navController: NavHostController) {
         }
     }
 
-    val store by taskAssistantStore()
+    val store by closestStore()
 
     LaunchedEffect(key1 = store) {
         store.observeSideEffects().collect { sideEffect ->
@@ -96,7 +96,7 @@ fun TaskBottomAppBar() {
 
 @Composable
 private fun TaskBottomAppBarImpl(items: List<BottomNavigationScreen>) {
-    val store by taskAssistantStore()
+    val store by closestStore()
     val navController: NavController by rememberInstance()
 
     BottomAppBar() {
@@ -113,7 +113,7 @@ private fun TaskBottomAppBarImpl(items: List<BottomNavigationScreen>) {
 
 @Composable
 fun TaskFloatingActionBar() {
-    val store by taskAssistantStore()
+    val store by closestStore()
     FloatingActionButton(
         onClick = { store.dispatch(FabClicked(TaskNavDestination.CreateTask)) }
     ) {

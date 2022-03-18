@@ -13,7 +13,6 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,7 +40,6 @@ import com.hallett.taskassistant.corndux.interpreters.ScopeSelectionEntered
 import com.hallett.taskassistant.corndux.performers.actions.CancelTask
 import com.hallett.taskassistant.corndux.performers.actions.CreateTaskAction
 import com.hallett.taskassistant.corndux.performers.actions.SubmitTask
-import java.util.Collections.singleton
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -50,11 +48,9 @@ import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.kodein.di.bindSingleton
-import org.kodein.di.compose.instance
 import org.kodein.di.compose.subDI
 import org.kodein.di.instance
-import org.kodein.di.singleton
-import taskAssistantStore
+import closestStore
 
 
 class CreateTaskInterpreter(store: IStore): IInterpreter(store) {
@@ -101,7 +97,7 @@ fun TaskCreation() {
     subDI(diBuilder = {
         bindSingleton { CreateTaskInterpreter(instance()) }
     }) {
-        val store by taskAssistantStore()
+        val store by closestStore()
         val createTaskInfo by store.observeState { it.components.createTask }.collectAsState()
         val shouldExpandCard = createTaskInfo.scopeSelectionInfo == null
 

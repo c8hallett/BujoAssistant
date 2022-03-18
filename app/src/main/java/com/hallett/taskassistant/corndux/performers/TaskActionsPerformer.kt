@@ -2,12 +2,11 @@ package com.hallett.taskassistant.corndux.performers
 
 import com.hallett.corndux.Action
 import com.hallett.corndux.Commit
+import com.hallett.corndux.Performer
 import com.hallett.corndux.SideEffect
 import com.hallett.database.ITaskRepository
 import com.hallett.domain.model.TaskStatus
 import com.hallett.scopes.scope_generator.IScopeCalculator
-import com.hallett.taskassistant.corndux.IPerformer
-import com.hallett.taskassistant.corndux.TaskAssistantState
 import com.hallett.taskassistant.corndux.performers.actions.DeferTask
 import com.hallett.taskassistant.corndux.performers.actions.DeleteTask
 import com.hallett.taskassistant.corndux.performers.actions.MarkTaskAsComplete
@@ -15,12 +14,11 @@ import com.hallett.taskassistant.corndux.performers.actions.MarkTaskAsIncomplete
 import com.hallett.taskassistant.corndux.performers.actions.RescheduleTask
 import com.hallett.taskassistant.corndux.performers.actions.TaskAction
 
-class TaskActionPerformer(
+class TaskActionsPerformer(
     private val taskRepo: ITaskRepository,
     private val scopeCalculator: IScopeCalculator,
-) : IPerformer {
+) : Performer {
     override suspend fun performAction(
-        state: TaskAssistantState,
         action: Action,
         dispatchAction: suspend (Action) -> Unit,
         dispatchCommit: suspend (Commit) -> Unit,

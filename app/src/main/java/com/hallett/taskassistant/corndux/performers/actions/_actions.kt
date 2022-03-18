@@ -7,6 +7,8 @@ import com.hallett.scopes.model.ScopeType
 import com.hallett.taskassistant.corndux.FutureTaskListState
 import com.hallett.taskassistant.ui.navigation.TaskNavDestination
 
+data class ClickTaskInList(val task: Task): Action
+
 sealed interface CreateTaskAction: Action {
     data class SelectNewScope(val newTaskScope: Scope?) : CreateTaskAction
     data class SelectNewScopeType(val scopeType: ScopeType) : CreateTaskAction

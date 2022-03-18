@@ -21,7 +21,16 @@ abstract class Interpreter<State: IState>(private val store: Store<State>) {
 
 sealed interface Actor<State : IState>
 
-interface Performer<State : IState> : Actor<State> {
+interface Performer: Actor<Nothing> {
+    suspend fun performAction(
+        action: Action,
+        dispatchAction: suspend (Action) -> Unit,
+        dispatchCommit: suspend (Commit) -> Unit,
+        dispatchSideEffect: suspend (SideEffect) -> Unit,
+    )
+}
+
+interface StatefulPerformer<State : IState> : Actor<State> {
     suspend fun performAction(
         state: State,
         action: Action,

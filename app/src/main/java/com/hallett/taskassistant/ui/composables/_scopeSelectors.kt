@@ -45,7 +45,6 @@ import androidx.compose.ui.unit.dp
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
-import com.hallett.corndux.Action
 import com.hallett.scopes.model.Scope
 import com.hallett.scopes.model.ScopeType
 import com.hallett.scopes.scope_generator.IScopeCalculator
@@ -58,7 +57,6 @@ import com.hallett.taskassistant.ui.formatters.Formatter
 import taskAssistantInterpreter
 import kotlinx.coroutines.flow.Flow
 import org.kodein.di.compose.rememberInstance
-import taskAssistantStore
 
 
 @Composable

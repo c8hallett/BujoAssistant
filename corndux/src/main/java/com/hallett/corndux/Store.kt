@@ -30,7 +30,8 @@ abstract class Store<State : IState>(
     private val middleware = actors.filterIsInstance<Middleware<State>>()
 
     init {
-        val performers = actors.filterIsInstance<Performer<State>>()
+        val performers = actors.filterIsInstance<StatefulPerformer<State>>()
+        val statelessPerformers = actors.filterIsInstance<Performer>()
 
         // consuming actions
         scope.launch(customDispatcher) {
@@ -39,6 +40,14 @@ abstract class Store<State : IState>(
                 performers.forEach { performer ->
                     performer.performAction(
                         state = stateFlow.value,
+                        action = newAction,
+                        dispatchAction = { dispatch(it) },
+                        dispatchCommit = { dispatchCommit(it) },
+                        dispatchSideEffect = { sideEffectFlow.emit(it) }
+                    )
+                }
+                statelessPerformers.forEach { sPerformer ->
+                    sPerformer.performAction(
                         action = newAction,
                         dispatchAction = { dispatch(it) },
                         dispatchCommit = { dispatchCommit(it) },
@@ -81,6 +90,8 @@ abstract class Store<State : IState>(
         SharingStarted.WhileSubscribed(),
         select(stateFlow.value)
     ) // this is so big sad, map{} takes away my ez peasy StateFlow type
+
+    fun observeState(): StateFlow<State> = stateFlow
 
 
     fun observeSideEffects(): Flow<SideEffect> = sideEffectFlow

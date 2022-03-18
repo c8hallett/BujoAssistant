@@ -26,7 +26,6 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.items
-import com.hallett.corndux.Action
 import com.hallett.domain.model.Task
 import com.hallett.domain.model.TaskStatus
 import com.hallett.taskassistant.corndux.interpreters.TaskInListClicked
@@ -38,7 +37,8 @@ import com.hallett.taskassistant.corndux.performers.actions.RescheduleTask
 import com.hallett.taskassistant.ui.model.TaskAction
 import com.hallett.taskassistant.ui.model.TaskView
 import taskAssistantInterpreter
-import taskAssistantStore
+import closestStore
+import com.hallett.taskassistant.corndux.performers.actions.ClickTaskInList
 
 @Composable
 fun TaskList(
@@ -70,9 +70,9 @@ fun TaskItem(
     isExpanded: Boolean,
     modifier: Modifier = Modifier,
 ) {
-    val interpreter by taskAssistantInterpreter()
+    val store by closestStore()
     Card(modifier = modifier
-        .clickable { interpreter.dispatch(TaskInListClicked(taskHolder.task)) }
+        .clickable { store.dispatch(ClickTaskInList(taskHolder.task)) }
         .fillMaxWidth()
         .animateContentSize()
     ) {
@@ -98,7 +98,7 @@ fun TaskItem(
 
 @Composable
 fun TaskActions(task: Task, actions: List<TaskAction>) {
-    val store by taskAssistantStore()
+    val store by closestStore()
 
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,

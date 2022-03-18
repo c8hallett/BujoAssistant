@@ -17,7 +17,7 @@ import com.hallett.taskassistant.corndux.performers.DashboardScreenPerformer
 import com.hallett.taskassistant.corndux.performers.FutureTaskPerformer
 import com.hallett.taskassistant.corndux.performers.OverdueTaskPerformer
 import com.hallett.taskassistant.corndux.performers.RootNavigationPerformer
-import com.hallett.taskassistant.corndux.performers.TaskActionPerformer
+import com.hallett.taskassistant.corndux.performers.TaskActionsPerformer
 import com.hallett.taskassistant.corndux.performers.TaskListPerformer
 import com.hallett.taskassistant.corndux.performers.utils.ScopeSelectionInfoGenerator
 import com.hallett.taskassistant.corndux.performers.utils.TaskListTransformer
@@ -67,7 +67,7 @@ val cornduxModule = DI.Module("corndux_module") {
             FutureTaskPerformer(instance(), instance()),
             OverdueTaskPerformer(instance(), instance()),
             RootNavigationPerformer(),
-            TaskActionPerformer(instance(), instance()),
+            TaskActionsPerformer(instance(), instance()),
             TaskListPerformer(instance(), instance(), instance(), instance()),
             LoggingMiddleware(),
             ComponentReducer(),

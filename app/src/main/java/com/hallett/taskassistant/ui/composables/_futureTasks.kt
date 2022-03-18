@@ -15,13 +15,10 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
-import androidx.paging.compose.collectAsLazyPagingItems
 import com.hallett.corndux.Action
 import com.hallett.corndux.Event
 import com.hallett.domain.model.Task
@@ -35,7 +32,7 @@ import com.hallett.taskassistant.ui.model.TaskView
 import org.kodein.di.bindSingleton
 import org.kodein.di.compose.subDI
 import org.kodein.di.instance
-import taskAssistantStore
+import closestStore
 
 class FutureTaskInterpeter(store: IStore): IInterpreter(store) {
     override fun mapEvent(event: Event): Action? = when (event){
@@ -49,7 +46,7 @@ fun FutureTaskList() {
     subDI(diBuilder = {
         bindSingleton { FutureTaskInterpeter(instance()) }
     }) {
-        val store by taskAssistantStore()
+        val store by closestStore()
         val state by store.observeState { it.components.futureTasks }.collectAsState()
         val unscheduledTasks = state.unscheduledList.collectAsLazyPagingItems()
         val scheduledTasks = state.scheduledList.collectAsLazyPagingItems()
