@@ -27,7 +27,7 @@ import com.hallett.taskassistant.corndux.sideeffects.NavigateUp
 import com.hallett.taskassistant.ui.composables.FutureTaskList
 import com.hallett.taskassistant.ui.composables.OpenTaskList
 import com.hallett.taskassistant.ui.composables.OverdueTasks
-import com.hallett.taskassistant.ui.composables.TaskCreation
+import com.hallett.taskassistant.createTasks.TaskCreation
 import com.hallett.taskassistant.ui.composables.TaskDashboard
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collect

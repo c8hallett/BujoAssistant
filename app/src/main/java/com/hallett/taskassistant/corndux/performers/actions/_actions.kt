@@ -48,3 +48,8 @@ sealed interface TaskListAction: Action {
     object CancelScopeSelection : TaskListAction
     object EnterScopeSelection : TaskListAction
 }
+
+data class SelectNewScope(val newTaskScope: Scope?) : Action
+data class SelectNewScopeType(val scopeType: ScopeType) : Action
+object CancelScopeSelection : Action
+object EnterScopeSelection : Action

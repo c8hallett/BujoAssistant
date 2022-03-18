@@ -8,16 +8,6 @@ object Init : Action
 
 interface Commit
 
-interface Event
-abstract class Interpreter<State: IState>(private val store: Store<State>) {
-    protected abstract fun mapEvent(event: Event): Action?
-    fun dispatch(event: Event) {
-        mapEvent(event)?.let { action ->
-            store.dispatch(action)
-        }
-    }
-}
-
 
 sealed interface Actor<State : IState>
 
@@ -51,4 +41,8 @@ interface Middleware<State : IState> : Actor<State> {
     suspend fun before(state: State, commit: Commit)
     suspend fun afterEachReduce(state: State, commit: Commit, reducer: Class<out Reducer<State>>)
     suspend fun after(state: State, commit: Commit)
+}
+
+interface SideEffectPerformer: Actor<Nothing> {
+    fun performSideEffect(sideEffect: SideEffect)
 }

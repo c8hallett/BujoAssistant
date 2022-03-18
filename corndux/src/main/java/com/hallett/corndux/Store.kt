@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -30,14 +31,15 @@ abstract class Store<State : IState>(
     private val middleware = actors.filterIsInstance<Middleware<State>>()
 
     init {
-        val performers = actors.filterIsInstance<StatefulPerformer<State>>()
-        val statelessPerformers = actors.filterIsInstance<Performer>()
+        val statePerformers = actors.filterIsInstance<StatefulPerformer<State>>()
+        val performers = actors.filterIsInstance<Performer>()
+        val sideEffectPerformers = actors.filterIsInstance<SideEffectPerformer>()
 
         // consuming actions
         scope.launch(customDispatcher) {
             actionChannel.consumeEach { newAction ->
                 // pass actions to pre-middlewares first
-                performers.forEach { performer ->
+                statePerformers.forEach { performer ->
                     performer.performAction(
                         state = stateFlow.value,
                         action = newAction,
@@ -46,13 +48,23 @@ abstract class Store<State : IState>(
                         dispatchSideEffect = { sideEffectFlow.emit(it) }
                     )
                 }
-                statelessPerformers.forEach { sPerformer ->
-                    sPerformer.performAction(
+                performers.forEach { performer ->
+                    performer.performAction(
                         action = newAction,
                         dispatchAction = { dispatch(it) },
                         dispatchCommit = { dispatchCommit(it) },
                         dispatchSideEffect = { sideEffectFlow.emit(it) }
                     )
+                }
+            }
+        }
+
+        if(sideEffectPerformers.isNotEmpty()) {
+            scope.launch(customDispatcher) {
+                sideEffectFlow.collect{ sideEffect ->
+                    sideEffectPerformers.forEach { performer ->
+                        performer.performSideEffect(sideEffect)
+                    }
                 }
             }
         }
@@ -92,7 +104,6 @@ abstract class Store<State : IState>(
     ) // this is so big sad, map{} takes away my ez peasy StateFlow type
 
     fun observeState(): StateFlow<State> = stateFlow
-
 
     fun observeSideEffects(): Flow<SideEffect> = sideEffectFlow
 }
