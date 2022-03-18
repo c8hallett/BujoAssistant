@@ -1,4 +1,4 @@
-package com.hallett.taskassistant.di
+package com.hallett.taskassistant
 
 import androidx.compose.ui.unit.Dp
 import androidx.paging.Pager
@@ -74,12 +74,6 @@ val cornduxModule = DI.Module("corndux_module") {
             SessionReducer()
         )
     }
-    bindSingleton<ScopeSelectionInfoGenerator> {
-        ScopeSelectionInfoGenerator(factory(), instance())
-    }
-    bindSingleton<TaskListTransformer> {
-        TaskListTransformer(instance(), instance(tag = Formatter.SIMPLE_LABEL))
-    }
 }
 
 data class PagerParams(
@@ -104,5 +98,11 @@ val utilModule = DI.Module("util_module") {
             io = Dispatchers.IO,
             default = Dispatchers.Default
         )
+    }
+    bindSingleton<ScopeSelectionInfoGenerator> {
+        ScopeSelectionInfoGenerator(factory(), instance())
+    }
+    bindSingleton<TaskListTransformer> {
+        TaskListTransformer(instance(), instance(tag = Formatter.SIMPLE_LABEL))
     }
 }
