@@ -16,10 +16,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.hallett.corndux.Store
 import com.hallett.scopes.model.ScopeType
 import com.hallett.taskassistant.corndux.performers.actions.LoadLargerScope
 import com.hallett.taskassistant.corndux.performers.actions.LoadSmallerScope
-import com.hallett.taskassistant.dashboard.corndux.DashboardStore
+import com.hallett.taskassistant.dashboard.corndux.DashboardState
 import com.hallett.taskassistant.dashboard.corndux.dashboardModule
 import com.hallett.taskassistant.ui.composables.TaskList
 import org.kodein.di.compose.rememberInstance
@@ -31,7 +32,7 @@ fun TaskDashboard() {
         allowSilentOverride = true,
         diBuilder = { import(dashboardModule) }
     ) {
-        val store by rememberInstance<DashboardStore>()
+        val store by rememberInstance<Store<DashboardState>>()
         val state by store.observeState().collectAsState()
         val taskList = state.taskList.collectAsLazyPagingItems()
 

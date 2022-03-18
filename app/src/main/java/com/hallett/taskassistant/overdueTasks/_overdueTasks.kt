@@ -1,4 +1,4 @@
-package com.hallett.taskassistant.ui.composables
+package com.hallett.taskassistant.overdueTasks
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.Button
@@ -8,33 +8,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.hallett.corndux.Action
-import com.hallett.corndux.Event
-import com.hallett.taskassistant.corndux.IInterpreter
-import com.hallett.taskassistant.corndux.IStore
-import com.hallett.taskassistant.corndux.interpreters.TaskInListClicked
 import com.hallett.taskassistant.corndux.performers.actions.AddRandomOverdueTask
-import com.hallett.taskassistant.corndux.performers.actions.FutureTaskAction
-import com.hallett.taskassistant.corndux.performers.actions.OverdueTaskAction
-import org.kodein.di.bindSingleton
 import org.kodein.di.compose.subDI
-import org.kodein.di.instance
-import taskAssistantStore
-
-class OverdueTaskInterpreter(store: IStore): IInterpreter(store) {
-    override fun mapEvent(event: Event): Action? = when (event){
-        is TaskInListClicked -> OverdueTaskAction.ClickTaskInList(event.task)
-        else -> null
-    }
-}
+import com.hallett.corndux.Store
+import com.hallett.taskassistant.overdueTasks.corndux.OverdueState
+import com.hallett.taskassistant.overdueTasks.corndux.overdueModule
+import com.hallett.taskassistant.ui.composables.TaskList
+import org.kodein.di.compose.rememberInstance
 
 @Composable
 fun OverdueTasks() {
-    subDI(diBuilder = {
-        bindSingleton { OverdueTaskInterpreter(instance()) }
-    }) {
-        val store by taskAssistantStore()
-        val state by store.observeState { it.components.overdueTask }.collectAsState()
+    subDI(
+        allowSilentOverride = true,
+        diBuilder = { import(overdueModule) },
+    ) {
+        val store by rememberInstance<Store<OverdueState>>()
+        val state by store.observeState().collectAsState()
         val pagedTasks = state.taskList.collectAsLazyPagingItems()
 
         Column {
