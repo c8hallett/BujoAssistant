@@ -24,7 +24,6 @@ import com.hallett.taskassistant.corndux.performers.actions.FabClicked
 import com.hallett.taskassistant.corndux.sideeffects.NavigateSingleTop
 import com.hallett.taskassistant.corndux.sideeffects.NavigateToRootDestination
 import com.hallett.taskassistant.corndux.sideeffects.NavigateUp
-import com.hallett.taskassistant.ui.composables.OpenTaskList
 import com.hallett.taskassistant.createTasks.TaskCreation
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collect
@@ -33,6 +32,7 @@ import closestStore
 import com.hallett.taskassistant.dashboard.TaskDashboard
 import com.hallett.taskassistant.futureTasks.FutureTaskList
 import com.hallett.taskassistant.overdueTasks.OverdueTasks
+import com.hallett.taskassistant.taskList.OpenTaskList
 
 
 @FlowPreview

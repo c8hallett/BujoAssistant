@@ -24,6 +24,6 @@ data class CreateTaskState(
 data class SubmitTask(val taskName: String) : Action
 object CancelTask : Action
 
-data class UpdateSelectedScope(val scope: Scope?): Commit
-data class UpdateSelectedScopeInfo(val selectionInfo: ScopeSelectionInfo?): Commit
+data class UpdateSelectedScope(val scope: Scope?, val scopeSelectionInfo: ScopeSelectionInfo?): Commit
+data class UpdateScopeSelectionInfo(val scopeSelectionInfo: ScopeSelectionInfo?): Commit
 object ClearCreateTaskState: Commit

@@ -35,26 +35,21 @@ class CreateTaskPerformer(
                 val scopeSelectionInfo =
                     ssiGenerator.generateInfo(state.scope?.type ?: ScopeType.DAY)
                 dispatchCommit(
-                    UpdateSelectedScopeInfo(selectionInfo = scopeSelectionInfo)
+                    UpdateScopeSelectionInfo(scopeSelectionInfo = scopeSelectionInfo)
                 )
             }
             is CancelScopeSelection -> {
                 dispatchCommit(
-                    UpdateSelectedScopeInfo(selectionInfo = null)
+                    UpdateScopeSelectionInfo(scopeSelectionInfo = null)
                 )
             }
-            is ClickNewScope -> {
-                dispatchCommit(
-                    UpdateSelectedScope(scope = action.newTaskScope)
-                )
-                dispatchCommit(
-                    UpdateSelectedScopeInfo(selectionInfo = null)
-                )
-            }
+            is ClickNewScope -> dispatchCommit(
+                UpdateSelectedScope(scope = action.newTaskScope, scopeSelectionInfo = null)
+            )
             is ClickNewScopeType -> {
                 val scopeSelectionInfo = ssiGenerator.generateInfo(action.scopeType)
                 dispatchCommit(
-                    UpdateSelectedScopeInfo(selectionInfo = scopeSelectionInfo)
+                    UpdateScopeSelectionInfo(scopeSelectionInfo = scopeSelectionInfo)
                 )
             }
         }
