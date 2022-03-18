@@ -32,7 +32,7 @@ object LoadSmallerScope : DashboardAction
 sealed interface FutureTaskAction: Action {
     data class ClickTaskInList(val task: Task): FutureTaskAction
 }
-data class ExpandList(val list: FutureTaskListState.ExpandedList) : FutureTaskAction
+data class ExpandList(val list: FutureTaskListState.ExpandedList) : Action
 
 sealed interface TaskAction : Action
 data class DeleteTask(val task: Task) : TaskAction

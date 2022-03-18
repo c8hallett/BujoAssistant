@@ -1,4 +1,4 @@
-package com.hallett.taskassistant.ui.composables
+package com.hallett.taskassistant.futureTasks
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -15,42 +15,33 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
-import com.hallett.corndux.Action
-import com.hallett.corndux.Event
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.hallett.domain.model.Task
-import com.hallett.taskassistant.corndux.FutureTaskListState.ExpandedList
-import com.hallett.taskassistant.corndux.IInterpreter
-import com.hallett.taskassistant.corndux.IStore
-import com.hallett.taskassistant.corndux.interpreters.TaskInListClicked
-import com.hallett.taskassistant.corndux.performers.actions.ExpandList
-import com.hallett.taskassistant.corndux.performers.actions.FutureTaskAction
 import com.hallett.taskassistant.ui.model.TaskView
-import org.kodein.di.bindSingleton
 import org.kodein.di.compose.subDI
-import org.kodein.di.instance
-import closestStore
-
-class FutureTaskInterpeter(store: IStore): IInterpreter(store) {
-    override fun mapEvent(event: Event): Action? = when (event){
-        is TaskInListClicked -> FutureTaskAction.ClickTaskInList(event.task)
-        else -> null
-    }
-}
+import com.hallett.corndux.Store
+import com.hallett.taskassistant.futureTasks.corndux.ExpandList
+import com.hallett.taskassistant.futureTasks.corndux.FutureState
+import com.hallett.taskassistant.futureTasks.corndux.ListType
+import com.hallett.taskassistant.futureTasks.corndux.futureModule
+import com.hallett.taskassistant.ui.composables.TaskList
+import org.kodein.di.compose.rememberInstance
 
 @Composable
 fun FutureTaskList() {
-    subDI(diBuilder = {
-        bindSingleton { FutureTaskInterpeter(instance()) }
-    }) {
-        val store by closestStore()
-        val state by store.observeState { it.components.futureTasks }.collectAsState()
-        val unscheduledTasks = state.unscheduledList.collectAsLazyPagingItems()
-        val scheduledTasks = state.scheduledList.collectAsLazyPagingItems()
-
+    subDI(
+        allowSilentOverride = true,
+        diBuilder = { import(futureModule) }
+    ) {
+        val store by rememberInstance<Store<FutureState>>()
+        val state by store.observeState().collectAsState()
+        val taskList = state.currentList.collectAsLazyPagingItems()
 
         Column(
             modifier = Modifier
@@ -59,19 +50,17 @@ fun FutureTaskList() {
         ) {
             ExpandableTaskList(
                 label = "Sometime",
-                isExpanded = state.expandedList == ExpandedList.UNSCHEDULED,
-                items = unscheduledTasks,
+                items = if(state.currentListType == ListType.UNSCHEDULED) taskList else null,
                 expandedTask = state.currentlyExpandedTask
             ) {
-                store.dispatch(ExpandList(ExpandedList.UNSCHEDULED))
+                store.dispatch(ExpandList(ListType.UNSCHEDULED))
             }
             ExpandableTaskList(
                 label = "Scheduled",
-                isExpanded = state.expandedList == ExpandedList.SCHEDULED,
-                items = scheduledTasks,
+                items = if(state.currentListType == ListType.SCHEDULED) taskList else null,
                 expandedTask = state.currentlyExpandedTask
             ) {
-                store.dispatch(ExpandList(ExpandedList.SCHEDULED))
+                store.dispatch(ExpandList(ListType.SCHEDULED))
             }
         }
     }
@@ -81,9 +70,8 @@ fun FutureTaskList() {
 @Composable
 fun ColumnScope.ExpandableTaskList(
     label: String,
-    isExpanded: Boolean,
     expandedTask: Task?,
-    items: LazyPagingItems<TaskView>,
+    items: LazyPagingItems<TaskView>?,
     onHeaderClicked: () -> Unit
 ) {
     Row(
@@ -102,7 +90,7 @@ fun ColumnScope.ExpandableTaskList(
             modifier = Modifier.padding(12.dp)
         )
 
-        if (!isExpanded) {
+        if (items == null) {
             Icon(
                 Icons.Default.ExpandMore,
                 "",
@@ -110,7 +98,7 @@ fun ColumnScope.ExpandableTaskList(
             )
         }
     }
-    if (isExpanded) {
+    if (items != null) {
         TaskList(
             pagedTasks = items,
             isTaskExpanded = { expandedTask == it },
