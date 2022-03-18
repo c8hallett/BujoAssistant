@@ -8,8 +8,8 @@ import com.hallett.database.ITaskRepository
 import com.hallett.scopes.model.ScopeType
 import com.hallett.taskassistant.corndux.performers.actions.CancelScopeSelection
 import com.hallett.taskassistant.corndux.performers.actions.EnterScopeSelection
-import com.hallett.taskassistant.corndux.performers.actions.SelectNewScope
-import com.hallett.taskassistant.corndux.performers.actions.SelectNewScopeType
+import com.hallett.taskassistant.corndux.performers.actions.ClickNewScope
+import com.hallett.taskassistant.corndux.performers.actions.ClickNewScopeType
 import com.hallett.taskassistant.corndux.performers.utils.ScopeSelectionInfoGenerator
 import com.hallett.taskassistant.corndux.sideeffects.NavigateUp
 
@@ -43,7 +43,7 @@ class CreateTaskPerformer(
                     UpdateSelectedScopeInfo(selectionInfo = null)
                 )
             }
-            is SelectNewScope -> {
+            is ClickNewScope -> {
                 dispatchCommit(
                     UpdateSelectedScope(scope = action.newTaskScope)
                 )
@@ -51,7 +51,7 @@ class CreateTaskPerformer(
                     UpdateSelectedScopeInfo(selectionInfo = null)
                 )
             }
-            is SelectNewScopeType -> {
+            is ClickNewScopeType -> {
                 val scopeSelectionInfo = ssiGenerator.generateInfo(action.scopeType)
                 dispatchCommit(
                     UpdateSelectedScopeInfo(selectionInfo = scopeSelectionInfo)

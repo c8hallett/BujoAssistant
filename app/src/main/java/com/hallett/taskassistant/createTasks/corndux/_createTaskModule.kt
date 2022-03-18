@@ -1,6 +1,7 @@
 package com.hallett.taskassistant.createTasks.corndux
 
 import com.hallett.corndux.Actor
+import com.hallett.taskassistant.mainNavigation.corndux.NavigationSideEffectPerformer
 import org.kodein.di.DI
 import org.kodein.di.bindSingleton
 import org.kodein.di.instance
@@ -16,6 +17,7 @@ val createTaskModule = DI.Module("createTaskModule") {
         listOf(
             CreateTaskPerformer(instance(), instance()),
             CreateTaskReducer(),
+            NavigationSideEffectPerformer(instance())
         )
     }
 }

@@ -1,7 +1,7 @@
 package com.hallett.taskassistant.corndux.performers.actions
 
 import com.hallett.corndux.Action
-import com.hallett.taskassistant.ui.navigation.TaskNavDestination
+import com.hallett.taskassistant.mainNavigation.TaskNavDestination
 
 sealed class NavigationAction(val destination: TaskNavDestination) : Action
 class FabClicked(destination: TaskNavDestination) : NavigationAction(destination)

@@ -45,16 +45,16 @@ import androidx.compose.ui.unit.dp
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
+import closestStore
 import com.hallett.scopes.model.Scope
 import com.hallett.scopes.model.ScopeType
 import com.hallett.scopes.scope_generator.IScopeCalculator
 import com.hallett.taskassistant.corndux.ScopeSelectionInfo
-import com.hallett.taskassistant.corndux.interpreters.NewScopeClicked
-import com.hallett.taskassistant.corndux.interpreters.NewScopeTypeClicked
-import com.hallett.taskassistant.corndux.interpreters.ScopeSelectionCancelled
-import com.hallett.taskassistant.corndux.interpreters.ScopeSelectionEntered
+import com.hallett.taskassistant.corndux.performers.actions.CancelScopeSelection
+import com.hallett.taskassistant.corndux.performers.actions.EnterScopeSelection
+import com.hallett.taskassistant.corndux.performers.actions.ClickNewScope
+import com.hallett.taskassistant.corndux.performers.actions.ClickNewScopeType
 import com.hallett.taskassistant.ui.formatters.Formatter
-import taskAssistantInterpreter
 import kotlinx.coroutines.flow.Flow
 import org.kodein.di.compose.rememberInstance
 
@@ -162,12 +162,12 @@ fun ScopeTypeDropDownMenu(
 fun SelectableScopeLabel(
     scope: Scope?,
 ) {
-    val interpreter by taskAssistantInterpreter()
+    val store by closestStore()
     val labelFormatter: Formatter<Scope?, String> by rememberInstance(tag = Formatter.SIMPLE_LABEL)
 
     Text(
         text = labelFormatter.format(scope),
-        modifier = Modifier.clickable { interpreter.dispatch(ScopeSelectionEntered) },
+        modifier = Modifier.clickable { store.dispatch(EnterScopeSelection) },
         style = MaterialTheme.typography.h5,
         color = MaterialTheme.colors.onSurface
     )
@@ -231,7 +231,7 @@ fun ScopeListItem(scope: Scope, onScopeSelected: (Scope) -> Unit) {
 fun ActiveScopeSelectionContent(
     selectionInfo: ScopeSelectionInfo,
 ) {
-    val interpreter by taskAssistantInterpreter()
+    val store by closestStore()
     val (isExpanded, setIsExpanded) = remember { mutableStateOf(false) }
 
     Row(horizontalArrangement = SpaceBetween) {
@@ -244,24 +244,24 @@ fun ActiveScopeSelectionContent(
                 .align(Alignment.CenterVertically)
         )
         IconButton(
-            onClick = { interpreter.dispatch(NewScopeClicked(null)) },
+            onClick = { store.dispatch(ClickNewScope(null)) },
         ) {
             Icon(Icons.Default.Delete, "remove scope", tint = MaterialTheme.colors.error)
         }
         IconButton(
-            onClick = { interpreter.dispatch(ScopeSelectionCancelled) },
+            onClick = { store.dispatch(CancelScopeSelection) },
         ) {
             Icon(Icons.Default.Cancel, "cancel edit", tint = MaterialTheme.colors.error)
         }
         ScopeTypeDropDownMenu(
             isExpanded = isExpanded,
             onDismiss = { setIsExpanded(false) },
-            onScopeTypeSelected = { interpreter.dispatch(NewScopeTypeClicked(it)) }
+            onScopeTypeSelected = { store.dispatch(ClickNewScopeType(it)) }
         )
     }
     ScopeList(
         selectableScopes = selectionInfo.scopes,
-        onScopeSelected = { interpreter.dispatch(NewScopeClicked(it)) }
+        onScopeSelected = { store.dispatch(ClickNewScope(it)) }
     )
 }
 

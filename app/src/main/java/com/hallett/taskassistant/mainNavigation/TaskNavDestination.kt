@@ -1,4 +1,4 @@
-package com.hallett.taskassistant.ui.navigation
+package com.hallett.taskassistant.mainNavigation
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Dashboard
@@ -6,6 +6,7 @@ import androidx.compose.material.icons.filled.ErrorOutline
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.hallett.domain.model.Task
 import com.hallett.taskassistant.R
 import com.hallett.taskassistant.corndux.performers.actions.BottomNavigationClicked
 
@@ -14,6 +15,14 @@ sealed class TaskNavDestination(val route: String) {
     companion object {
         val startDestination: TaskNavDestination
             get() = Dashboard
+        fun fromRoute(route: String?): TaskNavDestination = when(route) {
+            CreateTask.route -> CreateTask
+            TaskList.route -> TaskList
+            Dashboard.route -> Dashboard
+            OverdueTasks.route -> OverdueTasks
+            FutureTaskList.route -> FutureTaskList
+            else -> startDestination
+        }
     }
 
     object CreateTask : TaskNavDestination("taskCreate")
@@ -41,4 +50,5 @@ sealed class TaskNavDestination(val route: String) {
         override val icon: ImageVector = Icons.Filled.Schedule
         override val action: BottomNavigationClicked = BottomNavigationClicked(this)
     }
+
 }

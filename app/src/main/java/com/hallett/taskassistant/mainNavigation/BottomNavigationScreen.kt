@@ -1,4 +1,4 @@
-package com.hallett.taskassistant.ui.navigation
+package com.hallett.taskassistant.mainNavigation
 
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.hallett.taskassistant.corndux.performers.actions.BottomNavigationClicked

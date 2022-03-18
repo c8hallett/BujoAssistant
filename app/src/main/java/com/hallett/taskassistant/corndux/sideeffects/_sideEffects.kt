@@ -1,7 +1,7 @@
 package com.hallett.taskassistant.corndux.sideeffects
 
 import com.hallett.corndux.SideEffect
-import com.hallett.taskassistant.ui.navigation.TaskNavDestination
+import com.hallett.taskassistant.mainNavigation.TaskNavDestination
 
 object NavigateUp : SideEffect
 data class NavigateToRootDestination(val destination: TaskNavDestination) : SideEffect

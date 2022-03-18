@@ -1,4 +1,4 @@
-package com.hallett.taskassistant.ui.navigation
+package com.hallett.taskassistant.mainNavigation
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
@@ -24,15 +24,15 @@ import com.hallett.taskassistant.corndux.performers.actions.FabClicked
 import com.hallett.taskassistant.corndux.sideeffects.NavigateSingleTop
 import com.hallett.taskassistant.corndux.sideeffects.NavigateToRootDestination
 import com.hallett.taskassistant.corndux.sideeffects.NavigateUp
-import com.hallett.taskassistant.ui.composables.FutureTaskList
 import com.hallett.taskassistant.ui.composables.OpenTaskList
-import com.hallett.taskassistant.ui.composables.OverdueTasks
 import com.hallett.taskassistant.createTasks.TaskCreation
-import com.hallett.taskassistant.ui.composables.TaskDashboard
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collect
 import org.kodein.di.compose.rememberInstance
 import closestStore
+import com.hallett.taskassistant.dashboard.TaskDashboard
+import com.hallett.taskassistant.futureTasks.FutureTaskList
+import com.hallett.taskassistant.overdueTasks.OverdueTasks
 
 
 @FlowPreview

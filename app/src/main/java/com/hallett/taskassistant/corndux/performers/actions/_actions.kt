@@ -5,7 +5,6 @@ import com.hallett.domain.model.Task
 import com.hallett.scopes.model.Scope
 import com.hallett.scopes.model.ScopeType
 import com.hallett.taskassistant.corndux.FutureTaskListState
-import com.hallett.taskassistant.ui.navigation.TaskNavDestination
 
 data class ClickTaskInList(val task: Task): Action
 
@@ -34,6 +33,7 @@ sealed interface FutureTaskAction: Action {
 }
 data class ExpandList(val list: FutureTaskListState.ExpandedList) : Action
 
+
 sealed interface TaskAction : Action
 data class DeleteTask(val task: Task) : TaskAction
 data class DeferTask(val task: Task) : TaskAction
@@ -49,7 +49,7 @@ sealed interface TaskListAction: Action {
     object EnterScopeSelection : TaskListAction
 }
 
-data class SelectNewScope(val newTaskScope: Scope?) : Action
-data class SelectNewScopeType(val scopeType: ScopeType) : Action
+data class ClickNewScope(val newTaskScope: Scope?) : Action
+data class ClickNewScopeType(val scopeType: ScopeType) : Action
 object CancelScopeSelection : Action
 object EnterScopeSelection : Action

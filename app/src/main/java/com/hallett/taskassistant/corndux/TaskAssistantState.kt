@@ -6,7 +6,7 @@ import com.hallett.domain.model.Task
 import com.hallett.scopes.model.Scope
 import com.hallett.scopes.model.ScopeType
 import com.hallett.taskassistant.ui.model.TaskView
-import com.hallett.taskassistant.ui.navigation.TaskNavDestination
+import com.hallett.taskassistant.mainNavigation.TaskNavDestination
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
