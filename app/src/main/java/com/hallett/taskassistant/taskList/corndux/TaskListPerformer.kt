@@ -9,17 +9,15 @@ import com.hallett.corndux.StatefulPerformer
 import com.hallett.database.ITaskRepository
 import com.hallett.scopes.model.ScopeType
 import com.hallett.scopes.scope_generator.IScopeCalculator
-import com.hallett.taskassistant.corndux.CancelScopeSelection
-import com.hallett.taskassistant.corndux.ClickNewScope
-import com.hallett.taskassistant.corndux.ClickNewScopeType
-import com.hallett.taskassistant.corndux.ClickTaskInList
-import com.hallett.taskassistant.corndux.EnterScopeSelection
-import com.hallett.taskassistant.corndux.UpdateExpandedTask
 import com.hallett.taskassistant.corndux.UpdateScopeSelectionInfo
 import com.hallett.taskassistant.corndux.UpdateSelectedScope
 import com.hallett.taskassistant.corndux.UpdateTaskList
 import com.hallett.taskassistant.corndux.utils.ScopeSelectionInfoGenerator
 import com.hallett.taskassistant.corndux.utils.TaskListTransformer
+import com.hallett.taskassistant.ui.composables.CancelScopeSelection
+import com.hallett.taskassistant.ui.composables.ClickNewScope
+import com.hallett.taskassistant.ui.composables.ClickNewScopeType
+import com.hallett.taskassistant.ui.composables.EnterScopeSelection
 
 class TaskListPerformer(
     private val taskRepo: ITaskRepository,
@@ -73,7 +71,6 @@ class TaskListPerformer(
                     UpdateScopeSelectionInfo(scopeSelectionInfo = scopeSelectionInfo)
                 )
             }
-            is ClickTaskInList -> dispatchCommit(UpdateExpandedTask(action.task))
         }
     }
 }

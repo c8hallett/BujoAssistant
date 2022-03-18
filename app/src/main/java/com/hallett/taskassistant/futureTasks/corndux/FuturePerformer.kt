@@ -35,7 +35,6 @@ class FuturePerformer(
                     )
                 )
             }
-            is ClickTaskInList -> dispatchCommit(UpdateExpandedTask(action.task))
             is ExpandList -> {
                 val list = when (action.listType) {
                     ListType.SCHEDULED -> transformer.transform(

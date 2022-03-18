@@ -6,17 +6,17 @@ import com.hallett.corndux.SideEffect
 import com.hallett.corndux.StatefulPerformer
 import com.hallett.database.ITaskRepository
 import com.hallett.scopes.model.ScopeType
-import com.hallett.taskassistant.corndux.CancelScopeSelection
 import com.hallett.taskassistant.corndux.CancelTask
 import com.hallett.taskassistant.corndux.ClearCreateTaskState
-import com.hallett.taskassistant.corndux.ClickNewScope
-import com.hallett.taskassistant.corndux.ClickNewScopeType
-import com.hallett.taskassistant.corndux.EnterScopeSelection
 import com.hallett.taskassistant.corndux.SubmitTask
 import com.hallett.taskassistant.corndux.UpdateScopeSelectionInfo
 import com.hallett.taskassistant.corndux.UpdateSelectedScope
 import com.hallett.taskassistant.corndux.sideeffects.NavigateUp
 import com.hallett.taskassistant.corndux.utils.ScopeSelectionInfoGenerator
+import com.hallett.taskassistant.ui.composables.CancelScopeSelection
+import com.hallett.taskassistant.ui.composables.ClickNewScope
+import com.hallett.taskassistant.ui.composables.ClickNewScopeType
+import com.hallett.taskassistant.ui.composables.EnterScopeSelection
 
 class CreateTaskPerformer(
     private val taskRepo: ITaskRepository,

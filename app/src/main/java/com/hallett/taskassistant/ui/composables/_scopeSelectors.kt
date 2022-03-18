@@ -46,18 +46,20 @@ import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import closestStore
+import com.hallett.corndux.Action
 import com.hallett.scopes.model.Scope
 import com.hallett.scopes.model.ScopeType
 import com.hallett.scopes.scope_generator.IScopeCalculator
-import com.hallett.taskassistant.corndux.CancelScopeSelection
-import com.hallett.taskassistant.corndux.ClickNewScope
-import com.hallett.taskassistant.corndux.ClickNewScopeType
-import com.hallett.taskassistant.corndux.EnterScopeSelection
 import com.hallett.taskassistant.ui.formatters.Formatter
 import com.hallett.taskassistant.ui.model.ScopeSelectionInfo
 import kotlinx.coroutines.flow.Flow
 import org.kodein.di.compose.rememberInstance
 
+sealed interface ScopeSelectionAction : Action
+    data class ClickNewScope(val newTaskScope: Scope?) : ScopeSelectionAction
+    data class ClickNewScopeType(val scopeType: ScopeType) : ScopeSelectionAction
+    object CancelScopeSelection : ScopeSelectionAction
+    object EnterScopeSelection : ScopeSelectionAction
 
 @Composable
 fun ScopeSelection(

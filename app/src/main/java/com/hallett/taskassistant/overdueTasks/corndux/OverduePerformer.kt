@@ -37,7 +37,6 @@ class OverduePerformer(
                     )
                 )
             )
-            is ClickTaskInList -> dispatchCommit(UpdateExpandedTask(action.task))
             is AddRandomOverdueTask -> {
                 taskRepo.randomTask(ScopeType.values().random(), overdue = true)
             }

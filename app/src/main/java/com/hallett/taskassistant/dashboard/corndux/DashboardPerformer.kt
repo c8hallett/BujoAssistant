@@ -49,7 +49,6 @@ class DashboardPerformer(
                     )
                 )
             }
-            is ClickTaskInList -> dispatchCommit(UpdateExpandedTask(action.task))
             is LoadSmallerScope -> {
                 val prevScopeType = state.scopeType.previous()
                 if (prevScopeType != state.scopeType) {

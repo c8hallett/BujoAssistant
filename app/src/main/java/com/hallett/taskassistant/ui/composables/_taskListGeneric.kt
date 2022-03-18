@@ -27,16 +27,20 @@ import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.items
 import closestStore
+import com.hallett.corndux.Action
 import com.hallett.domain.model.Task
 import com.hallett.domain.model.TaskStatus
-import com.hallett.taskassistant.corndux.ClickTaskInList
-import com.hallett.taskassistant.corndux.DeferTask
-import com.hallett.taskassistant.corndux.DeleteTask
-import com.hallett.taskassistant.corndux.MarkTaskAsComplete
-import com.hallett.taskassistant.corndux.MarkTaskAsIncomplete
-import com.hallett.taskassistant.corndux.RescheduleTask
 import com.hallett.taskassistant.ui.model.TaskActionType
 import com.hallett.taskassistant.ui.model.TaskView
+
+
+sealed interface TaskAction : Action
+data class ClickTaskInList(val task: Task) : TaskAction
+data class DeleteTask(val task: Task) : TaskAction
+data class DeferTask(val task: Task) : TaskAction
+data class RescheduleTask(val task: Task) : TaskAction
+data class MarkTaskAsComplete(val task: Task) : TaskAction
+data class MarkTaskAsIncomplete(val task: Task) : TaskAction
 
 @Composable
 fun TaskList(
