@@ -115,7 +115,8 @@ internal class TaskRepository(
     private fun Scope?.toEntity(): TaskEntity.ScopeEntity? = this?.let {
         TaskEntity.ScopeEntity(
             type = type,
-            value = value
+            value = value,
+            endValue = scopeCalculator.getEndOfScope(it)
         )
     }
 

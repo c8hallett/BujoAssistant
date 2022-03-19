@@ -11,7 +11,7 @@ class CreateTaskReducer : Reducer<CreateTaskState> {
         return when (commit) {
             is ClearCreateTaskState -> CreateTaskState()
             is UpdateScopeSelectionInfo -> state.copy(scopeSelectionInfo = commit.scopeSelectionInfo)
-            is UpdateSelectedScope -> state.copy(scope = commit.scope)
+            is UpdateSelectedScope -> state.copy(scope = commit.scope, scopeSelectionInfo = commit.scopeSelectionInfo)
             else -> state
         }
     }

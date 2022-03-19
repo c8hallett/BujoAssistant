@@ -9,8 +9,6 @@ import com.hallett.corndux.SideEffect
 import com.hallett.database.ITaskRepository
 import com.hallett.scopes.model.ScopeType
 import com.hallett.taskassistant.corndux.AddRandomOverdueTask
-import com.hallett.taskassistant.corndux.ClickTaskInList
-import com.hallett.taskassistant.corndux.UpdateExpandedTask
 import com.hallett.taskassistant.corndux.UpdateTaskList
 import com.hallett.taskassistant.corndux.utils.TaskListTransformer
 import java.time.LocalDate

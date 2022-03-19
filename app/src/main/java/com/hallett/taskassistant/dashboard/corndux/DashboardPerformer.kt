@@ -9,10 +9,8 @@ import com.hallett.corndux.StatefulPerformer
 import com.hallett.database.ITaskRepository
 import com.hallett.scopes.model.ScopeType
 import com.hallett.scopes.scope_generator.IScopeCalculator
-import com.hallett.taskassistant.corndux.ClickTaskInList
 import com.hallett.taskassistant.corndux.LoadLargerScope
 import com.hallett.taskassistant.corndux.LoadSmallerScope
-import com.hallett.taskassistant.corndux.UpdateExpandedTask
 import com.hallett.taskassistant.corndux.UpdateTypedTaskList
 import com.hallett.taskassistant.corndux.utils.TaskListTransformer
 import java.time.LocalDate

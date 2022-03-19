@@ -7,8 +7,6 @@ import com.hallett.corndux.Init
 import com.hallett.corndux.Performer
 import com.hallett.corndux.SideEffect
 import com.hallett.database.ITaskRepository
-import com.hallett.taskassistant.corndux.ClickTaskInList
-import com.hallett.taskassistant.corndux.UpdateExpandedTask
 import com.hallett.taskassistant.corndux.utils.TaskListTransformer
 import java.time.LocalDate
 
