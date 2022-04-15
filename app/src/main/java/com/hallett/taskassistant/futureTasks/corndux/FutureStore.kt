@@ -19,9 +19,10 @@ class FutureStore(
 ) : Store<FutureState>(initialState, actors, scope)
 
 data class FutureState(
-    val currentlyExpandedTask: Task? = null,
-    val currentList: Flow<PagingData<TaskView>> = flowOf(),
-    val currentListType: ListType = ListType.UNSCHEDULED
+    val expandedTask: Task? = null,
+    val list: Flow<PagingData<TaskView>> = flowOf(),
+    val listType: ListType = ListType.UNSCHEDULED,
+    val search: String = ""
 ) : IState
 
 enum class ListType {

@@ -8,15 +8,15 @@ class FutureReducer : Reducer<FutureState> {
     override fun reduce(state: FutureState, commit: Commit): FutureState {
         return when (commit) {
             is UpdateExpandedList -> state.copy(
-                currentList = commit.taskList,
-                currentListType = commit.listType
+                list = commit.taskList,
+                listType = commit.listType
             )
             is UpdateExpandedTask -> {
-                val newTask = when (state.currentlyExpandedTask) {
+                val newTask = when (state.expandedTask) {
                     commit.task -> null
                     else -> commit.task
                 }
-                state.copy(currentlyExpandedTask = newTask)
+                state.copy(expandedTask = newTask)
             }
             else -> state
         }
