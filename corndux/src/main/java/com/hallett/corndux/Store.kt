@@ -10,14 +10,14 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 abstract class Store<State : IState>(
     initialState: State,
-    actors: List<Actor<out State>>,
+    actors: List<Performer<in State>>,
+    reducers: List<Reducer<State>>,
     private val scope: CoroutineScope,
 ) {
 
@@ -25,73 +25,54 @@ abstract class Store<State : IState>(
     private val sideEffectFlow = MutableSharedFlow<SideEffect>()
 
     private val customDispatcher = Executors.newFixedThreadPool(2).asCoroutineDispatcher()
-    private val actionChannel = Channel<Action>()
-
-    private val reducers = actors.filterIsInstance<Reducer<State>>()
-    private val middleware = actors.filterIsInstance<Middleware<State>>()
+    private val performActionChannel = Channel<Action>()
+    private val commitActionChannel = Channel<Action>()
 
     init {
-        val statePerformers = actors.filterIsInstance<StatefulPerformer<State>>()
-        val performers = actors.filterIsInstance<Performer>()
-        val sideEffectPerformers = actors.filterIsInstance<SideEffectPerformer>()
-
-        // consuming actions
+        // performing actions as needed
         scope.launch(customDispatcher) {
-            actionChannel.consumeEach { newAction ->
-                // pass actions to pre-middlewares first
-                statePerformers.forEach { performer ->
-                    performer.performAction(
-                        state = stateFlow.value,
-                        action = newAction,
-                        dispatchAction = { dispatch(it) },
-                        dispatchCommit = { dispatchCommit(it) },
-                        dispatchSideEffect = { sideEffectFlow.emit(it) }
-                    )
-                }
-                performers.forEach { performer ->
-                    performer.performAction(
-                        action = newAction,
-                        dispatchAction = { dispatch(it) },
-                        dispatchCommit = { dispatchCommit(it) },
-                        dispatchSideEffect = { sideEffectFlow.emit(it) }
-                    )
-                }
-            }
-        }
-
-        if(sideEffectPerformers.isNotEmpty()) {
-            scope.launch(customDispatcher) {
-                sideEffectFlow.collect{ sideEffect ->
-                    sideEffectPerformers.forEach { performer ->
-                        performer.performSideEffect(sideEffect)
+            performActionChannel.consumeEach { newAction ->
+                val currentState = stateFlow.value
+                val consumed = actors.fold(false) { consumed, actor ->
+                    when(consumed) {
+                        true -> true
+                        false -> when(actor){
+                            is StatefulPerformer -> actor.performAction(
+                                state = currentState,
+                                action = newAction,
+                                dispatchAction = ::dispatch,
+                                dispatchSideEffect = ::dispatchSideEffect,
+                            )
+                            is StatelessPerformer -> actor.performAction(
+                                action = newAction,
+                                dispatchAction = ::dispatch,
+                                dispatchSideEffect = ::dispatchSideEffect,
+                            )
+                        }
                     }
                 }
+                if(!consumed) commitActionChannel.send(newAction)
             }
         }
 
+        // allowing actions to modify state
+        scope.launch(customDispatcher) {
+            commitActionChannel.consumeEach { newCommit ->
+                reducers.fold(stateFlow.value) { state, reducer ->
+                    reducer.reduce(state, newCommit)
+                }
+            }
+        }
         dispatch(Init)
+    }
+
+    private suspend fun dispatchSideEffect(sideEffect: SideEffect) {
+        sideEffectFlow.emit(sideEffect)
     }
 
     fun dispatch(action: Action) {
         scope.launch(customDispatcher) {
-            actionChannel.send(action)
-        }
-    }
-
-    private suspend fun dispatchCommit(newCommit: Commit) {
-        middleware.forEach {
-            it.before(stateFlow.value, newCommit)
-        }
-
-        stateFlow.value = reducers.fold(stateFlow.value) { state, reducer ->
-            reducer.reduce(state, newCommit).also { newState ->
-                middleware.forEach {
-                    it.afterEachReduce(newState, newCommit, reducer::class.java)
-                }
-            }
-        }
-        middleware.forEach {
-            it.after(stateFlow.value, newCommit)
+            performActionChannel.send(action)
         }
     }
 

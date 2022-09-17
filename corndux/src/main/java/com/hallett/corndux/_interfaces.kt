@@ -4,45 +4,31 @@ interface IState
 interface SideEffect
 
 interface Action
+
 object Init : Action
 
-interface Commit
+sealed interface Performer<State: IState>
 
-
-sealed interface Actor<State : IState>
-
-interface Performer: Actor<Nothing> {
-    suspend fun performAction(
+interface StatelessPerformer: Performer<IState> {
+    fun performAction(
         action: Action,
         dispatchAction: suspend (Action) -> Unit,
-        dispatchCommit: suspend (Commit) -> Unit,
         dispatchSideEffect: suspend (SideEffect) -> Unit,
-    )
+    ): Boolean
 }
 
-interface StatefulPerformer<State : IState> : Actor<State> {
+interface StatefulPerformer<State : IState>: Performer<State>  {
     suspend fun performAction(
         state: State,
         action: Action,
         dispatchAction: suspend (Action) -> Unit,
-        dispatchCommit: suspend (Commit) -> Unit,
         dispatchSideEffect: suspend (SideEffect) -> Unit,
-    )
+    ): Boolean
 }
 
-interface Reducer<State : IState> : Actor<State> {
+interface Reducer<State : IState> {
     fun reduce(
         state: State,
-        commit: Commit
+        action: Action
     ): State
-}
-
-interface Middleware<State : IState> : Actor<State> {
-    suspend fun before(state: State, commit: Commit)
-    suspend fun afterEachReduce(state: State, commit: Commit, reducer: Class<out Reducer<State>>)
-    suspend fun after(state: State, commit: Commit)
-}
-
-interface SideEffectPerformer: Actor<Nothing> {
-    fun performSideEffect(sideEffect: SideEffect)
 }
