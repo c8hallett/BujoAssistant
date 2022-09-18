@@ -75,7 +75,7 @@ abstract class Store<State : IState>(
     }
 
     fun stopObserving (other: Store<out IState>) {
-        log("${other::class.simpleName} ❌ ${this::class.simpleName}")
+        log("${this::class.simpleName} ❌ ${other::class.simpleName}")
         val prependJob = prependMap.remove(other.hashCode())
         prependJob?.cancel()
     }
