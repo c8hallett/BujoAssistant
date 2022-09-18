@@ -3,7 +3,7 @@ package com.hallett.taskassistant.features.createTasks.corndux
 import com.hallett.corndux.IState
 import com.hallett.corndux.Store
 import com.hallett.scopes.model.Scope
-import com.hallett.taskassistant.ui.model.ScopeSelectionInfo
+import com.hallett.taskassistant.features.scopeSelection.ScopeSelectionInfo
 import kotlinx.coroutines.CoroutineScope
 
 class CreateTaskStore(

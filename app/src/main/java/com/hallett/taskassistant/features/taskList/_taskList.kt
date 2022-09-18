@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.hallett.taskassistant.features.genericTaskList.TaskList
 import com.hallett.taskassistant.features.taskList.corndux.TaskListStore
-import com.hallett.taskassistant.ui.composables.ScopeSelection
+import com.hallett.taskassistant.features.scopeSelection.ScopeSelection
 import org.kodein.di.compose.rememberInstance
 
 

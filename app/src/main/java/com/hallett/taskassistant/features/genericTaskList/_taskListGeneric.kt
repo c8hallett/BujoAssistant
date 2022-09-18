@@ -32,8 +32,6 @@ import com.hallett.domain.model.Task
 import com.hallett.domain.model.TaskStatus
 import com.hallett.taskassistant.LocalStore
 import com.hallett.taskassistant.features.genericTaskList.corndux.TaskActionsStore
-import com.hallett.taskassistant.ui.model.TaskActionType
-import com.hallett.taskassistant.ui.model.TaskView
 import org.kodein.di.compose.rememberInstance
 
 

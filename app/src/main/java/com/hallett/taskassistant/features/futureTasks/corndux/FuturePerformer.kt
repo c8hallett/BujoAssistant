@@ -7,7 +7,7 @@ import com.hallett.corndux.SideEffect
 import com.hallett.corndux.StatefulPerformer
 import com.hallett.database.ITaskRepository
 import com.hallett.taskassistant.features.futureTasks.SearchUpdated
-import com.hallett.taskassistant.util.TaskListTransformer
+import com.hallett.taskassistant.features.genericTaskList.TaskListTransformer
 import java.time.LocalDate
 
 class FuturePerformer(
