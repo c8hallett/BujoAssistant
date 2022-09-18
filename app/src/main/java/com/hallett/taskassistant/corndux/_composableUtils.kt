@@ -11,8 +11,8 @@ inline fun WithStore(localStore: Store<out IState>, crossinline operation: @Comp
     val globalStore = LocalStore.current
     logD("DEBUG_STORE", ".\n${globalStore::class.simpleName}\n👆 ${localStore::class.simpleName}")
     DisposableEffect(globalStore) {
-        globalStore.prepend(localStore)
-        onDispose { globalStore.remove(localStore) }
+        globalStore.observe(localStore)
+        onDispose { globalStore.stopObserving(localStore) }
     }
     CompositionLocalProvider(LocalStore provides localStore) {
         operation()
