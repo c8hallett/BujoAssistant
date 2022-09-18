@@ -2,10 +2,10 @@ package com.hallett.taskassistant.features.taskList.corndux
 
 import com.hallett.corndux.Action
 import com.hallett.corndux.Reducer
-import com.hallett.taskassistant.mainNavigation.corndux.UpdateExpandedTask
-import com.hallett.taskassistant.mainNavigation.corndux.UpdateScopeSelectionInfo
-import com.hallett.taskassistant.mainNavigation.corndux.UpdateSelectedScope
-import com.hallett.taskassistant.mainNavigation.corndux.UpdateTaskList
+import com.hallett.taskassistant.main.corndux.UpdateExpandedTask
+import com.hallett.taskassistant.main.corndux.UpdateScopeSelectionInfo
+import com.hallett.taskassistant.main.corndux.UpdateSelectedScope
+import com.hallett.taskassistant.main.corndux.UpdateTaskList
 
 class TaskListReducer : Reducer<TaskListState> {
     override fun reduce(state: TaskListState, action: Action): TaskListState {

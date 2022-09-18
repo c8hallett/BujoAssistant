@@ -2,8 +2,8 @@ package com.hallett.taskassistant.features.dashboard.corndux
 
 import com.hallett.corndux.Action
 import com.hallett.corndux.Reducer
-import com.hallett.taskassistant.mainNavigation.corndux.UpdateExpandedTask
-import com.hallett.taskassistant.mainNavigation.corndux.UpdateTypedTaskList
+import com.hallett.taskassistant.main.corndux.UpdateExpandedTask
+import com.hallett.taskassistant.main.corndux.UpdateTypedTaskList
 
 class DashboardReducer : Reducer<DashboardState> {
     override fun reduce(state: DashboardState, action: Action): DashboardState {

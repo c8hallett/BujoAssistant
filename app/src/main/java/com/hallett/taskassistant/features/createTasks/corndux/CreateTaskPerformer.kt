@@ -5,17 +5,17 @@ import com.hallett.corndux.SideEffect
 import com.hallett.corndux.StatefulPerformer
 import com.hallett.database.ITaskRepository
 import com.hallett.scopes.model.ScopeType
-import com.hallett.taskassistant.mainNavigation.corndux.CancelTask
-import com.hallett.taskassistant.mainNavigation.corndux.ClearCreateTaskState
-import com.hallett.taskassistant.mainNavigation.corndux.NavigateUp
-import com.hallett.taskassistant.mainNavigation.corndux.SubmitTask
-import com.hallett.taskassistant.mainNavigation.corndux.UpdateScopeSelectionInfo
-import com.hallett.taskassistant.mainNavigation.corndux.UpdateSelectedScope
 import com.hallett.taskassistant.features.scopeSelection.CancelScopeSelection
 import com.hallett.taskassistant.features.scopeSelection.ClickNewScope
 import com.hallett.taskassistant.features.scopeSelection.ClickNewScopeType
 import com.hallett.taskassistant.features.scopeSelection.EnterScopeSelection
 import com.hallett.taskassistant.features.scopeSelection.ScopeSelectionInfoGenerator
+import com.hallett.taskassistant.main.corndux.CancelTask
+import com.hallett.taskassistant.main.corndux.ClearCreateTaskState
+import com.hallett.taskassistant.main.corndux.NavigateUp
+import com.hallett.taskassistant.main.corndux.SubmitTask
+import com.hallett.taskassistant.main.corndux.UpdateScopeSelectionInfo
+import com.hallett.taskassistant.main.corndux.UpdateSelectedScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 

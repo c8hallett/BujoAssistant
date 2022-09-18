@@ -1,4 +1,4 @@
-package com.hallett.taskassistant.mainNavigation.corndux
+package com.hallett.taskassistant.main.corndux
 
 import com.hallett.corndux.Action
 import com.hallett.corndux.SideEffect

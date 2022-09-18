@@ -2,8 +2,8 @@ package com.hallett.taskassistant.features.overdueTasks.corndux
 
 import com.hallett.corndux.Action
 import com.hallett.corndux.Reducer
-import com.hallett.taskassistant.mainNavigation.corndux.UpdateExpandedTask
-import com.hallett.taskassistant.mainNavigation.corndux.UpdateTaskList
+import com.hallett.taskassistant.main.corndux.UpdateExpandedTask
+import com.hallett.taskassistant.main.corndux.UpdateTaskList
 
 class OverdueReducer : Reducer<OverdueState> {
     override fun reduce(state: OverdueState, action: Action): OverdueState {

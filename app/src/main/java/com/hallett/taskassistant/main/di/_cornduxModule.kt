@@ -1,4 +1,4 @@
-package com.hallett.taskassistant.mainNavigation.corndux
+package com.hallett.taskassistant.main.di
 
 import com.hallett.taskassistant.features.createTasks.corndux.CreateTaskPerformer
 import com.hallett.taskassistant.features.createTasks.corndux.CreateTaskReducer
@@ -17,8 +17,8 @@ import com.hallett.taskassistant.features.overdueTasks.corndux.OverdueStore
 import com.hallett.taskassistant.features.taskList.corndux.TaskListPerformer
 import com.hallett.taskassistant.features.taskList.corndux.TaskListReducer
 import com.hallett.taskassistant.features.taskList.corndux.TaskListStore
-import com.hallett.taskassistant.mainNavigation.corndux.GlobalStore
-import com.hallett.taskassistant.mainNavigation.corndux.NavigationPerformer
+import com.hallett.taskassistant.main.corndux.GlobalStore
+import com.hallett.taskassistant.main.corndux.NavigationPerformer
 import org.kodein.di.DI
 import org.kodein.di.bindSingleton
 import org.kodein.di.instance

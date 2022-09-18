@@ -5,7 +5,7 @@ import androidx.paging.PagingConfig
 import com.hallett.domain.coroutines.DispatchersWrapper
 import com.hallett.scopes.model.Scope
 import com.hallett.scopes.model.ScopeType
-import com.hallett.taskassistant.PagerParams
+import com.hallett.taskassistant.main.di.PagerParams
 import kotlinx.coroutines.flow.flowOn
 
 class ScopeSelectionInfoGenerator(

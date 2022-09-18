@@ -13,8 +13,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.hallett.taskassistant.features.genericTaskList.TaskList
-import com.hallett.taskassistant.features.taskList.corndux.TaskListStore
 import com.hallett.taskassistant.features.scopeSelection.ScopeSelection
+import com.hallett.taskassistant.features.taskList.corndux.TaskListStore
 import org.kodein.di.compose.rememberInstance
 
 

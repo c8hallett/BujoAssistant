@@ -8,10 +8,10 @@ import com.hallett.corndux.StatefulPerformer
 import com.hallett.database.ITaskRepository
 import com.hallett.scopes.model.ScopeType
 import com.hallett.scopes.scope_generator.IScopeCalculator
-import com.hallett.taskassistant.mainNavigation.corndux.LoadLargerScope
-import com.hallett.taskassistant.mainNavigation.corndux.LoadSmallerScope
-import com.hallett.taskassistant.mainNavigation.corndux.UpdateTypedTaskList
 import com.hallett.taskassistant.features.genericTaskList.TaskListTransformer
+import com.hallett.taskassistant.main.corndux.LoadLargerScope
+import com.hallett.taskassistant.main.corndux.LoadSmallerScope
+import com.hallett.taskassistant.main.corndux.UpdateTypedTaskList
 import java.time.LocalDate
 
 class DashboardPerformer(
