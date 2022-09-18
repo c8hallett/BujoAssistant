@@ -1,8 +1,20 @@
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.DisposableEffect
 import com.hallett.corndux.IState
 import com.hallett.corndux.Store
-import org.kodein.di.DIProperty
-import org.kodein.di.compose.rememberInstance
+import com.hallett.logging.logD
+import com.hallett.taskassistant.LocalStore
 
 @Composable
-fun closestStore(): DIProperty<Store<out IState>> = rememberInstance()
+inline fun WithStore(localStore: Store<out IState>, crossinline operation: @Composable () -> Unit) {
+    val globalStore = LocalStore.current
+    logD("DEBUG_STORE", ".\n${globalStore::class.simpleName}\n👆 ${localStore::class.simpleName}")
+    DisposableEffect(globalStore) {
+        globalStore.prepend(localStore)
+        onDispose { globalStore.remove(localStore) }
+    }
+    CompositionLocalProvider(LocalStore provides localStore) {
+        operation()
+    }
+}

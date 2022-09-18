@@ -45,11 +45,11 @@ import androidx.compose.ui.unit.dp
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
-import closestStore
 import com.hallett.corndux.Action
 import com.hallett.scopes.model.Scope
 import com.hallett.scopes.model.ScopeType
 import com.hallett.scopes.scope_generator.IScopeCalculator
+import com.hallett.taskassistant.LocalStore
 import com.hallett.taskassistant.ui.formatters.Formatter
 import com.hallett.taskassistant.ui.model.ScopeSelectionInfo
 import kotlinx.coroutines.flow.Flow
@@ -164,7 +164,7 @@ fun ScopeTypeDropDownMenu(
 fun SelectableScopeLabel(
     scope: Scope?,
 ) {
-    val store by closestStore()
+    val store = LocalStore.current
     val labelFormatter: Formatter<Scope?, String> by rememberInstance(tag = Formatter.SIMPLE_LABEL)
 
     Text(
@@ -233,7 +233,7 @@ fun ScopeListItem(scope: Scope, onScopeSelected: (Scope) -> Unit) {
 fun ActiveScopeSelectionContent(
     selectionInfo: ScopeSelectionInfo,
 ) {
-    val store by closestStore()
+    val store = LocalStore.current
     val (isExpanded, setIsExpanded) = remember { mutableStateOf(false) }
 
     Row(horizontalArrangement = SpaceBetween) {

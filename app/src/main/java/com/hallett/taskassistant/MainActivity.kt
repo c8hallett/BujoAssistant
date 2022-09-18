@@ -6,18 +6,27 @@ import androidx.activity.compose.setContent
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.ProvidableCompositionLocal
+import androidx.compose.runtime.State
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.hallett.corndux.IState
+import com.hallett.corndux.Store
 import com.hallett.database.di.databaseModule
 import com.hallett.scopes.di.scopeGeneratorModule
 import com.hallett.taskassistant.corndux.cornduxModule
 import com.hallett.taskassistant.mainNavigation.MainNavHost
 import com.hallett.taskassistant.mainNavigation.TaskBottomAppBar
 import com.hallett.taskassistant.mainNavigation.TaskFloatingActionBar
+import com.hallett.taskassistant.mainNavigation.corndux.GlobalState
+import com.hallett.taskassistant.mainNavigation.corndux.GlobalStore
 import com.hallett.taskassistant.ui.composables.ScopeTypeDropDownMenu
 import com.hallett.taskassistant.ui.theme.TaskAssistantTheme
 import com.hallett.taskassistant.util.AndroidLoggerHandler
@@ -27,7 +36,13 @@ import kotlinx.coroutines.FlowPreview
 import org.kodein.di.DI
 import org.kodein.di.android.x.androidXModule
 import org.kodein.di.bindProvider
+import org.kodein.di.compose.localDI
+import org.kodein.di.compose.rememberInstance
 import org.kodein.di.compose.withDI
+import org.kodein.di.direct
+import org.kodein.di.instance
+
+lateinit var LocalStore: ProvidableCompositionLocal<Store<out IState>>
 
 @ExperimentalCoroutinesApi
 @ExperimentalMaterialApi
@@ -61,15 +76,22 @@ class MainActivity : ComponentActivity() {
             androidXModule(application),
             runtimeModule
         ) {
+            val globalStore by rememberInstance<Store<GlobalState>>()
+            LocalStore = compositionLocalOf { globalStore }
+
             Scaffold(
                 bottomBar = { TaskBottomAppBar() },
                 floatingActionButton = { TaskFloatingActionBar() },
             ) { innerPadding ->
-                MainNavHost(innerPadding = innerPadding, navController = navController)
+                CompositionLocalProvider(LocalStore provides globalStore) {
+
+                    MainNavHost(innerPadding = innerPadding, navController = navController)
+                }
             }
         }
     }
 }
+
 
 @Preview(showBackground = true)
 @Composable

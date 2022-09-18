@@ -7,8 +7,8 @@ import com.hallett.domain.coroutines.DispatchersWrapper
 import com.hallett.scopes.model.Scope
 import com.hallett.scopes.model.ScopeType
 import com.hallett.scopes.scope_generator.IScopeCalculator
-import com.hallett.taskassistant.corndux.utils.ScopeSelectionInfoGenerator
-import com.hallett.taskassistant.corndux.utils.TaskListTransformer
+import com.hallett.taskassistant.util.ScopeSelectionInfoGenerator
+import com.hallett.taskassistant.util.TaskListTransformer
 import com.hallett.taskassistant.ui.formatters.Formatter
 import com.hallett.taskassistant.ui.formatters.ScopeOffsetLabelFormatter
 import com.hallett.taskassistant.ui.formatters.ScopeScaleFormatter

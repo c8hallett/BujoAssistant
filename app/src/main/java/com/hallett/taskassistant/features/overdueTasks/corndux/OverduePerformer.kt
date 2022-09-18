@@ -1,0 +1,50 @@
+package com.hallett.taskassistant.features.overdueTasks.corndux
+
+import androidx.paging.PagingConfig
+import com.hallett.corndux.Action
+import com.hallett.corndux.Init
+import com.hallett.corndux.SideEffect
+import com.hallett.corndux.StatelessPerformer
+import com.hallett.database.ITaskRepository
+import com.hallett.scopes.model.ScopeType
+import com.hallett.taskassistant.corndux.AddRandomOverdueTask
+import com.hallett.taskassistant.corndux.UpdateTaskList
+import com.hallett.taskassistant.util.TaskListTransformer
+import java.time.LocalDate
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
+
+class OverduePerformer(
+    private val taskRepo: ITaskRepository,
+    private val transformer: TaskListTransformer,
+    private val workScope: CoroutineScope
+) : StatelessPerformer {
+
+    private val pagingConfig = PagingConfig(pageSize = 20)
+
+    override fun performAction(
+        action: Action,
+        dispatchAction: (Action) -> Unit,
+        dispatchSideEffect: (SideEffect) -> Unit
+    ) {
+        when (action) {
+            is Init -> {
+                dispatchAction(
+                    UpdateTaskList(
+                        taskList = transformer.transform(
+                            tasks = taskRepo.getOverdueTasks(pagingConfig, LocalDate.now()),
+                            includeHeaders = false
+                        )
+                    )
+                )
+            }
+            is AddRandomOverdueTask -> withRepo {
+                randomTask(ScopeType.values().random(), overdue = true)
+            }
+        }
+    }
+
+    private inline fun withRepo(crossinline operation: suspend ITaskRepository.() -> Unit) = workScope.launch {
+        taskRepo.operation()
+    }
+}

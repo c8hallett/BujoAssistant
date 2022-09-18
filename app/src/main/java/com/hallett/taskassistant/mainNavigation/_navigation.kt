@@ -19,19 +19,21 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import closestStore
+import com.hallett.corndux.SideEffect
 import com.hallett.logging.logI
+import com.hallett.taskassistant.LocalStore
 import com.hallett.taskassistant.corndux.FabClicked
-import com.hallett.taskassistant.corndux.sideeffects.NavigateSingleTop
-import com.hallett.taskassistant.corndux.sideeffects.NavigateToRootDestination
-import com.hallett.taskassistant.corndux.sideeffects.NavigateUp
-import com.hallett.taskassistant.createTasks.TaskCreation
-import com.hallett.taskassistant.dashboard.TaskDashboard
-import com.hallett.taskassistant.futureTasks.FutureTaskList
-import com.hallett.taskassistant.overdueTasks.OverdueTasks
-import com.hallett.taskassistant.taskList.OpenTaskList
+import com.hallett.taskassistant.corndux.NavigateSingleTop
+import com.hallett.taskassistant.corndux.NavigateToRootDestination
+import com.hallett.taskassistant.corndux.NavigateUp
+import com.hallett.taskassistant.features.createTasks.TaskCreation
+import com.hallett.taskassistant.features.dashboard.TaskDashboard
+import com.hallett.taskassistant.features.futureTasks.FutureTaskList
+import com.hallett.taskassistant.features.overdueTasks.OverdueTasks
+import com.hallett.taskassistant.features.taskList.OpenTaskList
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onEach
 import org.kodein.di.compose.rememberInstance
 
 
@@ -64,10 +66,10 @@ fun MainNavHost(innerPadding: PaddingValues, navController: NavHostController) {
         }
     }
 
-    val store by closestStore()
+    val store = LocalStore.current
 
     LaunchedEffect(key1 = store) {
-        store.observeSideEffects().collect { sideEffect ->
+        store.observeSideEffects().onEach { sideEffect: SideEffect ->
             when (sideEffect) {
                 is NavigateUp -> navController.popBackStack()
                 is NavigateToRootDestination -> navController.navigate(sideEffect.destination.route) {
@@ -79,7 +81,7 @@ fun MainNavHost(innerPadding: PaddingValues, navController: NavHostController) {
                     launchSingleTop = true
                 }
             }
-        }
+        }.collect()
     }
 }
 
@@ -96,7 +98,7 @@ fun TaskBottomAppBar() {
 
 @Composable
 private fun TaskBottomAppBarImpl(items: List<BottomNavigationScreen>) {
-    val store by closestStore()
+    val store = LocalStore.current
     val navController: NavController by rememberInstance()
 
     BottomAppBar() {
@@ -113,7 +115,7 @@ private fun TaskBottomAppBarImpl(items: List<BottomNavigationScreen>) {
 
 @Composable
 fun TaskFloatingActionBar() {
-    val store by closestStore()
+    val store = LocalStore.current
     FloatingActionButton(
         onClick = { store.dispatch(FabClicked(TaskNavDestination.CreateTask)) }
     ) {
