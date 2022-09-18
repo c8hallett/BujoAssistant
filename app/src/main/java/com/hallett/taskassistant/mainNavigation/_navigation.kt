@@ -101,7 +101,7 @@ private fun TaskBottomAppBarImpl(items: List<BottomNavigationScreen>) {
     val store = LocalStore.current
     val navController: NavController by rememberInstance()
 
-    BottomAppBar() {
+    BottomAppBar {
         items.forEach { screen ->
             BottomNavigationItem(
                 icon = { Icon(screen.icon, contentDescription = null) },

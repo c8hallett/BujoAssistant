@@ -1,5 +1,6 @@
 package com.hallett.taskassistant.features.createTasks
 
+import WithStore
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -29,7 +30,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import org.kodein.di.compose.rememberInstance
-import WithStore
 
 
 @FlowPreview

@@ -12,7 +12,7 @@ class CreateTaskStore(
     scope: CoroutineScope
 ) : Store<CreateTaskState>(
     initialState = CreateTaskState(),
-    actors= listOf(createTaskPerformer, createTaskReducer),
+    actors = listOf(createTaskPerformer, createTaskReducer),
     scope
 )
 

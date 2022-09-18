@@ -33,12 +33,21 @@ class FuturePerformer(
     private fun updateExpandedList(listType: ListType, search: String): Action {
         val list = when (listType) {
             ListType.SCHEDULED -> transformer.transform(
-                tasks = taskRepo.observeFutureTasks(pagingConfig, LocalDate.now(), search.nullIfBlank()),
+                tasks = taskRepo.observeFutureTasks(
+                    pagingConfig,
+                    LocalDate.now(),
+                    search.nullIfBlank()
+                ),
                 includeHeaders = true
             )
 
             ListType.UNSCHEDULED -> transformer.transform(
-                tasks = taskRepo.observeTasksForScope(pagingConfig, null, search.nullIfBlank(), false),
+                tasks = taskRepo.observeTasksForScope(
+                    pagingConfig,
+                    null,
+                    search.nullIfBlank(),
+                    false
+                ),
                 includeHeaders = false
             )
         }
@@ -49,7 +58,7 @@ class FuturePerformer(
         )
     }
 
-    private fun String.nullIfBlank(): String? = when{
+    private fun String.nullIfBlank(): String? = when {
         this.isBlank() -> null
         else -> this
     }

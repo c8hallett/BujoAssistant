@@ -8,7 +8,7 @@ class TaskActionsStore(
     taskActionsPerformer: TaskActionsPerformer,
     scope: CoroutineScope
 ) : Store<IState>(
-    initialState = object: IState{},
+    initialState = object : IState {},
     actors = listOf(taskActionsPerformer),
     scope = scope
 )

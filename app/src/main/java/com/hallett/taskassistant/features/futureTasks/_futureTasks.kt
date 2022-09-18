@@ -45,7 +45,7 @@ fun FutureTaskList() {
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight()
-        )  {
+        ) {
             SearchField()
             TabRow(selectedTabIndex = tabs.indexOfFirst { it.first == state.listType }) {
                 tabs.forEach {
@@ -66,7 +66,8 @@ fun FutureTaskList() {
     }
 }
 
-data class SearchUpdated(val newSearch: String): Action
+data class SearchUpdated(val newSearch: String) : Action
+
 @Composable
 fun ColumnScope.SearchField() {
     val store = LocalStore.current

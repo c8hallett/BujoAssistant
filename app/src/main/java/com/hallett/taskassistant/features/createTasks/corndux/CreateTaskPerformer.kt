@@ -7,15 +7,15 @@ import com.hallett.database.ITaskRepository
 import com.hallett.scopes.model.ScopeType
 import com.hallett.taskassistant.corndux.CancelTask
 import com.hallett.taskassistant.corndux.ClearCreateTaskState
+import com.hallett.taskassistant.corndux.NavigateUp
 import com.hallett.taskassistant.corndux.SubmitTask
 import com.hallett.taskassistant.corndux.UpdateScopeSelectionInfo
 import com.hallett.taskassistant.corndux.UpdateSelectedScope
-import com.hallett.taskassistant.corndux.NavigateUp
-import com.hallett.taskassistant.util.ScopeSelectionInfoGenerator
 import com.hallett.taskassistant.ui.composables.CancelScopeSelection
 import com.hallett.taskassistant.ui.composables.ClickNewScope
 import com.hallett.taskassistant.ui.composables.ClickNewScopeType
 import com.hallett.taskassistant.ui.composables.EnterScopeSelection
+import com.hallett.taskassistant.util.ScopeSelectionInfoGenerator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -63,7 +63,8 @@ class CreateTaskPerformer(
         }
     }
 
-    private inline fun withRepo(crossinline operation: suspend ITaskRepository.() -> Unit) = workScope.launch {
-        taskRepo.operation()
-    }
+    private inline fun withRepo(crossinline operation: suspend ITaskRepository.() -> Unit) =
+        workScope.launch {
+            taskRepo.operation()
+        }
 }

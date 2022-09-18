@@ -1,7 +1,6 @@
 package com.hallett.taskassistant.features.dashboard.corndux
 
 import androidx.paging.PagingData
-import com.hallett.corndux.Performer
 import com.hallett.corndux.IState
 import com.hallett.corndux.Store
 import com.hallett.domain.model.Task

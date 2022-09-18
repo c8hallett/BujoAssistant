@@ -56,10 +56,10 @@ import kotlinx.coroutines.flow.Flow
 import org.kodein.di.compose.rememberInstance
 
 sealed interface ScopeSelectionAction : Action
-    data class ClickNewScope(val newTaskScope: Scope?) : ScopeSelectionAction
-    data class ClickNewScopeType(val scopeType: ScopeType) : ScopeSelectionAction
-    object CancelScopeSelection : ScopeSelectionAction
-    object EnterScopeSelection : ScopeSelectionAction
+data class ClickNewScope(val newTaskScope: Scope?) : ScopeSelectionAction
+data class ClickNewScopeType(val scopeType: ScopeType) : ScopeSelectionAction
+object CancelScopeSelection : ScopeSelectionAction
+object EnterScopeSelection : ScopeSelectionAction
 
 @Composable
 fun ScopeSelection(

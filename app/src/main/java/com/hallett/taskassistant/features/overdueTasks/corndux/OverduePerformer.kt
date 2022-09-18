@@ -44,7 +44,8 @@ class OverduePerformer(
         }
     }
 
-    private inline fun withRepo(crossinline operation: suspend ITaskRepository.() -> Unit) = workScope.launch {
-        taskRepo.operation()
-    }
+    private inline fun withRepo(crossinline operation: suspend ITaskRepository.() -> Unit) =
+        workScope.launch {
+            taskRepo.operation()
+        }
 }

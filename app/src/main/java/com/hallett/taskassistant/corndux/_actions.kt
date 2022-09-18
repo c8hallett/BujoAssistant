@@ -22,7 +22,8 @@ object LoadSmallerScope : Action
 
 object AddRandomOverdueTask : Action
 
-data class UpdateSelectedScope(val scope: Scope?, val scopeSelectionInfo: ScopeSelectionInfo?) : Action
+data class UpdateSelectedScope(val scope: Scope?, val scopeSelectionInfo: ScopeSelectionInfo?) :
+    Action
 
 data class UpdateScopeSelectionInfo(val scopeSelectionInfo: ScopeSelectionInfo?) : Action
 object ClearCreateTaskState : Action

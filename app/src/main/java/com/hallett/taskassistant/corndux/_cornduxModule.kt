@@ -1,6 +1,5 @@
 package com.hallett.taskassistant.corndux
 
-import com.hallett.corndux.Store
 import com.hallett.taskassistant.features.createTasks.corndux.CreateTaskPerformer
 import com.hallett.taskassistant.features.createTasks.corndux.CreateTaskReducer
 import com.hallett.taskassistant.features.createTasks.corndux.CreateTaskStore
@@ -18,14 +17,13 @@ import com.hallett.taskassistant.features.overdueTasks.corndux.OverdueStore
 import com.hallett.taskassistant.features.taskList.corndux.TaskListPerformer
 import com.hallett.taskassistant.features.taskList.corndux.TaskListReducer
 import com.hallett.taskassistant.features.taskList.corndux.TaskListStore
-import com.hallett.taskassistant.mainNavigation.corndux.NavigationPerformer
-import com.hallett.taskassistant.mainNavigation.corndux.GlobalState
 import com.hallett.taskassistant.mainNavigation.corndux.GlobalStore
+import com.hallett.taskassistant.mainNavigation.corndux.NavigationPerformer
 import org.kodein.di.DI
 import org.kodein.di.bindSingleton
 import org.kodein.di.instance
 
-val cornduxModule = DI.Module("cornduxModule"){
+val cornduxModule = DI.Module("cornduxModule") {
     bindSingleton { TaskActionsPerformer(instance(), instance(), instance()) }
     bindSingleton { TaskActionsStore(instance(), instance()) }
 

@@ -8,11 +8,9 @@ import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ProvidableCompositionLocal
-import androidx.compose.runtime.State
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
@@ -26,7 +24,6 @@ import com.hallett.taskassistant.mainNavigation.MainNavHost
 import com.hallett.taskassistant.mainNavigation.TaskBottomAppBar
 import com.hallett.taskassistant.mainNavigation.TaskFloatingActionBar
 import com.hallett.taskassistant.mainNavigation.corndux.GlobalState
-import com.hallett.taskassistant.mainNavigation.corndux.GlobalStore
 import com.hallett.taskassistant.ui.composables.ScopeTypeDropDownMenu
 import com.hallett.taskassistant.ui.theme.TaskAssistantTheme
 import com.hallett.taskassistant.util.AndroidLoggerHandler
@@ -36,11 +33,8 @@ import kotlinx.coroutines.FlowPreview
 import org.kodein.di.DI
 import org.kodein.di.android.x.androidXModule
 import org.kodein.di.bindProvider
-import org.kodein.di.compose.localDI
 import org.kodein.di.compose.rememberInstance
 import org.kodein.di.compose.withDI
-import org.kodein.di.direct
-import org.kodein.di.instance
 
 lateinit var LocalStore: ProvidableCompositionLocal<Store<out IState>>
 

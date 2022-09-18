@@ -22,13 +22,12 @@ import com.hallett.taskassistant.corndux.LoadLargerScope
 import com.hallett.taskassistant.corndux.LoadSmallerScope
 import com.hallett.taskassistant.features.dashboard.corndux.DashboardStore
 import com.hallett.taskassistant.features.genericTaskList.TaskList
-import com.hallett.taskassistant.mainNavigation.TaskNavDestination
 import org.kodein.di.compose.rememberInstance
 
 @Composable
 fun TaskDashboard() {
     val dashboardStore by rememberInstance<DashboardStore>()
-    WithStore(dashboardStore){
+    WithStore(dashboardStore) {
 
         val state by dashboardStore.observeState().collectAsState()
         val taskList = state.taskList.collectAsLazyPagingItems()

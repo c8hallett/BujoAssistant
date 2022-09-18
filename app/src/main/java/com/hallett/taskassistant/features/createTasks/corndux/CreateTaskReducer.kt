@@ -11,7 +11,10 @@ class CreateTaskReducer : Reducer<CreateTaskState> {
         return when (action) {
             is ClearCreateTaskState -> CreateTaskState()
             is UpdateScopeSelectionInfo -> state.copy(scopeSelectionInfo = action.scopeSelectionInfo)
-            is UpdateSelectedScope -> state.copy(scope = action.scope, scopeSelectionInfo = action.scopeSelectionInfo)
+            is UpdateSelectedScope -> state.copy(
+                scope = action.scope,
+                scopeSelectionInfo = action.scopeSelectionInfo
+            )
             else -> state
         }
     }

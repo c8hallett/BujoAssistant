@@ -10,6 +10,7 @@ class GlobalStore(
 ) : Store<GlobalState>(
     initialState = GlobalState,
     actors = listOf(navigationPerformer),
-    scope = scope)
+    scope = scope
+)
 
 object GlobalState : IState

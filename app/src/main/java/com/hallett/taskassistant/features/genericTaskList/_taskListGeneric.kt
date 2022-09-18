@@ -61,7 +61,10 @@ fun TaskList(
             items(pagedTasks) { taskView ->
                 when (taskView) {
                     null -> {}
-                    is TaskView.HeaderHolder -> Text(taskView.text, style = MaterialTheme.typography.h6)
+                    is TaskView.HeaderHolder -> Text(
+                        taskView.text,
+                        style = MaterialTheme.typography.h6
+                    )
                     is TaskView.TaskHolder -> TaskItem(
                         taskHolder = taskView,
                         isExpanded = isTaskExpanded(taskView.task),
