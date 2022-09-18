@@ -10,4 +10,5 @@ interface IScopeCalculator {
     fun isCurrentOrFutureScope(scope: Scope): Boolean
     fun isCurrentScope(scope: Scope): Boolean
     fun getOffset(scope: Scope, startDate: LocalDate = LocalDate.now()): Int
+    fun getEndOfScope(scope: Scope): LocalDate
 }

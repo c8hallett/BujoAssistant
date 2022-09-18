@@ -31,6 +31,8 @@ data class TaskEntity(
         val type: ScopeType,
         @ColumnInfo(name = TASK_SCOPE_VALUE)
         val value: LocalDate,
+        @ColumnInfo(name = TASK_SCOPE_END_VALUE)
+        val endValue: LocalDate,
     )
 
     data class StatusUpdate(
@@ -58,6 +60,7 @@ data class TaskEntity(
         const val TASK_NAME = "task_name"
         const val TASK_SCOPE_TYPE = "task_scope_type"
         const val TASK_SCOPE_VALUE = "task_scope_value"
+        const val TASK_SCOPE_END_VALUE = "task_scope_end_value"
         const val TASK_STATUS = "task_status"
         const val CREATED_AT = "created_at"
         const val UPDATED_AT = "updated_at"

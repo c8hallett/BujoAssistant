@@ -12,11 +12,16 @@ import kotlinx.coroutines.flow.Flow
 interface ITaskRepository {
     fun getOverdueTasks(pagingConfig: PagingConfig, cutoff: LocalDate): Flow<PagingData<Task>>
 
-    fun observeFutureTasks(pagingConfig: PagingConfig, cutoff: LocalDate): Flow<PagingData<Task>>
+    fun observeFutureTasks(
+        pagingConfig: PagingConfig,
+        cutoff: LocalDate,
+        search: String? = null,
+    ): Flow<PagingData<Task>>
 
     fun observeTasksForScope(
         pagingConfig: PagingConfig,
         scope: Scope?,
+        search: String? = null,
         includeCompleted: Boolean = true
     ): Flow<PagingData<Task>>
 

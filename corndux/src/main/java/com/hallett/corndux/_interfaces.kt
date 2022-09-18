@@ -4,42 +4,33 @@ interface IState
 interface SideEffect
 
 interface Action
+
 object Init : Action
-
-interface Commit
-
-interface Event
-abstract class Interpreter<State: IState>(private val store: Store<State>) {
-    protected abstract fun mapEvent(event: Event): Action?
-    fun dispatch(event: Event) {
-        mapEvent(event)?.let { action ->
-            store.dispatch(action)
-        }
-    }
-}
-
 
 sealed interface Actor<State : IState>
 
-interface Performer<State : IState> : Actor<State> {
-    suspend fun performAction(
+sealed interface Performer<State : IState> : Actor<State>
+
+interface StatelessPerformer : Performer<Nothing> {
+    fun performAction(
+        action: Action,
+        dispatchAction: (Action) -> Unit,
+        dispatchSideEffect: (SideEffect) -> Unit,
+    )
+}
+
+interface StatefulPerformer<State : IState> : Performer<State> {
+    fun performAction(
         state: State,
         action: Action,
-        dispatchAction: suspend (Action) -> Unit,
-        dispatchCommit: suspend (Commit) -> Unit,
-        dispatchSideEffect: suspend (SideEffect) -> Unit,
+        dispatchAction: (Action) -> Unit,
+        dispatchSideEffect: (SideEffect) -> Unit,
     )
 }
 
 interface Reducer<State : IState> : Actor<State> {
     fun reduce(
         state: State,
-        commit: Commit
+        action: Action
     ): State
-}
-
-interface Middleware<State : IState> : Actor<State> {
-    suspend fun before(state: State, commit: Commit)
-    suspend fun afterEachReduce(state: State, commit: Commit, reducer: Class<out Reducer<State>>)
-    suspend fun after(state: State, commit: Commit)
 }

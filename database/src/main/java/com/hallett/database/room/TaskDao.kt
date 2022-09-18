@@ -10,6 +10,8 @@ import androidx.room.Transaction
 import androidx.room.Update
 import com.hallett.database.room.TaskEntity.Companion.ID
 import com.hallett.database.room.TaskEntity.Companion.TABLE_NAME
+import com.hallett.database.room.TaskEntity.Companion.TASK_NAME
+import com.hallett.database.room.TaskEntity.Companion.TASK_SCOPE_END_VALUE
 import com.hallett.database.room.TaskEntity.Companion.TASK_SCOPE_TYPE
 import com.hallett.database.room.TaskEntity.Companion.TASK_SCOPE_VALUE
 import com.hallett.database.room.TaskEntity.Companion.TASK_STATUS
@@ -49,22 +51,24 @@ internal interface TaskDao {
     @Query("SELECT * FROM $TABLE_NAME WHERE $ID = :taskId")
     suspend fun getTask(taskId: Long): TaskEntity?
 
-    @Query("SELECT * FROM $TABLE_NAME WHERE $TASK_SCOPE_TYPE IS :scopeType AND $TASK_SCOPE_VALUE IS :value AND $TASK_STATUS IS NOT :excludeStatus")
-    fun getAllTaskForScope(
+    @Query("SELECT * FROM $TABLE_NAME WHERE $TASK_SCOPE_TYPE IS :scopeType AND $TASK_SCOPE_VALUE IS :value AND $TASK_NAME LIKE :filter AND $TASK_STATUS IS NOT :excludeStatus")
+    fun filterTasksForScope(
         scopeType: ScopeType?,
         value: LocalDate?,
+        filter: String,
         excludeStatus: TaskStatus? = null
     ): PagingSource<Int, TaskEntity>
 
-    @Query("SELECT * FROM $TABLE_NAME WHERE $TASK_SCOPE_VALUE < :value AND $TASK_STATUS IS NOT :excludeStatus")
+    @Query("SELECT * FROM $TABLE_NAME WHERE $TASK_SCOPE_END_VALUE < :value AND $TASK_STATUS IS NOT :excludeStatus")
     fun getAllOverdueTasks(
         value: Long,
         excludeStatus: TaskStatus = TaskStatus.COMPLETE
     ): PagingSource<Int, TaskEntity>
 
-    @Query("SELECT * FROM $TABLE_NAME WHERE $TASK_SCOPE_VALUE > :value AND $TASK_STATUS IS NOT :excludeStatus ORDER BY $TASK_SCOPE_VALUE ASC, $TASK_SCOPE_TYPE DESC")
-    fun getFutureTasks(
+    @Query("SELECT * FROM $TABLE_NAME WHERE $TASK_SCOPE_VALUE > :value AND $TASK_NAME LIKE :filter AND $TASK_STATUS IS NOT :excludeStatus ORDER BY $TASK_SCOPE_VALUE ASC, $TASK_SCOPE_TYPE DESC")
+    fun filterFutureTasks(
         value: Long,
+        filter: String,
         excludeStatus: TaskStatus = TaskStatus.COMPLETE
     ): PagingSource<Int, TaskEntity>
 

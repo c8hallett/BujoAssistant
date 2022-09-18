@@ -35,8 +35,12 @@ internal class TaskRepository(
 
     override fun observeFutureTasks(
         pagingConfig: PagingConfig,
-        cutoff: LocalDate
-    ): Flow<PagingData<Task>> = Pager(pagingConfig) { taskDao.getFutureTasks(cutoff.toEpochDay()) }
+        cutoff: LocalDate,
+        search: String?,
+    ): Flow<PagingData<Task>> = Pager(pagingConfig) {
+        val searchFilter = if(search == null) "%" else "%$search%"
+        taskDao.filterFutureTasks(cutoff.toEpochDay(), searchFilter)
+    }
         .flow
         .flowOn(dispatchers.io)
         .map { data -> data.map { entity -> entity.toTask() } }
@@ -44,12 +48,12 @@ internal class TaskRepository(
     override fun observeTasksForScope(
         pagingConfig: PagingConfig,
         scope: Scope?,
+        search: String?,
         includeCompleted: Boolean
     ): Flow<PagingData<Task>> = Pager(pagingConfig) {
-        when (includeCompleted) {
-            true -> taskDao.getAllTaskForScope(scope?.type, scope?.value)
-            false -> taskDao.getAllTaskForScope(scope?.type, scope?.value, TaskStatus.COMPLETE)
-        }
+        val excluded = if(includeCompleted) null else TaskStatus.COMPLETE
+        val searchFilter = if(search == null) "%" else "%$search%"
+        taskDao.filterTasksForScope(scope?.type, scope?.value, searchFilter, excluded)
     }
         .flow
         .flowOn(dispatchers.io)
@@ -115,7 +119,8 @@ internal class TaskRepository(
     private fun Scope?.toEntity(): TaskEntity.ScopeEntity? = this?.let {
         TaskEntity.ScopeEntity(
             type = type,
-            value = value
+            value = value,
+            endValue = scopeCalculator.getEndOfScope(it)
         )
     }
 
