@@ -7,9 +7,9 @@ import com.hallett.corndux.SideEffect
 import com.hallett.corndux.StatelessPerformer
 import com.hallett.database.ITaskRepository
 import com.hallett.scopes.model.ScopeType
-import com.hallett.taskassistant.corndux.AddRandomOverdueTask
-import com.hallett.taskassistant.corndux.UpdateTaskList
-import com.hallett.taskassistant.util.TaskListTransformer
+import com.hallett.taskassistant.mainNavigation.corndux.AddRandomOverdueTask
+import com.hallett.taskassistant.mainNavigation.corndux.UpdateTaskList
+import com.hallett.taskassistant.features.genericTaskList.TaskListTransformer
 import java.time.LocalDate
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch

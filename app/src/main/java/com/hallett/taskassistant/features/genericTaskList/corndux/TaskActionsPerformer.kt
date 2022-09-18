@@ -6,7 +6,7 @@ import com.hallett.corndux.StatelessPerformer
 import com.hallett.database.ITaskRepository
 import com.hallett.domain.model.TaskStatus
 import com.hallett.scopes.scope_generator.IScopeCalculator
-import com.hallett.taskassistant.corndux.UpdateExpandedTask
+import com.hallett.taskassistant.mainNavigation.corndux.UpdateExpandedTask
 import com.hallett.taskassistant.features.genericTaskList.ClickTaskInList
 import com.hallett.taskassistant.features.genericTaskList.DeferTask
 import com.hallett.taskassistant.features.genericTaskList.DeleteTask

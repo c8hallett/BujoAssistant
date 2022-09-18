@@ -1,4 +1,4 @@
-package com.hallett.taskassistant.ui.paging
+package com.hallett.taskassistant.features.scopeSelection
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState

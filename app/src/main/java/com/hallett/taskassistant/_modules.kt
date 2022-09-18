@@ -12,9 +12,9 @@ import com.hallett.taskassistant.ui.formatters.ScopeOffsetLabelFormatter
 import com.hallett.taskassistant.ui.formatters.ScopeScaleFormatter
 import com.hallett.taskassistant.ui.formatters.ScopeSimpleDateFormatter
 import com.hallett.taskassistant.ui.formatters.ScopeSimpleLabelFormatter
-import com.hallett.taskassistant.ui.paging.ScopePagingSource
-import com.hallett.taskassistant.util.ScopeSelectionInfoGenerator
-import com.hallett.taskassistant.util.TaskListTransformer
+import com.hallett.taskassistant.features.scopeSelection.ScopePagingSource
+import com.hallett.taskassistant.features.scopeSelection.ScopeSelectionInfoGenerator
+import com.hallett.taskassistant.features.genericTaskList.TaskListTransformer
 import kotlinx.coroutines.Dispatchers
 import org.kodein.di.DI
 import org.kodein.di.bindFactory

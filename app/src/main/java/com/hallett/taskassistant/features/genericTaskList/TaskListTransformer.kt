@@ -1,4 +1,4 @@
-package com.hallett.taskassistant.util
+package com.hallett.taskassistant.features.genericTaskList
 
 import androidx.paging.PagingData
 import androidx.paging.insertSeparators
@@ -8,8 +8,6 @@ import com.hallett.domain.model.TaskStatus
 import com.hallett.scopes.model.Scope
 import com.hallett.scopes.scope_generator.IScopeCalculator
 import com.hallett.taskassistant.ui.formatters.Formatter
-import com.hallett.taskassistant.ui.model.TaskActionType
-import com.hallett.taskassistant.ui.model.TaskView
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 

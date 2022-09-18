@@ -1,4 +1,4 @@
-package com.hallett.taskassistant.corndux
+package com.hallett.taskassistant.mainNavigation.corndux
 
 import androidx.paging.PagingData
 import com.hallett.corndux.Action
@@ -6,8 +6,8 @@ import com.hallett.domain.model.Task
 import com.hallett.scopes.model.Scope
 import com.hallett.scopes.model.ScopeType
 import com.hallett.taskassistant.mainNavigation.TaskNavDestination
-import com.hallett.taskassistant.ui.model.ScopeSelectionInfo
-import com.hallett.taskassistant.ui.model.TaskView
+import com.hallett.taskassistant.features.scopeSelection.ScopeSelectionInfo
+import com.hallett.taskassistant.features.genericTaskList.TaskView
 import kotlinx.coroutines.flow.Flow
 
 sealed class NavigationAction(val destination: TaskNavDestination) : Action

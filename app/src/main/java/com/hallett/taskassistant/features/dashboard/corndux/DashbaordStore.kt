@@ -5,7 +5,7 @@ import com.hallett.corndux.IState
 import com.hallett.corndux.Store
 import com.hallett.domain.model.Task
 import com.hallett.scopes.model.ScopeType
-import com.hallett.taskassistant.ui.model.TaskView
+import com.hallett.taskassistant.features.genericTaskList.TaskView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf

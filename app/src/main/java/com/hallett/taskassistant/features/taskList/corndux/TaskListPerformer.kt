@@ -8,15 +8,15 @@ import com.hallett.corndux.StatefulPerformer
 import com.hallett.database.ITaskRepository
 import com.hallett.scopes.model.ScopeType
 import com.hallett.scopes.scope_generator.IScopeCalculator
-import com.hallett.taskassistant.corndux.UpdateScopeSelectionInfo
-import com.hallett.taskassistant.corndux.UpdateSelectedScope
-import com.hallett.taskassistant.corndux.UpdateTaskList
-import com.hallett.taskassistant.ui.composables.CancelScopeSelection
-import com.hallett.taskassistant.ui.composables.ClickNewScope
-import com.hallett.taskassistant.ui.composables.ClickNewScopeType
-import com.hallett.taskassistant.ui.composables.EnterScopeSelection
-import com.hallett.taskassistant.util.ScopeSelectionInfoGenerator
-import com.hallett.taskassistant.util.TaskListTransformer
+import com.hallett.taskassistant.mainNavigation.corndux.UpdateScopeSelectionInfo
+import com.hallett.taskassistant.mainNavigation.corndux.UpdateSelectedScope
+import com.hallett.taskassistant.mainNavigation.corndux.UpdateTaskList
+import com.hallett.taskassistant.features.scopeSelection.CancelScopeSelection
+import com.hallett.taskassistant.features.scopeSelection.ClickNewScope
+import com.hallett.taskassistant.features.scopeSelection.ClickNewScopeType
+import com.hallett.taskassistant.features.scopeSelection.EnterScopeSelection
+import com.hallett.taskassistant.features.scopeSelection.ScopeSelectionInfoGenerator
+import com.hallett.taskassistant.features.genericTaskList.TaskListTransformer
 
 class TaskListPerformer(
     private val taskRepo: ITaskRepository,

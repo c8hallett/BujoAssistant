@@ -7,7 +7,7 @@ import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.hallett.taskassistant.R
-import com.hallett.taskassistant.corndux.BottomNavigationClicked
+import com.hallett.taskassistant.mainNavigation.corndux.BottomNavigationClicked
 
 sealed class TaskNavDestination(val route: String) {
 

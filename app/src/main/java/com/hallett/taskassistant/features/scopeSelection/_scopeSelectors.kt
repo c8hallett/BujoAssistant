@@ -1,4 +1,4 @@
-package com.hallett.taskassistant.ui.composables
+package com.hallett.taskassistant.features.scopeSelection
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
@@ -51,7 +51,6 @@ import com.hallett.scopes.model.ScopeType
 import com.hallett.scopes.scope_generator.IScopeCalculator
 import com.hallett.taskassistant.LocalStore
 import com.hallett.taskassistant.ui.formatters.Formatter
-import com.hallett.taskassistant.ui.model.ScopeSelectionInfo
 import kotlinx.coroutines.flow.Flow
 import org.kodein.di.compose.rememberInstance
 

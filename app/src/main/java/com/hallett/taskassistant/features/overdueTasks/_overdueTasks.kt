@@ -9,7 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.hallett.taskassistant.corndux.AddRandomOverdueTask
+import com.hallett.taskassistant.mainNavigation.corndux.AddRandomOverdueTask
 import com.hallett.taskassistant.features.genericTaskList.TaskList
 import com.hallett.taskassistant.features.overdueTasks.corndux.OverdueStore
 import org.kodein.di.compose.rememberInstance

@@ -22,10 +22,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.hallett.taskassistant.corndux.CancelTask
-import com.hallett.taskassistant.corndux.SubmitTask
+import com.hallett.taskassistant.mainNavigation.corndux.CancelTask
+import com.hallett.taskassistant.mainNavigation.corndux.SubmitTask
 import com.hallett.taskassistant.features.createTasks.corndux.CreateTaskStore
-import com.hallett.taskassistant.ui.composables.ScopeSelection
+import com.hallett.taskassistant.features.scopeSelection.ScopeSelection
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.ObsoleteCoroutinesApi

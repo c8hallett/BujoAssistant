@@ -19,12 +19,12 @@ import com.hallett.corndux.IState
 import com.hallett.corndux.Store
 import com.hallett.database.di.databaseModule
 import com.hallett.scopes.di.scopeGeneratorModule
-import com.hallett.taskassistant.corndux.cornduxModule
+import com.hallett.taskassistant.mainNavigation.corndux.cornduxModule
 import com.hallett.taskassistant.mainNavigation.MainNavHost
 import com.hallett.taskassistant.mainNavigation.TaskBottomAppBar
 import com.hallett.taskassistant.mainNavigation.TaskFloatingActionBar
 import com.hallett.taskassistant.mainNavigation.corndux.GlobalState
-import com.hallett.taskassistant.ui.composables.ScopeTypeDropDownMenu
+import com.hallett.taskassistant.features.scopeSelection.ScopeTypeDropDownMenu
 import com.hallett.taskassistant.ui.theme.TaskAssistantTheme
 import com.hallett.taskassistant.util.AndroidLoggerHandler
 import kotlinx.coroutines.CoroutineScope

@@ -22,10 +22,10 @@ import androidx.navigation.compose.composable
 import com.hallett.corndux.SideEffect
 import com.hallett.logging.logI
 import com.hallett.taskassistant.LocalStore
-import com.hallett.taskassistant.corndux.FabClicked
-import com.hallett.taskassistant.corndux.NavigateSingleTop
-import com.hallett.taskassistant.corndux.NavigateToRootDestination
-import com.hallett.taskassistant.corndux.NavigateUp
+import com.hallett.taskassistant.mainNavigation.corndux.FabClicked
+import com.hallett.taskassistant.mainNavigation.corndux.NavigateSingleTop
+import com.hallett.taskassistant.mainNavigation.corndux.NavigateToRootDestination
+import com.hallett.taskassistant.mainNavigation.corndux.NavigateUp
 import com.hallett.taskassistant.features.createTasks.TaskCreation
 import com.hallett.taskassistant.features.dashboard.TaskDashboard
 import com.hallett.taskassistant.features.futureTasks.FutureTaskList

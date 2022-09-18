@@ -1,4 +1,4 @@
-package com.hallett.taskassistant.ui.model
+package com.hallett.taskassistant.features.genericTaskList
 
 import com.hallett.domain.model.Task
 
