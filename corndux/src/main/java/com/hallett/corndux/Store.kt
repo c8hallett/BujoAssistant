@@ -14,7 +14,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -23,7 +22,7 @@ abstract class Store<State : IState>(
     actors: List<Actor<out State>>,
     private val scope: CoroutineScope,
 ) {
-    
+
     private val stateFlow = MutableStateFlow(initialState)
     private val actionFlow = MutableSharedFlow<Action>()
     private val postActionFlow = MutableSharedFlow<Action>()
@@ -31,11 +30,12 @@ abstract class Store<State : IState>(
 
     private val customDispatcher = Executors.newFixedThreadPool(2).asCoroutineDispatcher()
 
-    private val performers: List<Performer<in State>> = actors.filterIsInstance<Performer<in State>>()
+    private val performers: List<Performer<in State>> =
+        actors.filterIsInstance<Performer<in State>>()
     private val reducers: List<Reducer<State>> = actors.filterIsInstance<Reducer<State>>()
 
     private val prependMap: MutableMap<Int, Job> = mutableMapOf()
-    
+
     init {
         // performing actions as needed
         scope.launch(customDispatcher) {
@@ -61,8 +61,8 @@ abstract class Store<State : IState>(
     fun observeState(): StateFlow<State> = stateFlow
     fun observeSideEffects(): Flow<SideEffect> = sideEffectFlow
 
-    fun observe (other: Store<out IState>) {
-        log( "${other::class.simpleName} 👉 ${this::class.simpleName}")
+    fun observe(other: Store<out IState>) {
+        log("${other::class.simpleName} 👉 ${this::class.simpleName}")
         val prependJob = scope.launch(customDispatcher) {
             launch {
                 actionFlow.emitAll(other.postActionFlow)
@@ -74,7 +74,7 @@ abstract class Store<State : IState>(
         prependMap[other.hashCode()] = prependJob
     }
 
-    fun stopObserving (other: Store<out IState>) {
+    fun stopObserving(other: Store<out IState>) {
         log("${this::class.simpleName} ❌ ${other::class.simpleName}")
         val prependJob = prependMap.remove(other.hashCode())
         prependJob?.cancel()

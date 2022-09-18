@@ -7,11 +7,11 @@ interface Action
 
 object Init : Action
 
-sealed interface Actor<State: IState>
+sealed interface Actor<State : IState>
 
-sealed interface Performer<State: IState>: Actor<State>
+sealed interface Performer<State : IState> : Actor<State>
 
-interface StatelessPerformer: Performer<Nothing> {
+interface StatelessPerformer : Performer<Nothing> {
     fun performAction(
         action: Action,
         dispatchAction: (Action) -> Unit,
@@ -19,7 +19,7 @@ interface StatelessPerformer: Performer<Nothing> {
     )
 }
 
-interface StatefulPerformer<State : IState>: Performer<State>  {
+interface StatefulPerformer<State : IState> : Performer<State> {
     fun performAction(
         state: State,
         action: Action,
@@ -28,7 +28,7 @@ interface StatefulPerformer<State : IState>: Performer<State>  {
     )
 }
 
-interface Reducer<State : IState>: Actor<State> {
+interface Reducer<State : IState> : Actor<State> {
     fun reduce(
         state: State,
         action: Action
