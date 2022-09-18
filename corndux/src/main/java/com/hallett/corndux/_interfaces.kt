@@ -7,26 +7,28 @@ interface Action
 
 object Init : Action
 
-sealed interface Performer<State: IState>
+sealed interface Actor<State: IState>
 
-interface StatelessPerformer: Performer<IState> {
+sealed interface Performer<State: IState>: Actor<State>
+
+interface StatelessPerformer: Performer<Nothing> {
     fun performAction(
         action: Action,
-        dispatchAction: suspend (Action) -> Unit,
-        dispatchSideEffect: suspend (SideEffect) -> Unit,
-    ): Boolean
+        dispatchAction: (Action) -> Unit,
+        dispatchSideEffect: (SideEffect) -> Unit,
+    )
 }
 
 interface StatefulPerformer<State : IState>: Performer<State>  {
-    suspend fun performAction(
+    fun performAction(
         state: State,
         action: Action,
-        dispatchAction: suspend (Action) -> Unit,
-        dispatchSideEffect: suspend (SideEffect) -> Unit,
-    ): Boolean
+        dispatchAction: (Action) -> Unit,
+        dispatchSideEffect: (SideEffect) -> Unit,
+    )
 }
 
-interface Reducer<State : IState> {
+interface Reducer<State : IState>: Actor<State> {
     fun reduce(
         state: State,
         action: Action
