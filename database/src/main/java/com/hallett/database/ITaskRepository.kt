@@ -27,7 +27,7 @@ interface ITaskRepository {
 
     suspend fun upsert(task: Task)
 
-    suspend fun createNewTask(taskName: String, scope: Scope?)
+    suspend fun upsert(taskId: Long, taskName: String, scope: Scope?)
 
     suspend fun updateStatus(task: Task, status: TaskStatus)
 

@@ -64,13 +64,13 @@ internal class TaskRepository(
         taskDao.insert(task.toEntity())
     }
 
-    override suspend fun createNewTask(taskName: String, scope: Scope?) {
-        taskDao.insert(
-            TaskEntity(
-                taskName = taskName,
-                scope = scope.toEntity()
-            )
+    override suspend fun upsert(taskId: Long, taskName: String, scope: Scope?) {
+        val update = TaskEntity.NameAndScopeUpdate(
+            taskId = taskId,
+            taskName = taskName,
+            scope = scope.toEntity()
         )
+        taskDao.updateTaskNameAndScope(update)
     }
 
     override suspend fun getTask(taskId: Long): Task? =

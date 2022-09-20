@@ -76,5 +76,8 @@ internal interface TaskDao {
     suspend fun updateTaskStatus(update: TaskEntity.StatusUpdate)
 
     @Update(entity = TaskEntity::class)
+    suspend fun updateTaskNameAndScope(update: TaskEntity.NameAndScopeUpdate)
+
+    @Update(entity = TaskEntity::class)
     suspend fun rescheduleTask(update: TaskEntity.ScopeUpdate)
 }
