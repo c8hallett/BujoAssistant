@@ -1,5 +1,6 @@
 package com.hallett.taskassistant.features.genericTaskList
 
+import LocalStore
 import WithStore
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.clickable
@@ -30,7 +31,6 @@ import androidx.paging.compose.items
 import com.hallett.corndux.Action
 import com.hallett.domain.model.Task
 import com.hallett.domain.model.TaskStatus
-import com.hallett.taskassistant.LocalStore
 import com.hallett.taskassistant.features.genericTaskList.corndux.TaskActionsStore
 import org.kodein.di.compose.rememberInstance
 

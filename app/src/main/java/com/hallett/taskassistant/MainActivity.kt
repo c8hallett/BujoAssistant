@@ -1,21 +1,18 @@
 package com.hallett.taskassistant
 
+import WithGlobalStore
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.ProvidableCompositionLocal
-import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.hallett.corndux.IState
 import com.hallett.corndux.Store
 import com.hallett.database.di.databaseModule
 import com.hallett.scopes.di.scopeGeneratorModule
@@ -39,7 +36,6 @@ import org.kodein.di.bindProvider
 import org.kodein.di.compose.rememberInstance
 import org.kodein.di.compose.withDI
 
-lateinit var LocalStore: ProvidableCompositionLocal<Store<out IState>>
 
 @ExperimentalCoroutinesApi
 @ExperimentalMaterialApi
@@ -74,17 +70,15 @@ class MainActivity : ComponentActivity() {
             runtimeModule
         ) {
             val globalStore by rememberInstance<Store<GlobalState>>()
-            LocalStore = compositionLocalOf { globalStore }
-
-            Scaffold(
-                bottomBar = { TaskBottomAppBar() },
-                floatingActionButton = { TaskFloatingActionBar() },
-            ) { innerPadding ->
-                CompositionLocalProvider(LocalStore provides globalStore) {
-
+            WithGlobalStore(globalStore) {
+                Scaffold(
+                    bottomBar = { TaskBottomAppBar() },
+                    floatingActionButton = { TaskFloatingActionBar() },
+                ) { innerPadding ->
                     MainNavHost(innerPadding = innerPadding, navController = navController)
                 }
             }
+
         }
     }
 }

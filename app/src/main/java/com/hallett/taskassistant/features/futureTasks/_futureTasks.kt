@@ -1,5 +1,6 @@
 package com.hallett.taskassistant.features.futureTasks
 
+import LocalStore
 import WithStore
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -21,7 +22,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.hallett.corndux.Action
-import com.hallett.taskassistant.LocalStore
 import com.hallett.taskassistant.features.futureTasks.corndux.ExpandList
 import com.hallett.taskassistant.features.futureTasks.corndux.FutureStore
 import com.hallett.taskassistant.features.futureTasks.corndux.ListType
