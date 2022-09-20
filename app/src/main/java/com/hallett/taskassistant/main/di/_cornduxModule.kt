@@ -18,7 +18,7 @@ import com.hallett.taskassistant.features.taskList.corndux.TaskListPerformer
 import com.hallett.taskassistant.features.taskList.corndux.TaskListReducer
 import com.hallett.taskassistant.features.taskList.corndux.TaskListStore
 import com.hallett.taskassistant.main.corndux.GlobalStore
-import com.hallett.taskassistant.main.corndux.NavigationPerformer
+import com.hallett.taskassistant.main.corndux.NavigationActor
 import org.kodein.di.DI
 import org.kodein.di.bindSingleton
 import org.kodein.di.instance
@@ -48,6 +48,6 @@ val cornduxModule = DI.Module("cornduxModule") {
     bindSingleton { TaskListStore(instance(), instance(), instance()) }
 
 
-    bindSingleton { NavigationPerformer() }
+    bindSingleton { NavigationActor() }
     bindSingleton { GlobalStore(instance(), instance()) }
 }
