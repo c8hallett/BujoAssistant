@@ -12,7 +12,10 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
@@ -27,8 +30,10 @@ import com.hallett.taskassistant.features.dashboard.TaskDashboard
 import com.hallett.taskassistant.features.futureTasks.FutureTaskList
 import com.hallett.taskassistant.features.overdueTasks.OverdueTasks
 import com.hallett.taskassistant.features.taskList.OpenTaskList
-import com.hallett.taskassistant.main.corndux.FabClicked
+import com.hallett.taskassistant.main.corndux.ClickFab
+import com.hallett.taskassistant.main.corndux.GlobalStore
 import com.hallett.taskassistant.main.corndux.NavigateSingleTop
+import com.hallett.taskassistant.main.corndux.NavigateToNewDestination
 import com.hallett.taskassistant.main.corndux.NavigateToRootDestination
 import com.hallett.taskassistant.main.corndux.NavigateUp
 import kotlinx.coroutines.FlowPreview
@@ -83,6 +88,16 @@ fun MainNavHost(innerPadding: PaddingValues, navController: NavHostController) {
             }
         }.collect()
     }
+
+    DisposableEffect(key1 = navController) {
+        val navigationObserver = NavController.OnDestinationChangedListener { _, destination, _ ->
+            store.dispatch(NavigateToNewDestination(destination))
+        }
+        navController.addOnDestinationChangedListener(navigationObserver)
+        onDispose {
+            navController.removeOnDestinationChangedListener(navigationObserver)
+        }
+    }
 }
 
 @Composable
@@ -115,10 +130,14 @@ private fun TaskBottomAppBarImpl(items: List<BottomNavigationScreen>) {
 
 @Composable
 fun TaskFloatingActionBar() {
-    val store = LocalStore.current
-    FloatingActionButton(
-        onClick = { store.dispatch(FabClicked(TaskNavDestination.CreateTask)) }
-    ) {
-        Icon(Icons.Default.Add, "new task")
+    val globalStore by rememberInstance<GlobalStore>()
+    val globalState by globalStore.observeState().collectAsState()
+
+    if (globalState.shouldShowFab) {
+        FloatingActionButton(
+            onClick = { globalStore.dispatch(ClickFab(TaskNavDestination.CreateTask)) }
+        ) {
+            Icon(Icons.Default.Add, "new task")
+        }
     }
 }

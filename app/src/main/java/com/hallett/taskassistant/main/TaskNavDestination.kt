@@ -7,7 +7,7 @@ import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.hallett.taskassistant.R
-import com.hallett.taskassistant.main.corndux.BottomNavigationClicked
+import com.hallett.taskassistant.main.corndux.ClickBottomNavigation
 
 sealed class TaskNavDestination(val route: String) {
 
@@ -30,25 +30,25 @@ sealed class TaskNavDestination(val route: String) {
     object TaskList : TaskNavDestination("taskList"), BottomNavigationScreen {
         override val labelResId: Int = R.string.navigation_label_task_list
         override val icon: ImageVector = Icons.Filled.List
-        override val action = BottomNavigationClicked(this)
+        override val action = ClickBottomNavigation(this)
     }
 
     object Dashboard : TaskNavDestination("dashboard"), BottomNavigationScreen {
         override val labelResId: Int = R.string.navigation_label_dashboard
         override val icon: ImageVector = Icons.Filled.Dashboard
-        override val action: BottomNavigationClicked = BottomNavigationClicked(this)
+        override val action = ClickBottomNavigation(this)
     }
 
     object OverdueTasks : TaskNavDestination("overdueList"), BottomNavigationScreen {
         override val labelResId: Int = R.string.navigation_label_overdue_tasks
         override val icon: ImageVector = Icons.Filled.ErrorOutline
-        override val action = BottomNavigationClicked(this)
+        override val action = ClickBottomNavigation(this)
     }
 
     object FutureTaskList : TaskNavDestination("futureTasks"), BottomNavigationScreen {
         override val labelResId: Int = R.string.navigation_label_future_tasks
         override val icon: ImageVector = Icons.Filled.Schedule
-        override val action: BottomNavigationClicked = BottomNavigationClicked(this)
+        override val action = ClickBottomNavigation(this)
     }
 
 }

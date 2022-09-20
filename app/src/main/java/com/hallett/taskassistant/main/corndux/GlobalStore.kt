@@ -5,12 +5,14 @@ import com.hallett.corndux.Store
 import kotlinx.coroutines.CoroutineScope
 
 class GlobalStore(
-    navigationPerformer: NavigationPerformer,
+    navigationActor: NavigationActor,
     scope: CoroutineScope,
 ) : Store<GlobalState>(
-    initialState = GlobalState,
-    actors = listOf(navigationPerformer),
+    initialState = GlobalState(),
+    actors = listOf(navigationActor),
     scope = scope
 )
 
-object GlobalState : IState
+data class GlobalState(
+    val shouldShowFab: Boolean = true
+) : IState

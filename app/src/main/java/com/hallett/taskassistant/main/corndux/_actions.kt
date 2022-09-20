@@ -1,5 +1,6 @@
 package com.hallett.taskassistant.main.corndux
 
+import androidx.navigation.NavDestination
 import androidx.paging.PagingData
 import com.hallett.corndux.Action
 import com.hallett.domain.model.Task
@@ -10,9 +11,14 @@ import com.hallett.taskassistant.features.scopeSelection.ScopeSelectionInfo
 import com.hallett.taskassistant.main.TaskNavDestination
 import kotlinx.coroutines.flow.Flow
 
-sealed class NavigationAction(val destination: TaskNavDestination) : Action
-class FabClicked(destination: TaskNavDestination) : NavigationAction(destination)
-class BottomNavigationClicked(destination: TaskNavDestination) : NavigationAction(destination)
+sealed interface NavigationAction : Action {
+    val destination: TaskNavDestination
+}
+
+data class ClickFab(override val destination: TaskNavDestination) : NavigationAction
+data class ClickBottomNavigation(override val destination: TaskNavDestination) : NavigationAction
+data class NavigateToNewDestination(val destination: NavDestination) : Action
+
 
 data class SubmitTask(val taskName: String) : Action
 object CancelTask : Action
