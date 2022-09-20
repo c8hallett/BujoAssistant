@@ -1,5 +1,6 @@
 package com.hallett.taskassistant.main
 
+import LocalStore
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.BottomAppBar
@@ -21,7 +22,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.hallett.corndux.SideEffect
 import com.hallett.logging.logI
-import com.hallett.taskassistant.LocalStore
 import com.hallett.taskassistant.features.createTasks.TaskCreation
 import com.hallett.taskassistant.features.dashboard.TaskDashboard
 import com.hallett.taskassistant.features.futureTasks.FutureTaskList
