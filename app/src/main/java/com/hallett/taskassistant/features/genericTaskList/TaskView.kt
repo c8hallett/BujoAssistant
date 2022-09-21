@@ -15,5 +15,6 @@ enum class TaskActionType {
     DELETE,
     COMPLETE,
     UNCOMPLETE,
-    RESCHEDULE
+    RESCHEDULE,
+    EDIT
 }

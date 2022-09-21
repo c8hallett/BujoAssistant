@@ -38,6 +38,7 @@ class TaskListTransformer(
     private fun getActionsForTask(task: Task): List<TaskActionType> =
         mutableListOf<TaskActionType>().apply {
             add(TaskActionType.DELETE)
+            add(TaskActionType.EDIT)
 
             when (task.status) {
                 TaskStatus.INCOMPLETE -> {

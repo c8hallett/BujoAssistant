@@ -9,10 +9,13 @@ import com.hallett.scopes.scope_generator.IScopeCalculator
 import com.hallett.taskassistant.features.genericTaskList.ClickTaskInList
 import com.hallett.taskassistant.features.genericTaskList.DeferTask
 import com.hallett.taskassistant.features.genericTaskList.DeleteTask
+import com.hallett.taskassistant.features.genericTaskList.EditTask
 import com.hallett.taskassistant.features.genericTaskList.MarkTaskAsComplete
 import com.hallett.taskassistant.features.genericTaskList.MarkTaskAsIncomplete
 import com.hallett.taskassistant.features.genericTaskList.RescheduleTask
 import com.hallett.taskassistant.features.genericTaskList.TaskAction
+import com.hallett.taskassistant.main.TaskNavDestination
+import com.hallett.taskassistant.main.corndux.NavigateSingleTop
 import com.hallett.taskassistant.main.corndux.UpdateExpandedTask
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -48,6 +51,10 @@ class TaskActionsPerformer(
             is MarkTaskAsIncomplete -> withRepo { updateStatus(action.task, TaskStatus.INCOMPLETE) }
             is ClickTaskInList -> {
                 dispatchAction(UpdateExpandedTask(action.task))
+            }
+            is EditTask -> {
+                val route = TaskNavDestination.CreateTask.createRoute(action.task.id)
+                dispatchSideEffect(NavigateSingleTop(route))
             }
         }
     }

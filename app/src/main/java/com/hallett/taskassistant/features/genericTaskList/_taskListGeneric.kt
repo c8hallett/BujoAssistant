@@ -19,6 +19,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.RemoveCircleOutline
 import androidx.compose.material.icons.filled.Schedule
@@ -42,6 +43,7 @@ data class DeferTask(val task: Task) : TaskAction
 data class RescheduleTask(val task: Task) : TaskAction
 data class MarkTaskAsComplete(val task: Task) : TaskAction
 data class MarkTaskAsIncomplete(val task: Task) : TaskAction
+data class EditTask(val task: Task) : TaskAction
 
 @Composable
 fun TaskList(
@@ -130,6 +132,9 @@ fun TaskActions(task: Task, actions: List<TaskActionType>) {
                 TaskActionType.RESCHEDULE -> RescheduleTaskButton {
                     store.dispatch(RescheduleTask(task))
                 }
+                TaskActionType.EDIT -> EditTaskButton {
+                    store.dispatch(EditTask(task))
+                }
             }
         }
     }
@@ -167,5 +172,12 @@ fun UncompleteTaskButton(uncomplete: () -> Unit) {
 fun RescheduleTaskButton(reschedule: () -> Unit) {
     IconButton(onClick = reschedule) {
         Icon(Icons.Default.Schedule, contentDescription = "reschedule task")
+    }
+}
+
+@Composable
+fun EditTaskButton(edit: () -> Unit) {
+    IconButton(onClick = edit) {
+        Icon(Icons.Default.Edit, contentDescription = "edit task")
     }
 }
