@@ -92,7 +92,7 @@ fun TaskItem(
                 val textDecoration =
                     if (task.status == TaskStatus.COMPLETE) TextDecoration.LineThrough else TextDecoration.None
                 Text(
-                    text = task.taskName,
+                    text = task.name,
                     style = MaterialTheme.typography.h6.copy(textDecoration = textDecoration),
                     modifier = Modifier.padding(12.dp)
                 )

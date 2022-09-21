@@ -14,6 +14,7 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -27,6 +28,7 @@ import com.hallett.taskassistant.features.scopeSelection.ScopeSelection
 import com.hallett.taskassistant.main.corndux.CancelTask
 import com.hallett.taskassistant.main.corndux.OpenTask
 import com.hallett.taskassistant.main.corndux.SubmitTask
+import com.hallett.taskassistant.main.corndux.UpdateTaskName
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.ObsoleteCoroutinesApi
@@ -38,14 +40,16 @@ import org.kodein.di.compose.rememberInstance
 @ExperimentalCoroutinesApi
 @ObsoleteCoroutinesApi
 @Composable
-fun TaskCreation(taskId: Long?) {
+fun TaskCreation(taskId: Long) {
     val createTaskStore by rememberInstance<CreateTaskStore>()
-    WithStore(createTaskStore) {
+
+    LaunchedEffect(key1 = taskId) {
         createTaskStore.dispatch(OpenTask(taskId))
+    }
+
+    WithStore(createTaskStore) {
         val createTaskInfo by createTaskStore.observeState().collectAsState()
         val shouldExpandCard = createTaskInfo.scopeSelectionInfo == null
-
-        val taskName by createTaskStore.observeState { it.taskName }.collectAsState()
 
         Column(verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically)) {
             val cardModifier = if (shouldExpandCard) Modifier else Modifier.weight(1.0f)
@@ -53,8 +57,8 @@ fun TaskCreation(taskId: Long?) {
             Card(backgroundColor = MaterialTheme.colors.surface, modifier = cardModifier) {
                 Column(modifier = Modifier.padding(12.dp)) {
                     BasicTextField(
-                        value = taskName,
-                        onValueChange = {},
+                        value = createTaskInfo.taskName,
+                        onValueChange = { createTaskStore.dispatch(UpdateTaskName(it)) },
                         textStyle = MaterialTheme.typography.h6.copy(color = MaterialTheme.colors.onSurface),
                         modifier = Modifier.fillMaxWidth(),
                     )
@@ -66,7 +70,7 @@ fun TaskCreation(taskId: Long?) {
             }
 
             TaskSelectionButtons(
-                onTaskSubmitted = { createTaskStore.dispatch(SubmitTask(taskName.trimExtraSpaces())) },
+                onTaskSubmitted = { createTaskStore.dispatch(SubmitTask) },
                 onTaskCancelled = { createTaskStore.dispatch(CancelTask) }
             )
         }
@@ -95,27 +99,4 @@ fun TaskSelectionButtons(onTaskSubmitted: () -> Unit, onTaskCancelled: () -> Uni
             Text("Yeah, that's right", color = MaterialTheme.colors.onPrimary)
         }
     }
-}
-
-private fun String.trimExtraSpaces(): String {
-    var foundChar = false
-    return this
-        .trimStart()
-        .foldRightIndexed("") { index, character, acc ->
-            when {
-                foundChar -> character + acc
-                character.isWhitespace() -> when {
-                    // current character is a double space
-                    this.getOrNull(index - 1)?.isWhitespace() == true -> acc
-                    else -> {
-                        foundChar = true
-                        character + acc
-                    }
-                }
-                else -> {
-                    foundChar = true
-                    character + acc
-                }
-            }
-        }
 }

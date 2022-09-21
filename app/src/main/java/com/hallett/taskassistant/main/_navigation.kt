@@ -58,7 +58,7 @@ fun MainNavHost(innerPadding: PaddingValues, navController: NavHostController) {
             TaskNavDestination.CreateTask.route,
             arguments = TaskNavDestination.CreateTask.navArguments
         ) {
-            TaskCreation(it.arguments?.getLong(TaskNavDestination.ARG_TASK_ID))
+            TaskCreation(it.arguments?.getLong(TaskNavDestination.ARG_TASK_ID) ?: 0L)
         }
         composable(
             TaskNavDestination.TaskList.route,

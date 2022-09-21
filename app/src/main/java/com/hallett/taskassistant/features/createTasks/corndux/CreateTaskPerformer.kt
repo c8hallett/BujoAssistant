@@ -5,6 +5,7 @@ import com.hallett.corndux.SideEffect
 import com.hallett.corndux.StatefulPerformer
 import com.hallett.database.ITaskRepository
 import com.hallett.domain.model.Task
+import com.hallett.logging.logI
 import com.hallett.scopes.model.ScopeType
 import com.hallett.taskassistant.features.scopeSelection.CancelScopeSelection
 import com.hallett.taskassistant.features.scopeSelection.ClickNewScope
@@ -46,10 +47,11 @@ class CreateTaskPerformer(
                 }
             }
             is SubmitTask -> {
+                logI("Submitting task to be updated: $state")
                 withRepo {
                     upsert(
                         taskId = state.taskId,
-                        taskName = action.taskName,
+                        taskName = state.taskName.trimExtraSpaces(),
                         scope = state.scope
                     )
                     dispatchSideEffect(NavigateUp)
@@ -86,4 +88,27 @@ class CreateTaskPerformer(
         workScope.launch {
             taskRepo.operation()
         }
+
+    private fun String.trimExtraSpaces(): String {
+        var foundChar = false
+        return this
+            .trimStart()
+            .foldRightIndexed("") { index, character, acc ->
+                when {
+                    foundChar -> character + acc
+                    character.isWhitespace() -> when {
+                        // current character is a double space
+                        this.getOrNull(index - 1)?.isWhitespace() == true -> acc
+                        else -> {
+                            foundChar = true
+                            character + acc
+                        }
+                    }
+                    else -> {
+                        foundChar = true
+                        character + acc
+                    }
+                }
+            }
+    }
 }

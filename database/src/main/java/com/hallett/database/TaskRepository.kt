@@ -103,7 +103,7 @@ internal class TaskRepository(
 
     private fun Task.toEntity(): TaskEntity = TaskEntity(
         id = id,
-        taskName = taskName,
+        taskName = name,
         status = status,
         scope = scope.toEntity(),
         updatedAt = Date()
@@ -111,7 +111,7 @@ internal class TaskRepository(
 
     private fun TaskEntity.toTask(): Task = Task(
         id = id,
-        taskName = taskName,
+        name = taskName,
         status = status,
         scope = scope.toScope()
     )

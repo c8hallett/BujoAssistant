@@ -32,9 +32,7 @@ sealed class TaskNavDestination(val route: String) {
             }
         )
 
-        fun createRoute(taskId: Long = 0L): String {
-            return route.replace("{$ARG_TASK_ID}", taskId.toString())
-        }
+        fun createRoute(taskId: Long = 0L): String = "taskCreate?taskId=$taskId"
     }
 
     object TaskList : TaskNavDestination("taskList"), BottomNavigationScreen {
