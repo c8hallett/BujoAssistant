@@ -17,6 +17,7 @@ class CreateTaskStore(
 )
 
 data class CreateTaskState(
+    val taskId: Long = 0L,
     val taskName: String = "",
     val scope: Scope? = null,
     val scopeSelectionInfo: ScopeSelectionInfo? = null

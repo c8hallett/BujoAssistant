@@ -8,20 +8,24 @@ import com.hallett.scopes.model.Scope
 import com.hallett.scopes.model.ScopeType
 import com.hallett.taskassistant.features.genericTaskList.TaskView
 import com.hallett.taskassistant.features.scopeSelection.ScopeSelectionInfo
-import com.hallett.taskassistant.main.TaskNavDestination
 import kotlinx.coroutines.flow.Flow
 
 sealed interface NavigationAction : Action {
-    val destination: TaskNavDestination
+    val destination: String
 }
 
-data class ClickFab(override val destination: TaskNavDestination) : NavigationAction
-data class ClickBottomNavigation(override val destination: TaskNavDestination) : NavigationAction
+data class ClickFab(override val destination: String) : NavigationAction
+data class ClickBottomNavigation(override val destination: String) : NavigationAction
+
 data class NavigateToNewDestination(val destination: NavDestination) : Action
 
 
-data class SubmitTask(val taskName: String) : Action
+data class OpenTask(val taskId: Long?) : Action
+object SubmitTask : Action
+data class UpdateTaskName(val taskName: String) : Action
+data class DisplayTaskForEdit(val task: Task) : Action
 object CancelTask : Action
+object ClearCreateTaskState : Action
 
 object LoadLargerScope : Action
 object LoadSmallerScope : Action
@@ -32,7 +36,6 @@ data class UpdateSelectedScope(val scope: Scope?, val scopeSelectionInfo: ScopeS
     Action
 
 data class UpdateScopeSelectionInfo(val scopeSelectionInfo: ScopeSelectionInfo?) : Action
-object ClearCreateTaskState : Action
 
 // probably could move to global commits
 data class UpdateTypedTaskList(

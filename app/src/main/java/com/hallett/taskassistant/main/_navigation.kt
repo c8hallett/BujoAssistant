@@ -54,19 +54,32 @@ fun MainNavHost(innerPadding: PaddingValues, navController: NavHostController) {
     ) {
         composable(
             TaskNavDestination.CreateTask.route,
+            arguments = TaskNavDestination.CreateTask.navArguments
         ) {
-            TaskCreation()
+            TaskCreation(it.arguments?.getLong(TaskNavDestination.ARG_TASK_ID) ?: 0L)
         }
-        composable(TaskNavDestination.TaskList.route) {
+        composable(
+            TaskNavDestination.TaskList.route,
+            arguments = TaskNavDestination.TaskList.navArguments
+        ) {
             OpenTaskList()
         }
-        composable(TaskNavDestination.Dashboard.route) {
+        composable(
+            TaskNavDestination.Dashboard.route,
+            arguments = TaskNavDestination.Dashboard.navArguments
+        ) {
             TaskDashboard()
         }
-        composable(TaskNavDestination.OverdueTasks.route) {
+        composable(
+            TaskNavDestination.OverdueTasks.route,
+            arguments = TaskNavDestination.OverdueTasks.navArguments
+        ) {
             OverdueTasks()
         }
-        composable(TaskNavDestination.FutureTaskList.route) {
+        composable(
+            TaskNavDestination.FutureTaskList.route,
+            arguments = TaskNavDestination.FutureTaskList.navArguments
+        ) {
             FutureTaskList()
         }
     }
@@ -77,12 +90,12 @@ fun MainNavHost(innerPadding: PaddingValues, navController: NavHostController) {
         store.observeSideEffects().onEach { sideEffect: SideEffect ->
             when (sideEffect) {
                 is NavigateUp -> navController.popBackStack()
-                is NavigateToRootDestination -> navController.navigate(sideEffect.destination.route) {
+                is NavigateToRootDestination -> navController.navigate(sideEffect.route) {
                     popUpTo(navController.graph.startDestinationId) { inclusive = true }
                     launchSingleTop = true
                     restoreState = true
                 }
-                is NavigateSingleTop -> navController.navigate(sideEffect.destination.route) {
+                is NavigateSingleTop -> navController.navigate(sideEffect.route) {
                     launchSingleTop = true
                 }
             }
@@ -135,7 +148,10 @@ fun TaskFloatingActionBar() {
 
     if (globalState.shouldShowFab) {
         FloatingActionButton(
-            onClick = { globalStore.dispatch(ClickFab(TaskNavDestination.CreateTask)) }
+            onClick = {
+                val route = TaskNavDestination.CreateTask.createRoute()
+                globalStore.dispatch(ClickFab(route))
+            }
         ) {
             Icon(Icons.Default.Add, "new task")
         }

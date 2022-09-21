@@ -4,6 +4,7 @@ import com.hallett.corndux.Action
 import com.hallett.corndux.Reducer
 import com.hallett.corndux.SideEffect
 import com.hallett.corndux.StatefulPerformer
+import com.hallett.logging.logI
 import com.hallett.taskassistant.main.TaskNavDestination
 
 class NavigationActor : StatefulPerformer<GlobalState>, Reducer<GlobalState> {
@@ -27,7 +28,7 @@ class NavigationActor : StatefulPerformer<GlobalState>, Reducer<GlobalState> {
         return when (action) {
             is NavigateToNewDestination -> state.copy(
                 shouldShowFab = action.destination.route != TaskNavDestination.CreateTask.route
-            )
+            ).also { logI("Route = ${action.destination.route}") }
             else -> state
         }
     }
