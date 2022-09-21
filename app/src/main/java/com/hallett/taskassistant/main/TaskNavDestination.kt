@@ -7,8 +7,6 @@ import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NamedNavArgument
-import androidx.navigation.NavAction
-import androidx.navigation.NavArgument
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import com.hallett.taskassistant.R
@@ -24,9 +22,9 @@ sealed class TaskNavDestination(val route: String) {
         const val ARG_TASK_ID = "taskId"
     }
 
-    object CreateTask : TaskNavDestination("taskCreate?taskId={$ARG_TASK_ID}"){
+    object CreateTask : TaskNavDestination("taskCreate?taskId={$ARG_TASK_ID}") {
         override val navArguments: List<NamedNavArgument> = listOf(
-            navArgument(ARG_TASK_ID){
+            navArgument(ARG_TASK_ID) {
                 type = NavType.LongType
                 defaultValue = (0L)
             }

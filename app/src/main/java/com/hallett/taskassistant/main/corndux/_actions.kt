@@ -23,7 +23,7 @@ data class NavigateToNewDestination(val destination: NavDestination) : Action
 data class OpenTask(val taskId: Long?) : Action
 object SubmitTask : Action
 data class UpdateTaskName(val taskName: String) : Action
-data class DisplayTaskForEdit(val task: Task): Action
+data class DisplayTaskForEdit(val task: Task) : Action
 object CancelTask : Action
 object ClearCreateTaskState : Action
 

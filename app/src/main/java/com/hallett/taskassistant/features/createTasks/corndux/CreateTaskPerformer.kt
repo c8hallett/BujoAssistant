@@ -4,7 +4,6 @@ import com.hallett.corndux.Action
 import com.hallett.corndux.SideEffect
 import com.hallett.corndux.StatefulPerformer
 import com.hallett.database.ITaskRepository
-import com.hallett.domain.model.Task
 import com.hallett.logging.logI
 import com.hallett.scopes.model.ScopeType
 import com.hallett.taskassistant.features.scopeSelection.CancelScopeSelection
@@ -36,10 +35,10 @@ class CreateTaskPerformer(
     ) {
         when (action) {
             is OpenTask -> {
-                when(val taskId = action.taskId) {
+                when (val taskId = action.taskId) {
                     null -> dispatchAction(ClearCreateTaskState)
                     else -> withRepo {
-                        when(val task = getTask(taskId)) {
+                        when (val task = getTask(taskId)) {
                             null -> dispatchAction(ClearCreateTaskState)
                             else -> dispatchAction(DisplayTaskForEdit(task))
                         }
