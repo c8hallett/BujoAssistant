@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import com.hallett.taskassistant.features.createTasks.corndux.CreateTaskStore
 import com.hallett.taskassistant.features.scopeSelection.ScopeSelection
 import com.hallett.taskassistant.main.corndux.CancelTask
+import com.hallett.taskassistant.main.corndux.OpenTask
 import com.hallett.taskassistant.main.corndux.SubmitTask
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -37,13 +38,14 @@ import org.kodein.di.compose.rememberInstance
 @ExperimentalCoroutinesApi
 @ObsoleteCoroutinesApi
 @Composable
-fun TaskCreation() {
+fun TaskCreation(taskId: Long?) {
     val createTaskStore by rememberInstance<CreateTaskStore>()
     WithStore(createTaskStore) {
+        createTaskStore.dispatch(OpenTask(taskId))
         val createTaskInfo by createTaskStore.observeState().collectAsState()
         val shouldExpandCard = createTaskInfo.scopeSelectionInfo == null
 
-        var taskName by remember { mutableStateOf("") }
+        val taskName by createTaskStore.observeState { it.taskName }.collectAsState()
 
         Column(verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically)) {
             val cardModifier = if (shouldExpandCard) Modifier else Modifier.weight(1.0f)
@@ -52,9 +54,7 @@ fun TaskCreation() {
                 Column(modifier = Modifier.padding(12.dp)) {
                     BasicTextField(
                         value = taskName,
-                        onValueChange = { newTaskName: String ->
-                            taskName = newTaskName
-                        },
+                        onValueChange = {},
                         textStyle = MaterialTheme.typography.h6.copy(color = MaterialTheme.colors.onSurface),
                         modifier = Modifier.fillMaxWidth(),
                     )
