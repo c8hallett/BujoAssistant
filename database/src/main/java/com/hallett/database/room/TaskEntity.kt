@@ -44,17 +44,6 @@ data class TaskEntity(
         val updatedAt: Date = Date()
     )
 
-    data class NameAndScopeUpdate(
-        @ColumnInfo(name = ID)
-        val taskId: Long,
-        @ColumnInfo(name = TASK_NAME)
-        val taskName: String,
-        @Embedded
-        val scope: ScopeEntity?,
-        @ColumnInfo(name = UPDATED_AT)
-        val updatedAt: Date = Date()
-    )
-
     data class ScopeUpdate(
         @ColumnInfo(name = ID)
         val taskId: Long,

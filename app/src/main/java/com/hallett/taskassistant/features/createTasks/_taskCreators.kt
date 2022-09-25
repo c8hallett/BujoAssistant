@@ -54,13 +54,13 @@ fun TaskCreation(taskId: Long) {
             Card(backgroundColor = MaterialTheme.colors.surface, modifier = cardModifier) {
                 Column(modifier = Modifier.padding(12.dp)) {
                     BasicTextField(
-                        value = createTaskInfo.taskName,
+                        value = createTaskInfo.task.name,
                         onValueChange = { createTaskStore.dispatch(UpdateTaskName(it)) },
                         textStyle = MaterialTheme.typography.h6.copy(color = MaterialTheme.colors.onSurface),
                         modifier = Modifier.fillMaxWidth(),
                     )
                     ScopeSelection(
-                        scope = createTaskInfo.scope,
+                        scope = createTaskInfo.task.scope,
                         scopeSelectionInfo = createTaskInfo.scopeSelectionInfo,
                     )
                 }

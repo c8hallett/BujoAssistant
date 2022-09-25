@@ -4,6 +4,8 @@ import com.hallett.corndux.Action
 import com.hallett.corndux.SideEffect
 import com.hallett.corndux.StatefulPerformer
 import com.hallett.database.ITaskRepository
+import com.hallett.domain.model.Task
+import com.hallett.domain.model.TaskStatus
 import com.hallett.logging.logI
 import com.hallett.scopes.model.ScopeType
 import com.hallett.taskassistant.features.scopeSelection.CancelScopeSelection
@@ -12,7 +14,6 @@ import com.hallett.taskassistant.features.scopeSelection.ClickNewScopeType
 import com.hallett.taskassistant.features.scopeSelection.EnterScopeSelection
 import com.hallett.taskassistant.features.scopeSelection.ScopeSelectionInfoGenerator
 import com.hallett.taskassistant.main.corndux.CancelTask
-import com.hallett.taskassistant.main.corndux.ClearCreateTaskState
 import com.hallett.taskassistant.main.corndux.DisplayTaskForEdit
 import com.hallett.taskassistant.main.corndux.NavigateUp
 import com.hallett.taskassistant.main.corndux.OpenTask
@@ -27,6 +28,14 @@ class CreateTaskPerformer(
     private val ssiGenerator: ScopeSelectionInfoGenerator,
     private val workScope: CoroutineScope
 ) : StatefulPerformer<CreateTaskState> {
+
+    private val newTask = Task(
+        id = 0L,
+        name = "",
+        scope = null,
+        status = TaskStatus.INCOMPLETE
+    )
+
     override fun performAction(
         state: CreateTaskState,
         action: Action,
@@ -36,23 +45,22 @@ class CreateTaskPerformer(
         when (action) {
             is OpenTask -> {
                 when (val taskId = action.taskId) {
-                    null -> dispatchAction(ClearCreateTaskState)
+                    null -> dispatchAction(DisplayTaskForEdit(newTask))
                     else -> withRepo {
                         when (val task = getTask(taskId)) {
-                            null -> dispatchAction(ClearCreateTaskState)
+                            null -> dispatchAction(DisplayTaskForEdit(newTask))
                             else -> dispatchAction(DisplayTaskForEdit(task))
                         }
                     }
                 }
             }
             is SubmitTask -> {
-                logI("Submitting task to be updated: $state")
                 withRepo {
-                    upsert(
-                        taskId = state.taskId,
-                        taskName = state.taskName.trimExtraSpaces(),
-                        scope = state.scope
-                    )
+                    val formattedTask = with(state.task){
+                        copy(name = name.trimExtraSpaces())
+                    }
+                    upsert(formattedTask)
+                    logI("Sent task off: $formattedTask")
                     dispatchSideEffect(NavigateUp)
                 }
             }
@@ -61,7 +69,7 @@ class CreateTaskPerformer(
             }
             is EnterScopeSelection -> {
                 val scopeSelectionInfo =
-                    ssiGenerator.generateInfo(state.scope?.type ?: ScopeType.DAY)
+                    ssiGenerator.generateInfo(state.task.scope?.type ?: ScopeType.DAY)
                 dispatchAction(
                     UpdateScopeSelectionInfo(scopeSelectionInfo = scopeSelectionInfo)
                 )
