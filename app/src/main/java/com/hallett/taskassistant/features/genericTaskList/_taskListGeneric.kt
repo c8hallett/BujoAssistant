@@ -32,7 +32,6 @@ import androidx.paging.compose.items
 import com.hallett.corndux.Action
 import com.hallett.domain.model.Task
 import com.hallett.domain.model.TaskStatus
-import com.hallett.taskassistant.features.genericTaskList.corndux.TaskActionsStore
 import org.kodein.di.compose.rememberInstance
 
 
@@ -51,25 +50,22 @@ fun TaskList(
     isTaskExpanded: (Task) -> Boolean,
     modifier: Modifier = Modifier,
 ) {
-    val taskActionStore by rememberInstance<TaskActionsStore>()
-    WithStore(taskActionStore) {
-        LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-            contentPadding = PaddingValues(12.dp),
-            modifier = modifier
-        ) {
-            items(pagedTasks) { taskView ->
-                when (taskView) {
-                    null -> {}
-                    is TaskView.HeaderHolder -> Text(
-                        taskView.text,
-                        style = MaterialTheme.typography.h6
-                    )
-                    is TaskView.TaskHolder -> TaskItem(
-                        taskHolder = taskView,
-                        isExpanded = isTaskExpanded(taskView.task),
-                    )
-                }
+    LazyColumn(
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+        contentPadding = PaddingValues(12.dp),
+        modifier = modifier
+    ) {
+        items(pagedTasks) { taskView ->
+            when (taskView) {
+                null -> {}
+                is TaskView.HeaderHolder -> Text(
+                    taskView.text,
+                    style = MaterialTheme.typography.h6
+                )
+                is TaskView.TaskHolder -> TaskItem(
+                    taskHolder = taskView,
+                    isExpanded = isTaskExpanded(taskView.task),
+                )
             }
         }
     }
