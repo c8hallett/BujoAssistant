@@ -6,17 +6,19 @@ import com.hallett.corndux.Store
 import com.hallett.domain.model.Task
 import com.hallett.scopes.model.ScopeType
 import com.hallett.taskassistant.features.genericTaskList.TaskView
+import com.hallett.taskassistant.features.genericTaskList.TaskActionsPerformer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
 class DashboardStore(
     dashboardPerformer: DashboardPerformer,
+    taskActionsPerformer: TaskActionsPerformer,
     dashboardReducer: DashboardReducer,
     scope: CoroutineScope
 ) : Store<DashboardState>(
     initialState = DashboardState(),
-    actors = listOf(dashboardPerformer, dashboardReducer),
+    actors = listOf(dashboardPerformer, taskActionsPerformer, dashboardReducer),
     scope = scope
 )
 

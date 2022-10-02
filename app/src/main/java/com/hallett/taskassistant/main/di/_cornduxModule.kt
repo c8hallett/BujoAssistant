@@ -9,8 +9,7 @@ import com.hallett.taskassistant.features.dashboard.corndux.DashboardStore
 import com.hallett.taskassistant.features.futureTasks.corndux.FuturePerformer
 import com.hallett.taskassistant.features.futureTasks.corndux.FutureReducer
 import com.hallett.taskassistant.features.futureTasks.corndux.FutureStore
-import com.hallett.taskassistant.features.genericTaskList.corndux.TaskActionsPerformer
-import com.hallett.taskassistant.features.genericTaskList.corndux.TaskActionsStore
+import com.hallett.taskassistant.features.genericTaskList.TaskActionsPerformer
 import com.hallett.taskassistant.features.overdueTasks.corndux.OverduePerformer
 import com.hallett.taskassistant.features.overdueTasks.corndux.OverdueReducer
 import com.hallett.taskassistant.features.overdueTasks.corndux.OverdueStore
@@ -25,15 +24,14 @@ import org.kodein.di.instance
 
 val cornduxModule = DI.Module("cornduxModule") {
     bindSingleton { TaskActionsPerformer(instance(), instance(), instance()) }
-    bindSingleton { TaskActionsStore(instance(), instance()) }
 
     bindSingleton { DashboardPerformer(instance(), instance(), instance()) }
     bindSingleton { DashboardReducer() }
-    bindSingleton { DashboardStore(instance(), instance(), instance()) }
+    bindSingleton { DashboardStore(instance(), instance(), instance(), instance()) }
 
     bindSingleton { FuturePerformer(instance(), instance()) }
     bindSingleton { FutureReducer() }
-    bindSingleton { FutureStore(instance(), instance(), instance()) }
+    bindSingleton { FutureStore(instance(), instance(), instance(), instance()) }
 
     bindSingleton { CreateTaskPerformer(instance(), instance(), instance()) }
     bindSingleton { CreateTaskReducer() }
@@ -41,12 +39,11 @@ val cornduxModule = DI.Module("cornduxModule") {
 
     bindSingleton { OverduePerformer(instance(), instance(), instance()) }
     bindSingleton { OverdueReducer() }
-    bindSingleton { OverdueStore(instance(), instance(), instance()) }
+    bindSingleton { OverdueStore(instance(), instance(), instance(), instance()) }
 
     bindSingleton { TaskListPerformer(instance(), instance(), instance(), instance()) }
     bindSingleton { TaskListReducer() }
-    bindSingleton { TaskListStore(instance(), instance(), instance()) }
-
+    bindSingleton { TaskListStore(instance(), instance(), instance(), instance()) }
 
     bindSingleton { NavigationActor() }
     bindSingleton { GlobalStore(instance(), instance()) }

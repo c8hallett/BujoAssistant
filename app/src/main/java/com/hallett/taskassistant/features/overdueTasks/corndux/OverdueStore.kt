@@ -5,17 +5,19 @@ import com.hallett.corndux.IState
 import com.hallett.corndux.Store
 import com.hallett.domain.model.Task
 import com.hallett.taskassistant.features.genericTaskList.TaskView
+import com.hallett.taskassistant.features.genericTaskList.TaskActionsPerformer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
 class OverdueStore(
     overduePerformer: OverduePerformer,
+    taskActionsPerformer: TaskActionsPerformer,
     overdueReducer: OverdueReducer,
     scope: CoroutineScope
 ) : Store<OverdueState>(
     initialState = OverdueState(),
-    actors = listOf(overduePerformer, overdueReducer),
+    actors = listOf(overduePerformer, taskActionsPerformer, overdueReducer),
     scope = scope
 )
 

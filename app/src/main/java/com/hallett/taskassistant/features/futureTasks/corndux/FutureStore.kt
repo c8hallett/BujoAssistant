@@ -5,6 +5,7 @@ import com.hallett.corndux.Action
 import com.hallett.corndux.IState
 import com.hallett.corndux.Store
 import com.hallett.domain.model.Task
+import com.hallett.taskassistant.features.genericTaskList.TaskActionsPerformer
 import com.hallett.taskassistant.features.genericTaskList.TaskView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -12,11 +13,12 @@ import kotlinx.coroutines.flow.flowOf
 
 class FutureStore(
     futurePerformer: FuturePerformer,
+    taskActionsPerformer: TaskActionsPerformer,
     futureReducer: FutureReducer,
     scope: CoroutineScope
 ) : Store<FutureState>(
     initialState = FutureState(),
-    actors = listOf(futurePerformer, futureReducer),
+    actors = listOf(futurePerformer, taskActionsPerformer, futureReducer),
     scope = scope
 )
 
