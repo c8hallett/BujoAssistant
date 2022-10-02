@@ -27,7 +27,7 @@ import com.hallett.corndux.SideEffect
 import com.hallett.logging.logI
 import com.hallett.taskassistant.features.createTasks.TaskCreation
 import com.hallett.taskassistant.features.dashboard.TaskDashboard
-import com.hallett.taskassistant.features.futureTasks.FutureTaskList
+import com.hallett.taskassistant.features.limboTasks.FutureTaskList
 import com.hallett.taskassistant.features.overdueTasks.OverdueTasks
 import com.hallett.taskassistant.features.taskList.OpenTaskList
 import com.hallett.taskassistant.main.corndux.ClickFab
@@ -77,8 +77,8 @@ fun MainNavHost(innerPadding: PaddingValues, navController: NavHostController) {
             OverdueTasks()
         }
         composable(
-            TaskNavDestination.FutureTaskList.route,
-            arguments = TaskNavDestination.FutureTaskList.navArguments
+            TaskNavDestination.LimboTaskList.route,
+            arguments = TaskNavDestination.LimboTaskList.navArguments
         ) {
             FutureTaskList()
         }
@@ -117,7 +117,7 @@ fun MainNavHost(innerPadding: PaddingValues, navController: NavHostController) {
 fun TaskBottomAppBar() {
     val items = listOf(
         TaskNavDestination.Dashboard,
-        TaskNavDestination.FutureTaskList,
+        TaskNavDestination.LimboTaskList,
         TaskNavDestination.OverdueTasks,
         TaskNavDestination.TaskList,
     )

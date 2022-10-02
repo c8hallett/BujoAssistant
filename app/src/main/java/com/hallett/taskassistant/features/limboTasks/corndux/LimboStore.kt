@@ -1,7 +1,6 @@
-package com.hallett.taskassistant.features.futureTasks.corndux
+package com.hallett.taskassistant.features.limboTasks.corndux
 
 import androidx.paging.PagingData
-import com.hallett.corndux.Action
 import com.hallett.corndux.IState
 import com.hallett.corndux.Store
 import com.hallett.domain.model.Task
@@ -11,32 +10,19 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
-class FutureStore(
-    futurePerformer: FuturePerformer,
+class LimboStore(
+    limboPerformer: LimboPerformer,
     taskActionsPerformer: TaskActionsPerformer,
-    futureReducer: FutureReducer,
+    limboReducer: LimboReducer,
     scope: CoroutineScope
-) : Store<FutureState>(
-    initialState = FutureState(),
-    actors = listOf(futurePerformer, taskActionsPerformer, futureReducer),
+) : Store<LimboState>(
+    initialState = LimboState(),
+    actors = listOf(limboPerformer, taskActionsPerformer, limboReducer),
     scope = scope
 )
 
-data class FutureState(
+data class LimboState(
     val expandedTask: Task? = null,
     val list: Flow<PagingData<TaskView>> = flowOf(),
-    val listType: ListType = ListType.UNSCHEDULED,
     val search: String = ""
 ) : IState
-
-enum class ListType {
-    SCHEDULED,
-    UNSCHEDULED
-}
-
-data class ExpandList(val listType: ListType) : Action
-
-data class UpdateExpandedList(
-    val taskList: Flow<PagingData<TaskView>>,
-    val listType: ListType
-) : Action
