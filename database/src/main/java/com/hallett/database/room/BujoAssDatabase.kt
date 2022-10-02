@@ -5,7 +5,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.hallett.database.converter.DateToLongConverter
 import com.hallett.database.converter.LocalDateToLongConverter
-import com.hallett.database.converter.ScopeTypeToIntConverter
+import com.hallett.database.converter.EnumToIntConverter
 
 @Database(
     entities = [TaskEntity::class],
@@ -15,7 +15,7 @@ import com.hallett.database.converter.ScopeTypeToIntConverter
 @TypeConverters(
     DateToLongConverter::class,
     LocalDateToLongConverter::class,
-    ScopeTypeToIntConverter::class,
+    EnumToIntConverter::class,
 )
 internal abstract class BujoAssDatabase : RoomDatabase() {
     abstract fun bujoTaskDao(): TaskDao

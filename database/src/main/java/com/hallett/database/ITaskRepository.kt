@@ -2,6 +2,7 @@ package com.hallett.database
 
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import com.hallett.database.room.TaskEntity
 import com.hallett.domain.model.Task
 import com.hallett.domain.model.TaskStatus
 import com.hallett.scopes.model.Scope
@@ -22,7 +23,8 @@ interface ITaskRepository {
         pagingConfig: PagingConfig,
         scope: Scope?,
         search: String? = null,
-        includeCompleted: Boolean = true
+        includeCompleted: Boolean = true,
+        sort: Sort = Sort.Created(true)
     ): Flow<PagingData<Task>>
 
     suspend fun upsert(task: Task)

@@ -6,6 +6,7 @@ import androidx.paging.PagingData
 import androidx.paging.map
 import com.hallett.database.room.TaskDao
 import com.hallett.database.room.TaskEntity
+import com.hallett.database.room.TaskQueryBuilder
 import com.hallett.domain.coroutines.DispatchersWrapper
 import com.hallett.domain.model.Task
 import com.hallett.domain.model.TaskStatus
@@ -49,11 +50,31 @@ internal class TaskRepository(
         pagingConfig: PagingConfig,
         scope: Scope?,
         search: String?,
-        includeCompleted: Boolean
+        includeCompleted: Boolean,
+        sort: Sort
     ): Flow<PagingData<Task>> = Pager(pagingConfig) {
-        val excluded = if(includeCompleted) null else TaskStatus.COMPLETE
-        val searchFilter = if(search == null) "%" else "%$search%"
-        taskDao.filterTasksForScope(scope?.type, scope?.value, searchFilter, excluded)
+        val rawQuery = TaskQueryBuilder().query {
+            // filtering by scopes
+            if(scope == null){
+                filterByScopeType(null)
+            } else {
+                filterByScope(scope)
+            }
+
+            // filtering out completed
+            if(includeCompleted) {
+                filterByStatuses(listOf(TaskStatus.COMPLETE), false)
+            }
+
+            // finding those that match given name
+            if(search != null) {
+                filterByTaskName(search)
+            }
+
+            // specifying the sort
+            setSort(sort)
+        }
+        taskDao.getTasksViaQuery(rawQuery)
     }
         .flow
         .flowOn(dispatchers.io)

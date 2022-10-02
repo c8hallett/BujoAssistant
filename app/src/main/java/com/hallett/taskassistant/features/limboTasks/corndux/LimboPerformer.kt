@@ -6,6 +6,7 @@ import com.hallett.corndux.Init
 import com.hallett.corndux.SideEffect
 import com.hallett.corndux.StatefulPerformer
 import com.hallett.database.ITaskRepository
+import com.hallett.database.Sort
 import com.hallett.taskassistant.features.limboTasks.SearchUpdated
 import com.hallett.taskassistant.features.genericTaskList.TaskListTransformer
 import com.hallett.taskassistant.main.corndux.UpdateTaskList
@@ -47,7 +48,8 @@ class LimboPerformer(
                 pagingConfig,
                 null,
                 search.nullIfBlank(),
-                false
+                false,
+                sort = Sort.Updated(true)
             ),
             includeHeaders = false
         )
