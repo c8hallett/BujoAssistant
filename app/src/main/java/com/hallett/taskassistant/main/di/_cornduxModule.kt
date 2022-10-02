@@ -29,7 +29,7 @@ val cornduxModule = DI.Module("cornduxModule") {
     bindSingleton { DashboardReducer() }
     bindSingleton { DashboardStore(instance(), instance(), instance(), instance()) }
 
-    bindSingleton { LimboPerformer(instance(), instance()) }
+    bindSingleton { LimboPerformer(instance(), instance(), instance()) }
     bindSingleton { LimboReducer() }
     bindSingleton { LimboStore(instance(), instance(), instance(), instance()) }
 

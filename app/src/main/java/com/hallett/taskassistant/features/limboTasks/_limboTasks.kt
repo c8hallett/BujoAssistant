@@ -10,6 +10,7 @@ import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -35,7 +36,7 @@ fun FutureTaskList() {
                 .fillMaxWidth()
                 .fillMaxHeight()
         ) {
-            SearchField()
+            SearchField(state.search)
             TaskList(
                 pagedTasks = taskList,
                 isTaskExpanded = { state.expandedTask == it },
@@ -48,22 +49,12 @@ fun FutureTaskList() {
 data class SearchUpdated(val newSearch: String) : Action
 
 @Composable
-fun SearchField() {
+fun SearchField(searchText: String) {
     val store = LocalStore.current
-    val scope: CoroutineScope by rememberInstance()
-    val dispatchNewSearch: (String) -> Unit = remember {
-        // need the same debounce function to persist over recomposition
-        scope.debounce(250L) { store.dispatch(SearchUpdated(it)) }
-    }
-
-    var text by remember { mutableStateOf("") }
 
     TextField(
-        value = text,
-        onValueChange = {
-            text = it
-            dispatchNewSearch(it)
-        },
+        value = searchText,
+        onValueChange = { store.dispatch(SearchUpdated(it)) },
         leadingIcon = {
             Icon(Icons.Default.Search, contentDescription = null)
         },

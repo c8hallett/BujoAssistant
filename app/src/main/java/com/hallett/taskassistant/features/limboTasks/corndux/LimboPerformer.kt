@@ -9,13 +9,19 @@ import com.hallett.database.ITaskRepository
 import com.hallett.taskassistant.features.limboTasks.SearchUpdated
 import com.hallett.taskassistant.features.genericTaskList.TaskListTransformer
 import com.hallett.taskassistant.main.corndux.UpdateTaskList
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class LimboPerformer(
     private val taskRepo: ITaskRepository,
-    private val transformer: TaskListTransformer
+    private val transformer: TaskListTransformer,
+    private val scope: CoroutineScope,
 ) : StatefulPerformer<LimboState> {
 
     private val pagingConfig = PagingConfig(pageSize = 20)
+    private var debounceJob: Job? = null
 
     override fun performAction(
         state: LimboState,
@@ -25,7 +31,13 @@ class LimboPerformer(
     ) {
         when (action) {
             is Init -> dispatchAction(fetchList(state.search))
-            is SearchUpdated -> dispatchAction(fetchList(action.newSearch))
+            is SearchUpdated -> {
+                debounceJob?.cancel()
+                debounceJob = scope.launch {
+                    delay(300L)
+                    dispatchAction(fetchList(action.newSearch))
+                }
+            }
         }
     }
 
