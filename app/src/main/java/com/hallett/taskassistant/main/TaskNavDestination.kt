@@ -51,7 +51,7 @@ sealed class TaskNavDestination(val route: String) {
         override val action = ClickBottomNavigation(route)
     }
 
-    object LimboTaskList : TaskNavDestination("futureTasks"), BottomNavigationScreen {
+    object LimboTaskList : TaskNavDestination("limboTasks"), BottomNavigationScreen {
         override val labelResId: Int = R.string.navigation_label_future_tasks
         override val icon: ImageVector = Icons.Filled.Schedule
         override val action = ClickBottomNavigation(route)

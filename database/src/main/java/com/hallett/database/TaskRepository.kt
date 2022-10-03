@@ -24,62 +24,15 @@ internal class TaskRepository(
     private val dispatchers: DispatchersWrapper,
     private val scopeCalculator: IScopeCalculator
 ) : ITaskRepository {
-
-    override fun getOverdueTasks(
+    override suspend fun executeTaskQueryBuilder(
         pagingConfig: PagingConfig,
-        cutoff: LocalDate
-    ): Flow<PagingData<Task>> =
-        Pager(pagingConfig) { taskDao.getAllOverdueTasks(cutoff.toEpochDay()) }
+        builder: TaskQueryBuilder
+    ): Flow<PagingData<Task>> {
+        return Pager(pagingConfig) { taskDao.rawTasksQuery(builder.query()) }
             .flow
             .flowOn(dispatchers.io)
             .map { data -> data.map { entity -> entity.toTask() } }
-
-    override fun observeFutureTasks(
-        pagingConfig: PagingConfig,
-        cutoff: LocalDate,
-        search: String?,
-    ): Flow<PagingData<Task>> = Pager(pagingConfig) {
-        val searchFilter = if(search == null) "%" else "%$search%"
-        taskDao.filterFutureTasks(cutoff.toEpochDay(), searchFilter)
     }
-        .flow
-        .flowOn(dispatchers.io)
-        .map { data -> data.map { entity -> entity.toTask() } }
-
-    override fun observeTasksForScope(
-        pagingConfig: PagingConfig,
-        scope: Scope?,
-        search: String?,
-        includeCompleted: Boolean,
-        sort: Sort
-    ): Flow<PagingData<Task>> = Pager(pagingConfig) {
-        val rawQuery = TaskQueryBuilder().query {
-            // filtering by scopes
-            if(scope == null){
-                filterByScopeType(null)
-            } else {
-                filterByScope(scope)
-            }
-
-            // filtering out completed
-            if(includeCompleted) {
-                filterByStatuses(listOf(TaskStatus.COMPLETE), false)
-            }
-
-            // finding those that match given name
-            if(search != null) {
-                filterByTaskName(search)
-            }
-
-            // specifying the sort
-            setSort(sort)
-        }
-        taskDao.getTasksViaQuery(rawQuery)
-    }
-        .flow
-        .flowOn(dispatchers.io)
-        .map { data -> data.map { entity -> entity.toTask() } }
-
 
     override suspend fun upsert(task: Task) {
         taskDao.upsert(task.toEntity())

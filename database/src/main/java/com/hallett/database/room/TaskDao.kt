@@ -10,7 +10,6 @@ import androidx.room.RawQuery
 import androidx.room.Transaction
 import androidx.room.Update
 import androidx.sqlite.db.SupportSQLiteQuery
-import com.hallett.database.room.TaskEntity.Companion.CREATED_AT
 import com.hallett.database.room.TaskEntity.Companion.ID
 import com.hallett.database.room.TaskEntity.Companion.TABLE_NAME
 import com.hallett.database.room.TaskEntity.Companion.TASK_NAME
@@ -19,8 +18,6 @@ import com.hallett.database.room.TaskEntity.Companion.TASK_SCOPE_TYPE
 import com.hallett.database.room.TaskEntity.Companion.TASK_SCOPE_VALUE
 import com.hallett.database.room.TaskEntity.Companion.TASK_STATUS
 import com.hallett.domain.model.TaskStatus
-import com.hallett.scopes.model.ScopeType
-import java.time.LocalDate
 
 @Dao
 internal interface TaskDao {
@@ -54,7 +51,7 @@ internal interface TaskDao {
     suspend fun getTask(taskId: Long): TaskEntity?
 
     @RawQuery(observedEntities = [TaskEntity::class])
-    fun getTasksViaQuery(query: SupportSQLiteQuery): PagingSource<Int, TaskEntity>
+    fun rawTasksQuery(query: SupportSQLiteQuery): PagingSource<Int, TaskEntity>
 
     @Query("SELECT * FROM $TABLE_NAME WHERE $TASK_SCOPE_END_VALUE < :value AND $TASK_STATUS IS NOT :excludeStatus")
     fun getAllOverdueTasks(
