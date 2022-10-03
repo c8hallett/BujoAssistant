@@ -22,7 +22,7 @@ interface ITaskRepository {
 
     suspend fun deleteTask(task: Task)
     
-    suspend fun executeTaskQueryBuilder(
+    fun queryTasks(
         pagingConfig: PagingConfig,
         builder: TaskQueryBuilder
     ): Flow<PagingData<Task>>

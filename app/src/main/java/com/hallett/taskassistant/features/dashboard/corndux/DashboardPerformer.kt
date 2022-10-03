@@ -6,6 +6,7 @@ import com.hallett.corndux.Init
 import com.hallett.corndux.SideEffect
 import com.hallett.corndux.StatefulPerformer
 import com.hallett.database.ITaskRepository
+import com.hallett.database.room.TaskQueryBuilder
 import com.hallett.scopes.model.ScopeType
 import com.hallett.scopes.scope_generator.IScopeCalculator
 import com.hallett.taskassistant.features.genericTaskList.TaskListTransformer
@@ -21,6 +22,7 @@ class DashboardPerformer(
 ) : StatefulPerformer<DashboardState> {
 
     private val pagingConfig = PagingConfig(pageSize = 20)
+    private val taskQueryBuilder = TaskQueryBuilder()
 
     override fun performAction(
         state: DashboardState,
@@ -34,12 +36,13 @@ class DashboardPerformer(
                     state.scopeType,
                     LocalDate.now()
                 )
+                taskQueryBuilder.filterByScope(currentScope)
 
                 dispatchAction(
                     UpdateTypedTaskList(
                         scopeType = state.scopeType,
                         taskList = transformer.transform(
-                            tasks = taskRepo.observeTasksForScope(pagingConfig, currentScope),
+                            tasks = taskRepo.queryTasks(pagingConfig, taskQueryBuilder),
                             includeHeaders = false
                         )
                     )
@@ -49,12 +52,13 @@ class DashboardPerformer(
                 val prevScopeType = state.scopeType.previous()
                 if (prevScopeType != state.scopeType) {
                     val prevScope = scopeCalculator.generateScope(prevScopeType, LocalDate.now())
+                    taskQueryBuilder.filterByScope(prevScope)
 
                     dispatchAction(
                         UpdateTypedTaskList(
                             scopeType = prevScopeType,
                             taskList = transformer.transform(
-                                tasks = taskRepo.observeTasksForScope(pagingConfig, prevScope),
+                                tasks = taskRepo.queryTasks(pagingConfig, taskQueryBuilder),
                                 includeHeaders = false
                             )
                         )
@@ -65,12 +69,13 @@ class DashboardPerformer(
                 val nextScopeType = state.scopeType.next()
                 if (nextScopeType != state.scopeType) {
                     val nextScope = scopeCalculator.generateScope(nextScopeType, LocalDate.now())
+                    taskQueryBuilder.filterByScope(nextScope)
 
                     dispatchAction(
                         UpdateTypedTaskList(
                             scopeType = nextScopeType,
                             taskList = transformer.transform(
-                                tasks = taskRepo.observeTasksForScope(pagingConfig, nextScope),
+                                tasks = taskRepo.queryTasks(pagingConfig, taskQueryBuilder),
                                 includeHeaders = false
                             )
                         )

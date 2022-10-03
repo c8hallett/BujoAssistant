@@ -10,11 +10,13 @@ import com.hallett.database.room.TaskQueryBuilder
 import com.hallett.domain.coroutines.DispatchersWrapper
 import com.hallett.domain.model.Task
 import com.hallett.domain.model.TaskStatus
+import com.hallett.logging.logD
 import com.hallett.scopes.model.Scope
 import com.hallett.scopes.model.ScopeType
 import com.hallett.scopes.scope_generator.IScopeCalculator
 import java.time.LocalDate
 import java.util.Date
+import kotlin.random.Random
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
@@ -24,10 +26,11 @@ internal class TaskRepository(
     private val dispatchers: DispatchersWrapper,
     private val scopeCalculator: IScopeCalculator
 ) : ITaskRepository {
-    override suspend fun executeTaskQueryBuilder(
+    override fun queryTasks(
         pagingConfig: PagingConfig,
         builder: TaskQueryBuilder
     ): Flow<PagingData<Task>> {
+        logD("Executing query: ${builder.query().sql}")
         return Pager(pagingConfig) { taskDao.rawTasksQuery(builder.query()) }
             .flow
             .flowOn(dispatchers.io)
@@ -54,9 +57,10 @@ internal class TaskRepository(
         taskDao.rescheduleTask(scopeUpdate)
     }
 
+    private val random = Random(System.currentTimeMillis())
     override suspend fun randomTask(scopeType: ScopeType, overdue: Boolean) {
         val date = when {
-            overdue -> LocalDate.now().minusYears(1L)
+            overdue -> LocalDate.now().minusDays(random.nextLong(365L))
             else -> LocalDate.now()
         }
         val newTask = TaskEntity(
