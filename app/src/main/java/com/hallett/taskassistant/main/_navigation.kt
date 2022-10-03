@@ -13,7 +13,6 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
@@ -127,7 +126,10 @@ fun TaskBottomAppBar(navController: NavHostController) {
 }
 
 @Composable
-private fun TaskBottomAppBarImpl(navController: NavHostController, items: List<BottomNavigationScreen>) {
+private fun TaskBottomAppBarImpl(
+    navController: NavHostController,
+    items: List<BottomNavigationScreen>
+) {
     val store = LocalStore.current
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentHierarchy = backStackEntry?.destination?.hierarchy

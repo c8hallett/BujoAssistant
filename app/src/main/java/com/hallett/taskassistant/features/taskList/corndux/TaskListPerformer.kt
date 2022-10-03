@@ -15,9 +15,9 @@ import com.hallett.taskassistant.features.scopeSelection.ClickNewScope
 import com.hallett.taskassistant.features.scopeSelection.ClickNewScopeType
 import com.hallett.taskassistant.features.scopeSelection.EnterScopeSelection
 import com.hallett.taskassistant.features.scopeSelection.ScopeSelectionInfoGenerator
-import com.hallett.taskassistant.main.corndux.UpdateTaskList
 import com.hallett.taskassistant.main.corndux.UpdateScopeSelectionInfo
 import com.hallett.taskassistant.main.corndux.UpdateSelectedScope
+import com.hallett.taskassistant.main.corndux.UpdateTaskList
 
 class TaskListPerformer(
     private val taskRepo: ITaskRepository,

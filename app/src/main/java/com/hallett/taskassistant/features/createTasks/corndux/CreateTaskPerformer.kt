@@ -56,7 +56,7 @@ class CreateTaskPerformer(
             }
             is SubmitTask -> {
                 withRepo {
-                    val formattedTask = with(state.task){
+                    val formattedTask = with(state.task) {
                         copy(name = name.trimExtraSpaces())
                     }
                     upsert(formattedTask)

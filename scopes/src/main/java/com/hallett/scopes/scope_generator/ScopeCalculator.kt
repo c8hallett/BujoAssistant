@@ -51,7 +51,7 @@ internal class ScopeCalculator : IScopeCalculator {
         .between(scope.type.truncate(startDate), scope.value)
         .toInt()
 
-    override fun getEndOfScope(scope: Scope): LocalDate = when(scope.type) {
+    override fun getEndOfScope(scope: Scope): LocalDate = when (scope.type) {
         ScopeType.DAY -> scope.value
         ScopeType.WEEK -> scope.value.plusWeeks(1L).minusDays(1L)
         ScopeType.MONTH -> scope.value.plusMonths(1L).minusDays(1L)

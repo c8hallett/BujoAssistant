@@ -21,7 +21,7 @@ interface ITaskRepository {
     suspend fun randomTask(scopeType: ScopeType, overdue: Boolean)
 
     suspend fun deleteTask(task: Task)
-    
+
     fun queryTasks(
         pagingConfig: PagingConfig,
         builder: TaskQueryBuilder

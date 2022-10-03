@@ -3,8 +3,8 @@ package com.hallett.database.room
 import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
 import com.hallett.database.TaskSort
-import com.hallett.database.converter.LocalDateToLongConverter
 import com.hallett.database.converter.EnumToIntConverter
+import com.hallett.database.converter.LocalDateToLongConverter
 import com.hallett.database.room.TaskEntity.Companion.TABLE_NAME
 import com.hallett.database.room.TaskEntity.Companion.TASK_NAME
 import com.hallett.database.room.TaskEntity.Companion.TASK_SCOPE_END_VALUE
@@ -20,7 +20,7 @@ class TaskQueryBuilder {
     private sealed class ScopeFilter {
         data class ByScopeType(val type: ScopeType?) : ScopeFilter()
         data class ByScope(val scope: Scope, val future: Boolean?) : ScopeFilter()
-        data class ByDate(val date: LocalDate, val future: Boolean?): ScopeFilter()
+        data class ByDate(val date: LocalDate, val future: Boolean?) : ScopeFilter()
     }
 
     private data class StatusFilter(val statuses: List<TaskStatus>, val included: Boolean)
@@ -30,7 +30,7 @@ class TaskQueryBuilder {
     private var statusFilter: StatusFilter? = null
     private var taskSort: TaskSort? = null
 
-    private companion object{
+    private companion object {
         const val SELECT = "SELECT * FROM $TABLE_NAME "
         const val WHERE = "WHERE "
         const val AND = " AND "
@@ -40,15 +40,18 @@ class TaskQueryBuilder {
     fun filterByDate(localDate: LocalDate, future: Boolean? = null) {
         this.scopeFilter = ScopeFilter.ByDate(localDate, future)
     }
+
     fun filterByScope(scope: Scope?, future: Boolean? = null) {
-        this.scopeFilter = when(scope){
+        this.scopeFilter = when (scope) {
             null -> ScopeFilter.ByScopeType(null)
             else -> ScopeFilter.ByScope(scope, future)
         }
     }
+
     fun filterByScopeType(scopeType: ScopeType?) {
         this.scopeFilter = ScopeFilter.ByScopeType(scopeType)
     }
+
     fun removeScopeFilter() {
         this.scopeFilter = null
     }
@@ -56,6 +59,7 @@ class TaskQueryBuilder {
     fun filterByTaskName(nameFilter: String) {
         this.taskNameFilter = nameFilter
     }
+
     fun removeTaskNameFilter() {
         this.taskNameFilter = null
     }
@@ -63,6 +67,7 @@ class TaskQueryBuilder {
     fun filterByStatuses(statuses: List<TaskStatus>, included: Boolean) {
         this.statusFilter = StatusFilter(statuses, included)
     }
+
     fun removeStatusFilter() {
         this.statusFilter = null
     }
@@ -70,7 +75,8 @@ class TaskQueryBuilder {
     fun sortBy(taskSort: TaskSort) {
         this.taskSort = taskSort
     }
-    fun removeSort(){
+
+    fun removeSort() {
         this.taskSort = null
     }
 
@@ -101,7 +107,7 @@ class TaskQueryBuilder {
             }
 
             taskNameFilter?.let { taskName ->
-                if(taskName.isNotBlank()) add("$TASK_NAME LIKE '%$taskName%'")
+                if (taskName.isNotBlank()) add("$TASK_NAME LIKE '%$taskName%'")
             }
 
             statusFilter?.let { status ->
@@ -119,7 +125,7 @@ class TaskQueryBuilder {
 
         val order = taskSort?.let { sort ->
             val sortOrder = "$ORDER_BY ${sort.field} ${if (sort.ascending) "ASC" else "DESC"}"
-            when(sort) {
+            when (sort) {
                 is TaskSort.ScopeEnd, is TaskSort.ScopeStart -> "$sortOrder, $TASK_SCOPE_TYPE DESC"
                 else -> sortOrder
             }

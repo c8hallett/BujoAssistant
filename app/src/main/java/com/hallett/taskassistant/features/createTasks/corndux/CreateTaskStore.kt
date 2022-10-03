@@ -4,7 +4,6 @@ import com.hallett.corndux.IState
 import com.hallett.corndux.Store
 import com.hallett.domain.model.Task
 import com.hallett.domain.model.TaskStatus
-import com.hallett.scopes.model.Scope
 import com.hallett.taskassistant.features.scopeSelection.ScopeSelectionInfo
 import kotlinx.coroutines.CoroutineScope
 

@@ -35,4 +35,4 @@ inline fun WithStore(localStore: Store<out IState>, crossinline operation: @Comp
 }
 
 @Composable
-fun <T: IState> Store<T>.collectState(): State<T> = observeState().collectAsState()
+fun <T : IState> Store<T>.collectState(): State<T> = observeState().collectAsState()

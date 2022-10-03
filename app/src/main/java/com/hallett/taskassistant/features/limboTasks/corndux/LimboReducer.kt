@@ -3,8 +3,8 @@ package com.hallett.taskassistant.features.limboTasks.corndux
 import com.hallett.corndux.Action
 import com.hallett.corndux.Reducer
 import com.hallett.taskassistant.features.limboTasks.SearchUpdated
-import com.hallett.taskassistant.main.corndux.UpdateTaskList
 import com.hallett.taskassistant.main.corndux.UpdateExpandedTask
+import com.hallett.taskassistant.main.corndux.UpdateTaskList
 
 class LimboReducer : Reducer<LimboState> {
     override fun reduce(state: LimboState, action: Action): LimboState {

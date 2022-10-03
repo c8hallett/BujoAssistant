@@ -10,20 +10,13 @@ import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.paging.compose.collectAsLazyPagingItems
 import collectState
 import com.hallett.corndux.Action
-import com.hallett.taskassistant.features.limboTasks.corndux.LimboStore
 import com.hallett.taskassistant.features.genericTaskList.TaskList
-import com.hallett.taskassistant.util.debounce
-import kotlinx.coroutines.CoroutineScope
+import com.hallett.taskassistant.features.limboTasks.corndux.LimboStore
 import org.kodein.di.compose.rememberInstance
 
 @Composable
