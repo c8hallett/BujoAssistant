@@ -57,7 +57,6 @@ class MainActivity : ComponentActivity() {
         val navController = rememberNavController()
         val runtimeModule = DI.Module("runtime_module") {
             bindProvider<CoroutineScope> { lifecycleScope }
-            bindProvider<NavController> { navController }
         }
         withDI(
             databaseModule,
@@ -72,7 +71,7 @@ class MainActivity : ComponentActivity() {
             val globalStore by rememberInstance<Store<GlobalState>>()
             WithGlobalStore(globalStore) {
                 Scaffold(
-                    bottomBar = { TaskBottomAppBar() },
+                    bottomBar = { TaskBottomAppBar(navController) },
                     floatingActionButton = { TaskFloatingActionBar() },
                 ) { innerPadding ->
                     MainNavHost(innerPadding = innerPadding, navController = navController)
