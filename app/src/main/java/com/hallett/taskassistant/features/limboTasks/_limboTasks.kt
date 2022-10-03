@@ -18,6 +18,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.paging.compose.collectAsLazyPagingItems
+import collectState
 import com.hallett.corndux.Action
 import com.hallett.taskassistant.features.limboTasks.corndux.LimboStore
 import com.hallett.taskassistant.features.genericTaskList.TaskList
@@ -29,7 +30,7 @@ import org.kodein.di.compose.rememberInstance
 fun FutureTaskList() {
     val limboStore by rememberInstance<LimboStore>()
     WithStore(limboStore) {
-        val state by limboStore.observeState().collectAsState()
+        val state by limboStore.collectState()
         val taskList = state.list.collectAsLazyPagingItems()
         Column(
             modifier = Modifier
