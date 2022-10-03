@@ -1,15 +1,16 @@
-package com.hallett.taskassistant.features.futureTasks.corndux
+package com.hallett.taskassistant.features.limboTasks.corndux
 
 import com.hallett.corndux.Action
 import com.hallett.corndux.Reducer
+import com.hallett.taskassistant.features.limboTasks.SearchUpdated
 import com.hallett.taskassistant.main.corndux.UpdateExpandedTask
+import com.hallett.taskassistant.main.corndux.UpdateTaskList
 
-class FutureReducer : Reducer<FutureState> {
-    override fun reduce(state: FutureState, action: Action): FutureState {
+class LimboReducer : Reducer<LimboState> {
+    override fun reduce(state: LimboState, action: Action): LimboState {
         return when (action) {
-            is UpdateExpandedList -> state.copy(
-                list = action.taskList,
-                listType = action.listType
+            is UpdateTaskList -> state.copy(
+                list = action.taskList
             )
             is UpdateExpandedTask -> {
                 val newTask = when (state.expandedTask) {
@@ -18,6 +19,7 @@ class FutureReducer : Reducer<FutureState> {
                 }
                 state.copy(expandedTask = newTask)
             }
+            is SearchUpdated -> state.copy(search = action.newSearch)
             else -> state
         }
     }

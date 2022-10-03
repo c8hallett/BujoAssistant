@@ -7,11 +7,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.collectAsLazyPagingItems
+import collectState
 import com.hallett.taskassistant.features.genericTaskList.TaskList
 import com.hallett.taskassistant.features.scopeSelection.ScopeSelection
 import com.hallett.taskassistant.features.taskList.corndux.TaskListStore
@@ -22,7 +22,7 @@ import org.kodein.di.compose.rememberInstance
 fun OpenTaskList() {
     val taskListStore by rememberInstance<TaskListStore>()
     WithStore(taskListStore) {
-        val state by taskListStore.observeState().collectAsState()
+        val state by taskListStore.collectState()
         val pagedTasks = state.taskList.collectAsLazyPagingItems()
         val isSelectActive = state.scopeSelectionInfo != null
 

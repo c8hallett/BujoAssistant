@@ -8,26 +8,25 @@ import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
+import collectState
 import com.hallett.corndux.SideEffect
 import com.hallett.logging.logI
 import com.hallett.taskassistant.features.createTasks.TaskCreation
 import com.hallett.taskassistant.features.dashboard.TaskDashboard
-import com.hallett.taskassistant.features.futureTasks.FutureTaskList
+import com.hallett.taskassistant.features.limboTasks.FutureTaskList
 import com.hallett.taskassistant.features.overdueTasks.OverdueTasks
 import com.hallett.taskassistant.features.taskList.OpenTaskList
 import com.hallett.taskassistant.main.corndux.ClickFab
@@ -77,8 +76,8 @@ fun MainNavHost(innerPadding: PaddingValues, navController: NavHostController) {
             OverdueTasks()
         }
         composable(
-            TaskNavDestination.FutureTaskList.route,
-            arguments = TaskNavDestination.FutureTaskList.navArguments
+            TaskNavDestination.LimboTaskList.route,
+            arguments = TaskNavDestination.LimboTaskList.navArguments
         ) {
             FutureTaskList()
         }
@@ -91,7 +90,9 @@ fun MainNavHost(innerPadding: PaddingValues, navController: NavHostController) {
             when (sideEffect) {
                 is NavigateUp -> navController.popBackStack()
                 is NavigateToRootDestination -> navController.navigate(sideEffect.route) {
-                    popUpTo(navController.graph.startDestinationId) { inclusive = true }
+                    popUpTo(navController.graph.startDestinationId) {
+                        saveState = true
+                    }
                     launchSingleTop = true
                     restoreState = true
                 }
@@ -114,27 +115,30 @@ fun MainNavHost(innerPadding: PaddingValues, navController: NavHostController) {
 }
 
 @Composable
-fun TaskBottomAppBar() {
+fun TaskBottomAppBar(navController: NavHostController) {
     val items = listOf(
         TaskNavDestination.Dashboard,
-        TaskNavDestination.FutureTaskList,
+        TaskNavDestination.LimboTaskList,
         TaskNavDestination.OverdueTasks,
         TaskNavDestination.TaskList,
     )
-    TaskBottomAppBarImpl(items = items)
+    TaskBottomAppBarImpl(items = items, navController = navController)
 }
 
 @Composable
-private fun TaskBottomAppBarImpl(items: List<BottomNavigationScreen>) {
+private fun TaskBottomAppBarImpl(
+    navController: NavHostController,
+    items: List<BottomNavigationScreen>
+) {
     val store = LocalStore.current
-    val navController: NavController by rememberInstance()
+    val backStackEntry by navController.currentBackStackEntryAsState()
+    val currentHierarchy = backStackEntry?.destination?.hierarchy
 
     BottomAppBar {
         items.forEach { screen ->
             BottomNavigationItem(
                 icon = { Icon(screen.icon, contentDescription = null) },
-                label = { Text(stringResource(screen.labelResId)) },
-                selected = navController.currentDestination?.hierarchy?.any { it.route == screen.route } == true,
+                selected = currentHierarchy?.any { it.route == screen.route } == true,
                 onClick = { store.dispatch(screen.action) }
             )
         }
@@ -144,7 +148,7 @@ private fun TaskBottomAppBarImpl(items: List<BottomNavigationScreen>) {
 @Composable
 fun TaskFloatingActionBar() {
     val globalStore by rememberInstance<GlobalStore>()
-    val globalState by globalStore.observeState().collectAsState()
+    val globalState by globalStore.collectState()
 
     if (globalState.shouldShowFab) {
         FloatingActionButton(

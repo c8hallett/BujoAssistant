@@ -6,10 +6,10 @@ import com.hallett.taskassistant.features.createTasks.corndux.CreateTaskStore
 import com.hallett.taskassistant.features.dashboard.corndux.DashboardPerformer
 import com.hallett.taskassistant.features.dashboard.corndux.DashboardReducer
 import com.hallett.taskassistant.features.dashboard.corndux.DashboardStore
-import com.hallett.taskassistant.features.futureTasks.corndux.FuturePerformer
-import com.hallett.taskassistant.features.futureTasks.corndux.FutureReducer
-import com.hallett.taskassistant.features.futureTasks.corndux.FutureStore
 import com.hallett.taskassistant.features.genericTaskList.TaskActionsPerformer
+import com.hallett.taskassistant.features.limboTasks.corndux.LimboPerformer
+import com.hallett.taskassistant.features.limboTasks.corndux.LimboReducer
+import com.hallett.taskassistant.features.limboTasks.corndux.LimboStore
 import com.hallett.taskassistant.features.overdueTasks.corndux.OverduePerformer
 import com.hallett.taskassistant.features.overdueTasks.corndux.OverdueReducer
 import com.hallett.taskassistant.features.overdueTasks.corndux.OverdueStore
@@ -29,9 +29,9 @@ val cornduxModule = DI.Module("cornduxModule") {
     bindSingleton { DashboardReducer() }
     bindSingleton { DashboardStore(instance(), instance(), instance(), instance()) }
 
-    bindSingleton { FuturePerformer(instance(), instance()) }
-    bindSingleton { FutureReducer() }
-    bindSingleton { FutureStore(instance(), instance(), instance(), instance()) }
+    bindSingleton { LimboPerformer(instance(), instance(), instance()) }
+    bindSingleton { LimboReducer() }
+    bindSingleton { LimboStore(instance(), instance(), instance(), instance()) }
 
     bindSingleton { CreateTaskPerformer(instance(), instance(), instance()) }
     bindSingleton { CreateTaskReducer() }

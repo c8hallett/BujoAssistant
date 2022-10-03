@@ -3,7 +3,7 @@ package com.hallett.database.converter
 import androidx.room.TypeConverter
 import java.util.Date
 
-class DateToLongConverter {
+object DateToLongConverter {
     @TypeConverter
     fun dateToLong(dateTime: Date?): Long? = dateTime?.time
 

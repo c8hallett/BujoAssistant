@@ -11,7 +11,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.hallett.corndux.Store
 import com.hallett.database.di.databaseModule
@@ -57,7 +56,6 @@ class MainActivity : ComponentActivity() {
         val navController = rememberNavController()
         val runtimeModule = DI.Module("runtime_module") {
             bindProvider<CoroutineScope> { lifecycleScope }
-            bindProvider<NavController> { navController }
         }
         withDI(
             databaseModule,
@@ -72,7 +70,7 @@ class MainActivity : ComponentActivity() {
             val globalStore by rememberInstance<Store<GlobalState>>()
             WithGlobalStore(globalStore) {
                 Scaffold(
-                    bottomBar = { TaskBottomAppBar() },
+                    bottomBar = { TaskBottomAppBar(navController) },
                     floatingActionButton = { TaskFloatingActionBar() },
                 ) { innerPadding ->
                     MainNavHost(innerPadding = innerPadding, navController = navController)

@@ -2,6 +2,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.ProvidableCompositionLocal
+import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.compositionLocalOf
 import com.hallett.corndux.IState
 import com.hallett.corndux.Store
@@ -31,3 +33,6 @@ inline fun WithStore(localStore: Store<out IState>, crossinline operation: @Comp
         operation()
     }
 }
+
+@Composable
+fun <T : IState> Store<T>.collectState(): State<T> = observeState().collectAsState()

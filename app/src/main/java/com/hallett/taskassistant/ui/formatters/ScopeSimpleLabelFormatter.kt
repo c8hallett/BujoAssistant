@@ -5,6 +5,7 @@ import com.hallett.scopes.model.ScopeType
 import com.hallett.scopes.scope_generator.IScopeCalculator
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import kotlin.math.abs
 
 class ScopeSimpleLabelFormatter(private val scopeCalculator: IScopeCalculator) :
     Formatter<Scope?, String> {
@@ -27,6 +28,8 @@ class ScopeSimpleLabelFormatter(private val scopeCalculator: IScopeCalculator) :
     }
 
     private fun formatDay(offset: Int, date: LocalDate) = when {
+        offset < -1 -> "${abs(offset)} days ago"
+        offset == -1 -> "yesterday"
         offset == 0 -> "today"
         offset == 1 -> "tomorrow"
         offset < 7 -> "$offset days from now"
@@ -34,6 +37,8 @@ class ScopeSimpleLabelFormatter(private val scopeCalculator: IScopeCalculator) :
     }
 
     private fun formatWeek(offset: Int, date: LocalDate) = when {
+        offset < -1 -> "${abs(offset)} weeks ago"
+        offset == -1 -> "last week"
         offset == 0 -> "this week"
         offset == 1 -> "next week"
         offset < 4 -> "$offset weeks from now"
@@ -41,6 +46,8 @@ class ScopeSimpleLabelFormatter(private val scopeCalculator: IScopeCalculator) :
     }
 
     private fun formatMonth(offset: Int, date: LocalDate) = when {
+        offset < -1 -> "${abs(offset)} months ago"
+        offset == -1 -> "last month"
         offset == 0 -> "this month"
         offset == 1 -> "next month"
         date.year == LocalDate.now().year -> "in ${MONTH_PATTERN.formatDate(date)}"
@@ -48,6 +55,8 @@ class ScopeSimpleLabelFormatter(private val scopeCalculator: IScopeCalculator) :
     }
 
     private fun formatYear(offset: Int, date: LocalDate) = when {
+        offset < -1 -> "${abs(offset)} years ago"
+        offset == -1 -> "last year"
         offset == 0 -> "this year"
         offset == 1 -> "next year"
         else -> "in ${YEAR_PATTERN.formatDate(date)}"

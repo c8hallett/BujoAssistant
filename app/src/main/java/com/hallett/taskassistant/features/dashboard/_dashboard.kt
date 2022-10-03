@@ -10,13 +10,13 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.collectAsLazyPagingItems
+import collectState
 import com.hallett.scopes.model.ScopeType
 import com.hallett.taskassistant.features.dashboard.corndux.DashboardStore
 import com.hallett.taskassistant.features.genericTaskList.TaskList
@@ -29,7 +29,7 @@ fun TaskDashboard() {
     val dashboardStore by rememberInstance<DashboardStore>()
     WithStore(dashboardStore) {
 
-        val state by dashboardStore.observeState().collectAsState()
+        val state by dashboardStore.collectState()
         val taskList = state.taskList.collectAsLazyPagingItems()
 
         Column {

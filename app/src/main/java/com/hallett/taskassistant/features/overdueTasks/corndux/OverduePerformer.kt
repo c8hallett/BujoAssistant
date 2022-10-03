@@ -6,6 +6,9 @@ import com.hallett.corndux.Init
 import com.hallett.corndux.SideEffect
 import com.hallett.corndux.StatelessPerformer
 import com.hallett.database.ITaskRepository
+import com.hallett.database.TaskSort
+import com.hallett.database.room.TaskQueryBuilder
+import com.hallett.domain.model.TaskStatus
 import com.hallett.scopes.model.ScopeType
 import com.hallett.taskassistant.features.genericTaskList.TaskListTransformer
 import com.hallett.taskassistant.main.corndux.AddRandomOverdueTask
@@ -21,6 +24,11 @@ class OverduePerformer(
 ) : StatelessPerformer {
 
     private val pagingConfig = PagingConfig(pageSize = 20)
+    private val taskQueryBuilder = TaskQueryBuilder().apply {
+        filterByStatuses(listOf(TaskStatus.COMPLETE), included = false)
+        filterByDate(LocalDate.now(), false)
+        sortBy(TaskSort.ScopeEnd(false))
+    }
 
     override fun performAction(
         action: Action,
@@ -32,8 +40,8 @@ class OverduePerformer(
                 dispatchAction(
                     UpdateTaskList(
                         taskList = transformer.transform(
-                            tasks = taskRepo.getOverdueTasks(pagingConfig, LocalDate.now()),
-                            includeHeaders = false
+                            tasks = taskRepo.queryTasks(pagingConfig, taskQueryBuilder),
+                            includeHeaders = true
                         )
                     )
                 )

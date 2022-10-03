@@ -6,8 +6,10 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.RawQuery
 import androidx.room.Transaction
 import androidx.room.Update
+import androidx.sqlite.db.SupportSQLiteQuery
 import com.hallett.database.room.TaskEntity.Companion.ID
 import com.hallett.database.room.TaskEntity.Companion.TABLE_NAME
 import com.hallett.database.room.TaskEntity.Companion.TASK_NAME
@@ -16,12 +18,9 @@ import com.hallett.database.room.TaskEntity.Companion.TASK_SCOPE_TYPE
 import com.hallett.database.room.TaskEntity.Companion.TASK_SCOPE_VALUE
 import com.hallett.database.room.TaskEntity.Companion.TASK_STATUS
 import com.hallett.domain.model.TaskStatus
-import com.hallett.scopes.model.ScopeType
-import java.time.LocalDate
 
 @Dao
 internal interface TaskDao {
-
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(task: TaskEntity): Long
 
@@ -51,13 +50,8 @@ internal interface TaskDao {
     @Query("SELECT * FROM $TABLE_NAME WHERE $ID = :taskId")
     suspend fun getTask(taskId: Long): TaskEntity?
 
-    @Query("SELECT * FROM $TABLE_NAME WHERE $TASK_SCOPE_TYPE IS :scopeType AND $TASK_SCOPE_VALUE IS :value AND $TASK_NAME LIKE :filter AND $TASK_STATUS IS NOT :excludeStatus")
-    fun filterTasksForScope(
-        scopeType: ScopeType?,
-        value: LocalDate?,
-        filter: String,
-        excludeStatus: TaskStatus? = null
-    ): PagingSource<Int, TaskEntity>
+    @RawQuery(observedEntities = [TaskEntity::class])
+    fun rawTasksQuery(query: SupportSQLiteQuery): PagingSource<Int, TaskEntity>
 
     @Query("SELECT * FROM $TABLE_NAME WHERE $TASK_SCOPE_END_VALUE < :value AND $TASK_STATUS IS NOT :excludeStatus")
     fun getAllOverdueTasks(

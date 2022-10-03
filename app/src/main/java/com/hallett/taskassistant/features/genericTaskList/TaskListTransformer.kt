@@ -38,10 +38,10 @@ class TaskListTransformer(
     private fun getActionsForTask(task: Task): List<TaskActionType> =
         mutableListOf<TaskActionType>().apply {
             add(TaskActionType.DELETE)
-            add(TaskActionType.EDIT)
 
             when (task.status) {
                 TaskStatus.INCOMPLETE -> {
+                    add(TaskActionType.EDIT)
                     task.scope?.let { scope ->
                         if (scopeCalculator.isCurrentOrFutureScope(scope)) {
                             add(TaskActionType.DEFER)

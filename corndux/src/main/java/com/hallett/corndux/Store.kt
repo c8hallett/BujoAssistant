@@ -108,6 +108,8 @@ abstract class Store<State : IState>(
         }
         stateFlow.emit(newState)
         postActionFlow.emit(completedAction)
+
+        log("${this@Store::class.simpleName}: $newState")
     }
 
     private fun dispatchSideEffect(sideEffect: SideEffect) {

@@ -6,14 +6,17 @@ import androidx.paging.PagingData
 import androidx.paging.map
 import com.hallett.database.room.TaskDao
 import com.hallett.database.room.TaskEntity
+import com.hallett.database.room.TaskQueryBuilder
 import com.hallett.domain.coroutines.DispatchersWrapper
 import com.hallett.domain.model.Task
 import com.hallett.domain.model.TaskStatus
+import com.hallett.logging.logD
 import com.hallett.scopes.model.Scope
 import com.hallett.scopes.model.ScopeType
 import com.hallett.scopes.scope_generator.IScopeCalculator
 import java.time.LocalDate
 import java.util.Date
+import kotlin.random.Random
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
@@ -23,42 +26,16 @@ internal class TaskRepository(
     private val dispatchers: DispatchersWrapper,
     private val scopeCalculator: IScopeCalculator
 ) : ITaskRepository {
-
-    override fun getOverdueTasks(
+    override fun queryTasks(
         pagingConfig: PagingConfig,
-        cutoff: LocalDate
-    ): Flow<PagingData<Task>> =
-        Pager(pagingConfig) { taskDao.getAllOverdueTasks(cutoff.toEpochDay()) }
+        builder: TaskQueryBuilder
+    ): Flow<PagingData<Task>> {
+        logD("Executing query: ${builder.query().sql}")
+        return Pager(pagingConfig) { taskDao.rawTasksQuery(builder.query()) }
             .flow
             .flowOn(dispatchers.io)
             .map { data -> data.map { entity -> entity.toTask() } }
-
-    override fun observeFutureTasks(
-        pagingConfig: PagingConfig,
-        cutoff: LocalDate,
-        search: String?,
-    ): Flow<PagingData<Task>> = Pager(pagingConfig) {
-        val searchFilter = if(search == null) "%" else "%$search%"
-        taskDao.filterFutureTasks(cutoff.toEpochDay(), searchFilter)
     }
-        .flow
-        .flowOn(dispatchers.io)
-        .map { data -> data.map { entity -> entity.toTask() } }
-
-    override fun observeTasksForScope(
-        pagingConfig: PagingConfig,
-        scope: Scope?,
-        search: String?,
-        includeCompleted: Boolean
-    ): Flow<PagingData<Task>> = Pager(pagingConfig) {
-        val excluded = if(includeCompleted) null else TaskStatus.COMPLETE
-        val searchFilter = if(search == null) "%" else "%$search%"
-        taskDao.filterTasksForScope(scope?.type, scope?.value, searchFilter, excluded)
-    }
-        .flow
-        .flowOn(dispatchers.io)
-        .map { data -> data.map { entity -> entity.toTask() } }
-
 
     override suspend fun upsert(task: Task) {
         taskDao.upsert(task.toEntity())
@@ -80,9 +57,10 @@ internal class TaskRepository(
         taskDao.rescheduleTask(scopeUpdate)
     }
 
+    private val random = Random(System.currentTimeMillis())
     override suspend fun randomTask(scopeType: ScopeType, overdue: Boolean) {
         val date = when {
-            overdue -> LocalDate.now().minusYears(1L)
+            overdue -> LocalDate.now().minusDays(random.nextLong(365L))
             else -> LocalDate.now()
         }
         val newTask = TaskEntity(

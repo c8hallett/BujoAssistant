@@ -37,6 +37,10 @@ data class UpdateSelectedScope(val scope: Scope?, val scopeSelectionInfo: ScopeS
 
 data class UpdateScopeSelectionInfo(val scopeSelectionInfo: ScopeSelectionInfo?) : Action
 
+data class UpdateTaskList(
+    val taskList: Flow<PagingData<TaskView>>,
+) : Action
+
 // probably could move to global commits
 data class UpdateTypedTaskList(
     val scopeType: ScopeType,
@@ -45,4 +49,3 @@ data class UpdateTypedTaskList(
 
 data class UpdateExpandedTask(val task: Task) : Action
 
-data class UpdateTaskList(val taskList: Flow<PagingData<TaskView>>) : Action

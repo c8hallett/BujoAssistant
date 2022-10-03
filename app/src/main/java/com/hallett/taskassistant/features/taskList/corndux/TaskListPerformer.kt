@@ -6,6 +6,7 @@ import com.hallett.corndux.Init
 import com.hallett.corndux.SideEffect
 import com.hallett.corndux.StatefulPerformer
 import com.hallett.database.ITaskRepository
+import com.hallett.database.room.TaskQueryBuilder
 import com.hallett.scopes.model.ScopeType
 import com.hallett.scopes.scope_generator.IScopeCalculator
 import com.hallett.taskassistant.features.genericTaskList.TaskListTransformer
@@ -26,6 +27,7 @@ class TaskListPerformer(
 ) : StatefulPerformer<TaskListState> {
 
     private val pagingConfig = PagingConfig(pageSize = 20)
+    private val taskQueryBuilder = TaskQueryBuilder()
 
     override fun performAction(
         state: TaskListState,
@@ -48,15 +50,16 @@ class TaskListPerformer(
                 UpdateScopeSelectionInfo(scopeSelectionInfo = null)
             )
             is ClickNewScope -> {
+                taskQueryBuilder.filterByScope(action.newTaskScope)
                 dispatchAction(
                     UpdateSelectedScope(scope = action.newTaskScope, scopeSelectionInfo = null)
                 )
                 dispatchAction(
                     UpdateTaskList(
                         taskList = transformer.transform(
-                            tasks = taskRepo.observeTasksForScope(
+                            tasks = taskRepo.queryTasks(
                                 pagingConfig,
-                                action.newTaskScope
+                                taskQueryBuilder
                             ),
                             includeHeaders = false
                         )

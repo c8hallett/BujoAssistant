@@ -10,32 +10,24 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Card
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import collectState
 import com.hallett.taskassistant.features.createTasks.corndux.CreateTaskStore
 import com.hallett.taskassistant.features.scopeSelection.ScopeSelection
 import com.hallett.taskassistant.main.corndux.CancelTask
 import com.hallett.taskassistant.main.corndux.OpenTask
 import com.hallett.taskassistant.main.corndux.SubmitTask
 import com.hallett.taskassistant.main.corndux.UpdateTaskName
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.ObsoleteCoroutinesApi
 import org.kodein.di.compose.rememberInstance
 
 
-@FlowPreview
-@ExperimentalMaterialApi
-@ExperimentalCoroutinesApi
-@ObsoleteCoroutinesApi
 @Composable
 fun TaskCreation(taskId: Long) {
     val createTaskStore by rememberInstance<CreateTaskStore>()
@@ -45,7 +37,7 @@ fun TaskCreation(taskId: Long) {
     }
 
     WithStore(createTaskStore) {
-        val createTaskInfo by createTaskStore.observeState().collectAsState()
+        val createTaskInfo by createTaskStore.collectState()
         val shouldExpandCard = createTaskInfo.scopeSelectionInfo == null
 
         Column(verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically)) {
