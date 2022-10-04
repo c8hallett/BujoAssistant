@@ -6,8 +6,7 @@ import com.hallett.corndux.Action
 import com.hallett.domain.model.Task
 import com.hallett.scopes.model.Scope
 import com.hallett.scopes.model.ScopeType
-import com.hallett.taskassistant.features.genericTaskList.TaskView
-import com.hallett.taskassistant.features.scopeSelection.ScopeSelectionInfo
+import com.hallett.taskassistant.ui.genericTaskList.TaskView
 import kotlinx.coroutines.flow.Flow
 
 sealed interface NavigationAction : Action {
@@ -32,10 +31,9 @@ object LoadSmallerScope : Action
 
 object AddRandomOverdueTask : Action
 
-data class UpdateSelectedScope(val scope: Scope?, val scopeSelectionInfo: ScopeSelectionInfo?) :
-    Action
-
-data class UpdateScopeSelectionInfo(val scopeSelectionInfo: ScopeSelectionInfo?) : Action
+data class UpdateSelectedScope(
+    val scope: Scope?,
+) : Action
 
 data class UpdateTaskList(
     val taskList: Flow<PagingData<TaskView>>,
@@ -47,5 +45,7 @@ data class UpdateTypedTaskList(
     val taskList: Flow<PagingData<TaskView>>
 ) : Action
 
+
 data class UpdateExpandedTask(val task: Task) : Action
 
+object SubmitRescheduleTask : Action

@@ -1,6 +1,7 @@
 package com.hallett.taskassistant.features.scopeSelection
 
 import LocalStore
+import WithStore
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -30,6 +31,7 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -46,36 +48,44 @@ import androidx.compose.ui.unit.dp
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
+import collectState
 import com.hallett.corndux.Action
 import com.hallett.scopes.model.Scope
 import com.hallett.scopes.model.ScopeType
 import com.hallett.scopes.scope_generator.IScopeCalculator
 import com.hallett.taskassistant.ui.formatters.Formatter
+import com.hallett.taskassistant.features.scopeSelection.corndux.ScopeSelectionStore
 import kotlinx.coroutines.flow.Flow
 import org.kodein.di.compose.rememberInstance
 
 sealed interface ScopeSelectionAction : Action
 data class ClickNewScope(val newTaskScope: Scope?) : ScopeSelectionAction
 data class ClickNewScopeType(val scopeType: ScopeType) : ScopeSelectionAction
+data class EnterScopeSelection(val initialScope: Scope?): ScopeSelectionAction
+data class UpdateScopeSelectionInfo(
+    val scopeType: ScopeType,
+    val scopes: Flow<PagingData<Scope>>
+) : ScopeSelectionAction
 object CancelScopeSelection : ScopeSelectionAction
-object EnterScopeSelection : ScopeSelectionAction
 
 @Composable
 fun ScopeSelection(
     scope: Scope?,
-    scopeSelectionInfo: ScopeSelectionInfo?,
     modifier: Modifier = Modifier
 ) {
-    Column(
-        modifier = modifier
-            .animateContentSize()
-            .fillMaxWidth()
-    ) {
-        when (scopeSelectionInfo) {
-            null -> SelectableScopeLabel(scope)
-            else -> ActiveScopeSelectionContent(
-                scopeSelectionInfo
-            )
+    val scopeSelectionStore by rememberInstance<ScopeSelectionStore>()
+    WithStore(localStore = scopeSelectionStore) {
+        val state by scopeSelectionStore.collectState()
+
+        Column(
+            modifier = modifier
+                .animateContentSize()
+                .fillMaxWidth()
+        ) {
+            when {
+                state.isEditing -> ActiveScopeSelectionContent(state.scopeType, state.scopes)
+                else -> SelectableScopeLabel(scope)
+            }
         }
     }
 }
@@ -168,7 +178,7 @@ fun SelectableScopeLabel(
 
     Text(
         text = labelFormatter.format(scope),
-        modifier = Modifier.clickable { store.dispatch(EnterScopeSelection) },
+        modifier = Modifier.clickable { store.dispatch(EnterScopeSelection(scope)) },
         style = MaterialTheme.typography.h5,
         color = MaterialTheme.colors.onSurface
     )
@@ -229,15 +239,13 @@ fun ScopeListItem(scope: Scope, onScopeSelected: (Scope) -> Unit) {
 
 
 @Composable
-fun ActiveScopeSelectionContent(
-    selectionInfo: ScopeSelectionInfo,
-) {
+fun ActiveScopeSelectionContent(scopeType: ScopeType, scopes: Flow<PagingData<Scope>>) {
     val store = LocalStore.current
     val (isExpanded, setIsExpanded) = remember { mutableStateOf(false) }
 
     Row(horizontalArrangement = SpaceBetween) {
         ScopeTypeSelectorLabel(
-            scopeType = selectionInfo.scopeType,
+            scopeType = scopeType,
             isExpanded = isExpanded,
             setIsExpanded = setIsExpanded,
             modifier = Modifier
@@ -261,7 +269,7 @@ fun ActiveScopeSelectionContent(
         )
     }
     ScopeList(
-        selectableScopes = selectionInfo.scopes,
+        selectableScopes = scopes,
         onScopeSelected = { store.dispatch(ClickNewScope(it)) }
     )
 }

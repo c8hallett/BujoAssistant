@@ -2,9 +2,8 @@ package com.hallett.taskassistant.features.createTasks.corndux
 
 import com.hallett.corndux.IState
 import com.hallett.corndux.Store
-import com.hallett.domain.model.Task
 import com.hallett.domain.model.TaskStatus
-import com.hallett.taskassistant.features.scopeSelection.ScopeSelectionInfo
+import com.hallett.scopes.model.Scope
 import kotlinx.coroutines.CoroutineScope
 
 class CreateTaskStore(
@@ -18,6 +17,8 @@ class CreateTaskStore(
 )
 
 data class CreateTaskState(
-    val task: Task = Task(0L, "", null, TaskStatus.INCOMPLETE),
-    val scopeSelectionInfo: ScopeSelectionInfo? = null
+    val taskId: Long = 0L,
+    val taskName: String = "",
+    val taskScope: Scope? = null,
+    val taskStatus: TaskStatus = TaskStatus.INCOMPLETE,
 ) : IState

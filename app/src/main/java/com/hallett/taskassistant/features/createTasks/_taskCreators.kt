@@ -38,22 +38,19 @@ fun TaskCreation(taskId: Long) {
 
     WithStore(createTaskStore) {
         val createTaskInfo by createTaskStore.collectState()
-        val shouldExpandCard = createTaskInfo.scopeSelectionInfo == null
 
         Column(verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically)) {
-            val cardModifier = if (shouldExpandCard) Modifier else Modifier.weight(1.0f)
 
-            Card(backgroundColor = MaterialTheme.colors.surface, modifier = cardModifier) {
+            Card(backgroundColor = MaterialTheme.colors.surface, modifier = Modifier.weight(1.0f)) {
                 Column(modifier = Modifier.padding(12.dp)) {
                     BasicTextField(
-                        value = createTaskInfo.task.name,
+                        value = createTaskInfo.taskName,
                         onValueChange = { createTaskStore.dispatch(UpdateTaskName(it)) },
                         textStyle = MaterialTheme.typography.h6.copy(color = MaterialTheme.colors.onSurface),
                         modifier = Modifier.fillMaxWidth(),
                     )
                     ScopeSelection(
-                        scope = createTaskInfo.task.scope,
-                        scopeSelectionInfo = createTaskInfo.scopeSelectionInfo,
+                        scope = createTaskInfo.taskScope,
                     )
                 }
             }

@@ -10,7 +10,7 @@ import com.hallett.database.TaskSort
 import com.hallett.database.room.TaskQueryBuilder
 import com.hallett.domain.model.TaskStatus
 import com.hallett.scopes.model.ScopeType
-import com.hallett.taskassistant.features.genericTaskList.TaskListTransformer
+import com.hallett.taskassistant.ui.genericTaskList.TaskListTransformer
 import com.hallett.taskassistant.main.corndux.AddRandomOverdueTask
 import com.hallett.taskassistant.main.corndux.UpdateTaskList
 import java.time.LocalDate

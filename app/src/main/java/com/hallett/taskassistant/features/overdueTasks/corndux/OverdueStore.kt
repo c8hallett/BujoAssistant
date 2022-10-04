@@ -4,8 +4,8 @@ import androidx.paging.PagingData
 import com.hallett.corndux.IState
 import com.hallett.corndux.Store
 import com.hallett.domain.model.Task
-import com.hallett.taskassistant.features.genericTaskList.TaskActionsPerformer
-import com.hallett.taskassistant.features.genericTaskList.TaskView
+import com.hallett.taskassistant.ui.genericTaskList.TaskActionsPerformer
+import com.hallett.taskassistant.ui.genericTaskList.TaskView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf

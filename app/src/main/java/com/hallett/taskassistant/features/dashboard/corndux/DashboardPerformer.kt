@@ -9,10 +9,11 @@ import com.hallett.database.ITaskRepository
 import com.hallett.database.room.TaskQueryBuilder
 import com.hallett.scopes.model.ScopeType
 import com.hallett.scopes.scope_generator.IScopeCalculator
-import com.hallett.taskassistant.features.genericTaskList.TaskListTransformer
+import com.hallett.taskassistant.ui.genericTaskList.TaskListTransformer
 import com.hallett.taskassistant.main.corndux.LoadLargerScope
 import com.hallett.taskassistant.main.corndux.LoadSmallerScope
 import com.hallett.taskassistant.main.corndux.UpdateTypedTaskList
+import com.hallett.taskassistant.ui.genericTaskList.RescheduleTask
 import java.time.LocalDate
 
 class DashboardPerformer(

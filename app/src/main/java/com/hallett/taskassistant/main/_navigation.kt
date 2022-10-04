@@ -90,9 +90,7 @@ fun MainNavHost(innerPadding: PaddingValues, navController: NavHostController) {
             when (sideEffect) {
                 is NavigateUp -> navController.popBackStack()
                 is NavigateToRootDestination -> navController.navigate(sideEffect.route) {
-                    popUpTo(navController.graph.startDestinationId) {
-                        saveState = true
-                    }
+                    popUpTo(navController.graph.startDestinationId)
                     launchSingleTop = true
                     restoreState = true
                 }

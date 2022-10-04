@@ -9,20 +9,14 @@ import com.hallett.database.ITaskRepository
 import com.hallett.database.room.TaskQueryBuilder
 import com.hallett.scopes.model.ScopeType
 import com.hallett.scopes.scope_generator.IScopeCalculator
-import com.hallett.taskassistant.features.genericTaskList.TaskListTransformer
-import com.hallett.taskassistant.features.scopeSelection.CancelScopeSelection
+import com.hallett.taskassistant.ui.genericTaskList.TaskListTransformer
 import com.hallett.taskassistant.features.scopeSelection.ClickNewScope
-import com.hallett.taskassistant.features.scopeSelection.ClickNewScopeType
-import com.hallett.taskassistant.features.scopeSelection.EnterScopeSelection
-import com.hallett.taskassistant.features.scopeSelection.ScopeSelectionInfoGenerator
-import com.hallett.taskassistant.main.corndux.UpdateScopeSelectionInfo
 import com.hallett.taskassistant.main.corndux.UpdateSelectedScope
 import com.hallett.taskassistant.main.corndux.UpdateTaskList
 
 class TaskListPerformer(
     private val taskRepo: ITaskRepository,
     private val scopeCalculator: IScopeCalculator,
-    private val ssiGenerator: ScopeSelectionInfoGenerator,
     private val transformer: TaskListTransformer,
 ) : StatefulPerformer<TaskListState> {
 
@@ -36,24 +30,8 @@ class TaskListPerformer(
         dispatchSideEffect: (SideEffect) -> Unit
     ) {
         when (action) {
-            is Init -> dispatchAction(
-                ClickNewScope(scopeCalculator.generateScope(ScopeType.DAY))
-            )
-            is EnterScopeSelection -> {
-                val scopeSelectionInfo =
-                    ssiGenerator.generateInfo(state.scope?.type ?: ScopeType.DAY)
-                dispatchAction(
-                    UpdateScopeSelectionInfo(scopeSelectionInfo = scopeSelectionInfo)
-                )
-            }
-            is CancelScopeSelection -> dispatchAction(
-                UpdateScopeSelectionInfo(scopeSelectionInfo = null)
-            )
-            is ClickNewScope -> {
-                taskQueryBuilder.filterByScope(action.newTaskScope)
-                dispatchAction(
-                    UpdateSelectedScope(scope = action.newTaskScope, scopeSelectionInfo = null)
-                )
+            is Init -> {
+                taskQueryBuilder.filterByScopeType(null)
                 dispatchAction(
                     UpdateTaskList(
                         taskList = transformer.transform(
@@ -65,11 +43,20 @@ class TaskListPerformer(
                         )
                     )
                 )
+                dispatchAction(UpdateSelectedScope(null))
             }
-            is ClickNewScopeType -> {
-                val scopeSelectionInfo = ssiGenerator.generateInfo(action.scopeType)
+            is UpdateSelectedScope -> {
+                taskQueryBuilder.filterByScope(action.scope)
                 dispatchAction(
-                    UpdateScopeSelectionInfo(scopeSelectionInfo = scopeSelectionInfo)
+                    UpdateTaskList(
+                        taskList = transformer.transform(
+                            tasks = taskRepo.queryTasks(
+                                pagingConfig,
+                                taskQueryBuilder
+                            ),
+                            includeHeaders = false
+                        )
+                    )
                 )
             }
         }

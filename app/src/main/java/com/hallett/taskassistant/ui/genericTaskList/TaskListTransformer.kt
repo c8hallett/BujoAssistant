@@ -1,4 +1,4 @@
-package com.hallett.taskassistant.features.genericTaskList
+package com.hallett.taskassistant.ui.genericTaskList
 
 import androidx.paging.PagingData
 import androidx.paging.insertSeparators
