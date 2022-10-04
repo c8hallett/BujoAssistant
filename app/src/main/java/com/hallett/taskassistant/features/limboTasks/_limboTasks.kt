@@ -17,6 +17,7 @@ import collectState
 import com.hallett.corndux.Action
 import com.hallett.taskassistant.ui.genericTaskList.TaskList
 import com.hallett.taskassistant.features.limboTasks.corndux.LimboStore
+import com.hallett.taskassistant.ui.rescheduleDialog.RescheduleTaskDialog
 import org.kodein.di.compose.rememberInstance
 
 @Composable
@@ -36,6 +37,9 @@ fun FutureTaskList() {
                 isTaskExpanded = { state.expandedTask == it },
                 modifier = Modifier.weight(1.0f),
             )
+        }
+        state.currentlySchedulingTask?.let { rescheduleTask ->
+            RescheduleTaskDialog(task = rescheduleTask)
         }
     }
 }

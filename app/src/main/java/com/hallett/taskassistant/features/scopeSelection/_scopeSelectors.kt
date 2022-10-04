@@ -62,7 +62,7 @@ fun ScopeSelection(
     scope: Scope?,
     onScopeSelected: (Scope?) -> Unit,
 ) {
-    var isEditing : Boolean by remember { mutableStateOf(true) }
+    var isEditing : Boolean by remember { mutableStateOf(false) }
     var scopeType: ScopeType by remember(scope) {
         mutableStateOf(scope?.type ?: ScopeType.DAY)
     }

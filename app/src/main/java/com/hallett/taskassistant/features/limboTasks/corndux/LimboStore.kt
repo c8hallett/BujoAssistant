@@ -23,6 +23,7 @@ class LimboStore(
 
 data class LimboState(
     val expandedTask: Task? = null,
+    val currentlySchedulingTask: Task? = null,
     val list: Flow<PagingData<TaskView>> = flowOf(),
     val search: String = ""
 ) : IState

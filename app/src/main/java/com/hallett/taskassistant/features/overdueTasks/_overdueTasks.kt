@@ -12,6 +12,7 @@ import collectState
 import com.hallett.taskassistant.ui.genericTaskList.TaskList
 import com.hallett.taskassistant.features.overdueTasks.corndux.OverdueStore
 import com.hallett.taskassistant.main.corndux.AddRandomOverdueTask
+import com.hallett.taskassistant.ui.rescheduleDialog.RescheduleTaskDialog
 import org.kodein.di.compose.rememberInstance
 
 @Composable
@@ -35,6 +36,9 @@ fun OverdueTasks() {
                     isTaskExpanded = { state.currentlyExpandedTask == it },
                 )
             }
+        }
+        state.currentlySchedulingTask?.let { rescheduleTask ->
+            RescheduleTaskDialog(task = rescheduleTask)
         }
     }
 }

@@ -24,6 +24,7 @@ class TaskListStore(
 
 data class TaskListState(
     val currentlyExpandedTask: Task? = null,
+    val currentlySchedulingTask: Task? = null,
     val taskList: Flow<PagingData<TaskView>> = flowOf(),
     val scope: Scope? = null,
 ) : IState

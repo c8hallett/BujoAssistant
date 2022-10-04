@@ -23,5 +23,6 @@ class OverdueStore(
 
 data class OverdueState(
     val currentlyExpandedTask: Task? = null,
+    val currentlySchedulingTask: Task? = null,
     val taskList: Flow<PagingData<TaskView>> = flowOf(),
 ) : IState
