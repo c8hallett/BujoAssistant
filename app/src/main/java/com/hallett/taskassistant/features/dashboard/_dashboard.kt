@@ -19,9 +19,9 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import collectState
 import com.hallett.scopes.model.ScopeType
 import com.hallett.taskassistant.features.dashboard.corndux.DashboardStore
-import com.hallett.taskassistant.ui.genericTaskList.TaskList
 import com.hallett.taskassistant.main.corndux.LoadLargerScope
 import com.hallett.taskassistant.main.corndux.LoadSmallerScope
+import com.hallett.taskassistant.ui.genericTaskList.TaskList
 import com.hallett.taskassistant.ui.rescheduleDialog.RescheduleTaskDialog
 import org.kodein.di.compose.rememberInstance
 

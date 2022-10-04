@@ -10,7 +10,7 @@ import com.hallett.taskassistant.main.corndux.UpdateTaskName
 class CreateTaskReducer : Reducer<CreateTaskState> {
     override fun reduce(state: CreateTaskState, action: Action): CreateTaskState {
         return when (action) {
-            is DisplayTaskForEdit -> with(action.task){
+            is DisplayTaskForEdit -> with(action.task) {
                 state.copy(
                     taskId = id,
                     taskName = name,

@@ -43,7 +43,7 @@ data class ClickMarkTaskAsIncomplete(val task: Task) : TaskAction
 data class ClickEditTask(val task: Task) : TaskAction
 data class SubmitRescheduleTask(val task: Task, val newScope: Scope?) : TaskAction
 data class ClickRescheduleTask(val task: Task) : TaskAction
-object CancelRescheduleTask: TaskAction
+object CancelRescheduleTask : TaskAction
 
 @Composable
 fun TaskList(

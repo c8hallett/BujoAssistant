@@ -40,7 +40,12 @@ class TaskActionsPerformer(
             is SubmitRescheduleTask -> withRepo {
                 moveToNewScope(action.task, action.newScope)
             }
-            is ClickMarkTaskAsIncomplete -> withRepo { updateStatus(action.task, TaskStatus.INCOMPLETE) }
+            is ClickMarkTaskAsIncomplete -> withRepo {
+                updateStatus(
+                    action.task,
+                    TaskStatus.INCOMPLETE
+                )
+            }
             is ClickTaskInList -> {
                 dispatchAction(UpdateExpandedTask(action.task))
             }

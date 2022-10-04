@@ -6,7 +6,6 @@ import com.hallett.taskassistant.features.createTasks.corndux.CreateTaskStore
 import com.hallett.taskassistant.features.dashboard.corndux.DashboardPerformer
 import com.hallett.taskassistant.features.dashboard.corndux.DashboardReducer
 import com.hallett.taskassistant.features.dashboard.corndux.DashboardStore
-import com.hallett.taskassistant.ui.genericTaskList.TaskActionsPerformer
 import com.hallett.taskassistant.features.limboTasks.corndux.LimboPerformer
 import com.hallett.taskassistant.features.limboTasks.corndux.LimboReducer
 import com.hallett.taskassistant.features.limboTasks.corndux.LimboStore
@@ -18,9 +17,9 @@ import com.hallett.taskassistant.features.taskList.corndux.TaskListReducer
 import com.hallett.taskassistant.features.taskList.corndux.TaskListStore
 import com.hallett.taskassistant.main.corndux.GlobalStore
 import com.hallett.taskassistant.main.corndux.NavigationActor
+import com.hallett.taskassistant.ui.genericTaskList.TaskActionsPerformer
 import org.kodein.di.DI
 import org.kodein.di.bindSingleton
-import org.kodein.di.factory
 import org.kodein.di.instance
 
 val cornduxModule = DI.Module("cornduxModule") {

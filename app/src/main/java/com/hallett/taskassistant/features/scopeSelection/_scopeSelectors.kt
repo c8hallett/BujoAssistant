@@ -51,8 +51,8 @@ import androidx.paging.compose.items
 import com.hallett.scopes.model.Scope
 import com.hallett.scopes.model.ScopeType
 import com.hallett.scopes.scope_generator.IScopeCalculator
-import com.hallett.taskassistant.ui.formatters.Formatter
 import com.hallett.taskassistant.main.di.PagerParams
+import com.hallett.taskassistant.ui.formatters.Formatter
 import org.kodein.di.compose.rememberFactory
 import org.kodein.di.compose.rememberInstance
 
@@ -62,7 +62,7 @@ fun ScopeSelection(
     scope: Scope?,
     onScopeSelected: (Scope?) -> Unit,
 ) {
-    var isEditing : Boolean by remember { mutableStateOf(false) }
+    var isEditing: Boolean by remember { mutableStateOf(false) }
     var scopeType: ScopeType by remember(scope) {
         mutableStateOf(scope?.type ?: ScopeType.DAY)
     }
@@ -101,7 +101,6 @@ fun SelectableScopeLabel(
         color = MaterialTheme.colors.onSurface
     )
 }
-
 
 
 @Composable

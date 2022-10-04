@@ -40,10 +40,10 @@ fun RescheduleTaskDialog(task: Task) {
 
             Column(modifier = Modifier.padding(12.dp)) {
                 Text(text = task.name)
-                ScopeSelection(scope = newScope, onScopeSelected = {newScope = it})
+                ScopeSelection(scope = newScope, onScopeSelected = { newScope = it })
                 Button(onClick = {
                     store.dispatch(SubmitRescheduleTask(task, newScope))
-                }){
+                }) {
                     Text("Submit")
                 }
             }

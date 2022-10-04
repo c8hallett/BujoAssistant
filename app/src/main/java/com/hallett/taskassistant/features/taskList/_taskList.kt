@@ -5,15 +5,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.paging.compose.collectAsLazyPagingItems
 import collectState
-import com.hallett.taskassistant.ui.genericTaskList.TaskList
 import com.hallett.taskassistant.features.scopeSelection.ScopeSelection
 import com.hallett.taskassistant.features.taskList.corndux.TaskListStore
 import com.hallett.taskassistant.main.corndux.UpdateSelectedScope
+import com.hallett.taskassistant.ui.genericTaskList.TaskList
 import com.hallett.taskassistant.ui.rescheduleDialog.RescheduleTaskDialog
 import org.kodein.di.compose.rememberInstance
 
