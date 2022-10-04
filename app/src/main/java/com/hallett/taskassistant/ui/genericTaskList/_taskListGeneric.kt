@@ -31,16 +31,19 @@ import androidx.paging.compose.items
 import com.hallett.corndux.Action
 import com.hallett.domain.model.Task
 import com.hallett.domain.model.TaskStatus
+import com.hallett.scopes.model.Scope
 
 
 sealed interface TaskAction : Action
 data class ClickTaskInList(val task: Task) : TaskAction
-data class DeleteTask(val task: Task) : TaskAction
-data class DeferTask(val task: Task) : TaskAction
-data class RescheduleTask(val task: Task) : TaskAction
-data class MarkTaskAsComplete(val task: Task) : TaskAction
-data class MarkTaskAsIncomplete(val task: Task) : TaskAction
-data class EditTask(val task: Task) : TaskAction
+data class ClickDeleteTask(val task: Task) : TaskAction
+data class ClickDeferTask(val task: Task) : TaskAction
+data class ClickMarkTaskAsComplete(val task: Task) : TaskAction
+data class ClickMarkTaskAsIncomplete(val task: Task) : TaskAction
+data class ClickEditTask(val task: Task) : TaskAction
+data class SubmitRescheduleTask(val task: Task, val newScope: Scope?) : TaskAction
+data class ClickRescheduleTask(val task: Task) : TaskAction
+object CancelRescheduleTask: TaskAction
 
 @Composable
 fun TaskList(
@@ -112,22 +115,22 @@ fun TaskActions(task: Task, actions: List<TaskActionType>) {
         actions.forEach { action ->
             when (action) {
                 TaskActionType.DEFER -> DeferTaskButton {
-                    store.dispatch(DeferTask(task))
+                    store.dispatch(ClickDeferTask(task))
                 }
                 TaskActionType.DELETE -> DeleteTaskButton {
-                    store.dispatch(DeleteTask(task))
+                    store.dispatch(ClickDeleteTask(task))
                 }
                 TaskActionType.COMPLETE -> CompleteTaskButton {
-                    store.dispatch(MarkTaskAsComplete(task))
+                    store.dispatch(ClickMarkTaskAsComplete(task))
                 }
                 TaskActionType.UNCOMPLETE -> UncompleteTaskButton {
-                    store.dispatch(MarkTaskAsIncomplete(task))
+                    store.dispatch(ClickMarkTaskAsIncomplete(task))
                 }
                 TaskActionType.RESCHEDULE -> RescheduleTaskButton {
-                    store.dispatch(RescheduleTask(task))
+                    store.dispatch(ClickRescheduleTask(task))
                 }
                 TaskActionType.EDIT -> EditTaskButton {
-                    store.dispatch(EditTask(task))
+                    store.dispatch(ClickEditTask(task))
                 }
             }
         }

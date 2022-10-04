@@ -48,4 +48,3 @@ data class UpdateTypedTaskList(
 
 data class UpdateExpandedTask(val task: Task) : Action
 
-object SubmitRescheduleTask : Action

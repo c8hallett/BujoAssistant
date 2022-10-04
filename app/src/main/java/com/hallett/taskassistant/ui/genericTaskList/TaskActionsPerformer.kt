@@ -25,26 +25,26 @@ class TaskActionsPerformer(
 
         when (action) {
             !is TaskAction -> {}
-            is DeleteTask -> withRepo { deleteTask(action.task) }
-            is DeferTask -> {
+            is ClickRescheduleTask, CancelRescheduleTask -> {} // these passes through
+            is ClickDeleteTask -> withRepo { deleteTask(action.task) }
+            is ClickDeferTask -> {
                 val nextScope = action.task.scope?.let {
                     scopeCalculator.add(it, 1)
                 }
                 withRepo { moveToNewScope(action.task, nextScope) }
             }
-            is RescheduleTask -> {} // trigger side effect to show dialog and prompt for new scope
-            //  taskRepo.moveToNewScope(action.task, taskListState.scope)
-            is MarkTaskAsComplete -> {
-                withRepo {
-                    moveToNewScope(action.task, scopeCalculator.generateScope())
-                    updateStatus(action.task, TaskStatus.COMPLETE)
-                }
+            is ClickMarkTaskAsComplete -> withRepo {
+                moveToNewScope(action.task, scopeCalculator.generateScope())
+                updateStatus(action.task, TaskStatus.COMPLETE)
             }
-            is MarkTaskAsIncomplete -> withRepo { updateStatus(action.task, TaskStatus.INCOMPLETE) }
+            is SubmitRescheduleTask -> withRepo {
+                moveToNewScope(action.task, action.newScope)
+            }
+            is ClickMarkTaskAsIncomplete -> withRepo { updateStatus(action.task, TaskStatus.INCOMPLETE) }
             is ClickTaskInList -> {
                 dispatchAction(UpdateExpandedTask(action.task))
             }
-            is EditTask -> {
+            is ClickEditTask -> {
                 val route = TaskNavDestination.CreateTask.createRoute(action.task.id)
                 dispatchSideEffect(NavigateSingleTop(route))
             }

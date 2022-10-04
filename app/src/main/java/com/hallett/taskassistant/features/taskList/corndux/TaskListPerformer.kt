@@ -7,10 +7,8 @@ import com.hallett.corndux.SideEffect
 import com.hallett.corndux.StatefulPerformer
 import com.hallett.database.ITaskRepository
 import com.hallett.database.room.TaskQueryBuilder
-import com.hallett.scopes.model.ScopeType
 import com.hallett.scopes.scope_generator.IScopeCalculator
 import com.hallett.taskassistant.ui.genericTaskList.TaskListTransformer
-import com.hallett.taskassistant.features.scopeSelection.ClickNewScope
 import com.hallett.taskassistant.main.corndux.UpdateSelectedScope
 import com.hallett.taskassistant.main.corndux.UpdateTaskList
 

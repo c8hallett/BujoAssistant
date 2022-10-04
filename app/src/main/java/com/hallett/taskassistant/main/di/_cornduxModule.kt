@@ -18,9 +18,6 @@ import com.hallett.taskassistant.features.taskList.corndux.TaskListReducer
 import com.hallett.taskassistant.features.taskList.corndux.TaskListStore
 import com.hallett.taskassistant.main.corndux.GlobalStore
 import com.hallett.taskassistant.main.corndux.NavigationActor
-import com.hallett.taskassistant.features.scopeSelection.ScopeSelectionAction
-import com.hallett.taskassistant.features.scopeSelection.corndux.ScopeSelectionActor
-import com.hallett.taskassistant.features.scopeSelection.corndux.ScopeSelectionStore
 import org.kodein.di.DI
 import org.kodein.di.bindSingleton
 import org.kodein.di.factory
@@ -48,9 +45,6 @@ val cornduxModule = DI.Module("cornduxModule") {
     bindSingleton { TaskListPerformer(instance(), instance(), instance()) }
     bindSingleton { TaskListReducer() }
     bindSingleton { TaskListStore(instance(), instance(), instance(), instance()) }
-
-    bindSingleton { ScopeSelectionActor(factory(), instance()) }
-    bindSingleton { ScopeSelectionStore(instance(), instance()) }
 
     bindSingleton { NavigationActor() }
     bindSingleton { GlobalStore(instance(), instance()) }

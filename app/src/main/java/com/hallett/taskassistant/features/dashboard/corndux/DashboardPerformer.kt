@@ -13,7 +13,6 @@ import com.hallett.taskassistant.ui.genericTaskList.TaskListTransformer
 import com.hallett.taskassistant.main.corndux.LoadLargerScope
 import com.hallett.taskassistant.main.corndux.LoadSmallerScope
 import com.hallett.taskassistant.main.corndux.UpdateTypedTaskList
-import com.hallett.taskassistant.ui.genericTaskList.RescheduleTask
 import java.time.LocalDate
 
 class DashboardPerformer(

@@ -22,6 +22,7 @@ import com.hallett.taskassistant.features.dashboard.corndux.DashboardStore
 import com.hallett.taskassistant.ui.genericTaskList.TaskList
 import com.hallett.taskassistant.main.corndux.LoadLargerScope
 import com.hallett.taskassistant.main.corndux.LoadSmallerScope
+import com.hallett.taskassistant.ui.rescheduleDialog.RescheduleTaskDialog
 import org.kodein.di.compose.rememberInstance
 
 @Composable
@@ -52,6 +53,10 @@ fun TaskDashboard() {
             }
             TaskDashboardFooter(scopeType = state.scopeType) {
                 dashboardStore.dispatch(LoadLargerScope)
+            }
+
+            state.currentlySchedulingTask?.let { rescheduleTask ->
+                RescheduleTaskDialog(task = rescheduleTask)
             }
         }
     }

@@ -24,6 +24,7 @@ class DashboardStore(
 
 data class DashboardState(
     val currentlyExpandedTask: Task? = null,
+    val currentlySchedulingTask: Task? = null,
     val taskList: Flow<PagingData<TaskView>> = flowOf(),
     val scopeType: ScopeType = ScopeType.DAY,
 ) : IState

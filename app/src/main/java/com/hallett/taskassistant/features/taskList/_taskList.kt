@@ -10,6 +10,7 @@ import collectState
 import com.hallett.taskassistant.ui.genericTaskList.TaskList
 import com.hallett.taskassistant.features.scopeSelection.ScopeSelection
 import com.hallett.taskassistant.features.taskList.corndux.TaskListStore
+import com.hallett.taskassistant.main.corndux.UpdateSelectedScope
 import org.kodein.di.compose.rememberInstance
 
 
@@ -23,6 +24,7 @@ fun OpenTaskList() {
         Column {
             ScopeSelection(
                 scope = state.scope,
+                onScopeSelected = { taskListStore.dispatch(UpdateSelectedScope(it)) }
             )
 
             if (pagedTasks.itemCount == 0) {

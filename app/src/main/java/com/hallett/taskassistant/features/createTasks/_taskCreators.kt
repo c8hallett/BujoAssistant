@@ -24,6 +24,7 @@ import com.hallett.taskassistant.features.scopeSelection.ScopeSelection
 import com.hallett.taskassistant.main.corndux.CancelTask
 import com.hallett.taskassistant.main.corndux.OpenTask
 import com.hallett.taskassistant.main.corndux.SubmitTask
+import com.hallett.taskassistant.main.corndux.UpdateSelectedScope
 import com.hallett.taskassistant.main.corndux.UpdateTaskName
 import org.kodein.di.compose.rememberInstance
 
@@ -51,6 +52,9 @@ fun TaskCreation(taskId: Long) {
                     )
                     ScopeSelection(
                         scope = createTaskInfo.taskScope,
+                        onScopeSelected = {
+                            createTaskStore.dispatch(UpdateSelectedScope(it))
+                        }
                     )
                 }
             }

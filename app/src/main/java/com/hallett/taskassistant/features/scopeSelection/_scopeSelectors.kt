@@ -1,7 +1,5 @@
 package com.hallett.taskassistant.features.scopeSelection
 
-import LocalStore
-import WithStore
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -34,6 +32,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -45,49 +44,104 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.paging.PagingData
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
-import collectState
-import com.hallett.corndux.Action
 import com.hallett.scopes.model.Scope
 import com.hallett.scopes.model.ScopeType
 import com.hallett.scopes.scope_generator.IScopeCalculator
 import com.hallett.taskassistant.ui.formatters.Formatter
-import com.hallett.taskassistant.features.scopeSelection.corndux.ScopeSelectionStore
-import kotlinx.coroutines.flow.Flow
+import com.hallett.taskassistant.main.di.PagerParams
+import org.kodein.di.compose.rememberFactory
 import org.kodein.di.compose.rememberInstance
 
-sealed interface ScopeSelectionAction : Action
-data class ClickNewScope(val newTaskScope: Scope?) : ScopeSelectionAction
-data class ClickNewScopeType(val scopeType: ScopeType) : ScopeSelectionAction
-data class EnterScopeSelection(val initialScope: Scope?): ScopeSelectionAction
-data class UpdateScopeSelectionInfo(
-    val scopeType: ScopeType,
-    val scopes: Flow<PagingData<Scope>>
-) : ScopeSelectionAction
-object CancelScopeSelection : ScopeSelectionAction
 
 @Composable
 fun ScopeSelection(
     scope: Scope?,
-    modifier: Modifier = Modifier
+    onScopeSelected: (Scope?) -> Unit,
 ) {
-    val scopeSelectionStore by rememberInstance<ScopeSelectionStore>()
-    WithStore(localStore = scopeSelectionStore) {
-        val state by scopeSelectionStore.collectState()
+    var isEditing : Boolean by remember { mutableStateOf(true) }
+    var scopeType: ScopeType by remember(scope) {
+        mutableStateOf(scope?.type ?: ScopeType.DAY)
+    }
 
-        Column(
-            modifier = modifier
-                .animateContentSize()
-                .fillMaxWidth()
-        ) {
-            when {
-                state.isEditing -> ActiveScopeSelectionContent(state.scopeType, state.scopes)
-                else -> SelectableScopeLabel(scope)
-            }
+    Column(
+        modifier = Modifier
+            .animateContentSize()
+            .fillMaxWidth()
+    ) {
+        when {
+            isEditing -> ActiveScopeSelectionContent(
+                scopeType = scopeType,
+                onNewScopeType = { scopeType = it },
+                onNewScope = { newScope ->
+                    onScopeSelected(newScope)
+                    isEditing = false
+                },
+                onSelectCancel = { isEditing = false }
+            )
+            else -> SelectableScopeLabel(scope) { isEditing = true }
         }
     }
+}
+
+@Composable
+fun SelectableScopeLabel(
+    scope: Scope?,
+    onEdit: () -> Unit
+) {
+    val labelFormatter: Formatter<Scope?, String> by rememberInstance(tag = Formatter.SIMPLE_LABEL)
+
+    Text(
+        text = labelFormatter.format(scope),
+        modifier = Modifier.clickable { onEdit() },
+        style = MaterialTheme.typography.h5,
+        color = MaterialTheme.colors.onSurface
+    )
+}
+
+
+
+@Composable
+fun ActiveScopeSelectionContent(
+    scopeType: ScopeType,
+    onNewScopeType: (ScopeType) -> Unit,
+    onNewScope: (Scope?) -> Unit,
+    onSelectCancel: () -> Unit
+) {
+    val (isExpanded, setIsExpanded) = remember { mutableStateOf(false) }
+
+    Row(horizontalArrangement = SpaceBetween) {
+        ScopeTypeSelectorLabel(
+            scopeType = scopeType,
+            isExpanded = isExpanded,
+            setIsExpanded = setIsExpanded,
+            modifier = Modifier
+                .weight(1f)
+                .align(Alignment.CenterVertically)
+        )
+        IconButton(
+            onClick = { onNewScope(null) },
+        ) {
+            Icon(Icons.Default.Delete, "remove scope", tint = MaterialTheme.colors.error)
+        }
+        IconButton(
+            onClick = onSelectCancel,
+        ) {
+            Icon(Icons.Default.Cancel, "cancel edit", tint = MaterialTheme.colors.error)
+        }
+        ScopeTypeDropDownMenu(
+            isExpanded = isExpanded,
+            onDismiss = { setIsExpanded(false) },
+            onScopeTypeSelected = onNewScopeType
+        )
+    }
+    ScopeList(
+        scopeType = scopeType,
+        onScopeSelected = onNewScope
+    )
 }
 
 @Composable
@@ -170,24 +224,12 @@ fun ScopeTypeDropDownMenu(
 }
 
 @Composable
-fun SelectableScopeLabel(
-    scope: Scope?,
-) {
-    val store = LocalStore.current
-    val labelFormatter: Formatter<Scope?, String> by rememberInstance(tag = Formatter.SIMPLE_LABEL)
-
-    Text(
-        text = labelFormatter.format(scope),
-        modifier = Modifier.clickable { store.dispatch(EnterScopeSelection(scope)) },
-        style = MaterialTheme.typography.h5,
-        color = MaterialTheme.colors.onSurface
-    )
-}
-
-
-@Composable
-fun ScopeList(selectableScopes: Flow<PagingData<Scope>>, onScopeSelected: (Scope) -> Unit) {
-    val lazyScopes = selectableScopes.collectAsLazyPagingItems()
+fun ScopeList(scopeType: ScopeType, onScopeSelected: (Scope) -> Unit) {
+    val generatePager: (PagerParams) -> Pager<Scope, Scope> by rememberFactory()
+    val scopeList by remember(scopeType) {
+        mutableStateOf(generatePager(PagerParams(PagingConfig(pageSize = 20), scopeType)))
+    }
+    val lazyScopes = scopeList.flow.collectAsLazyPagingItems()
     LazyColumn(
         contentPadding = PaddingValues(top = 12.dp, bottom = 12.dp, start = 24.dp, end = 0.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
@@ -235,43 +277,6 @@ fun ScopeListItem(scope: Scope, onScopeSelected: (Scope) -> Unit) {
             )
         }
     }
-}
-
-
-@Composable
-fun ActiveScopeSelectionContent(scopeType: ScopeType, scopes: Flow<PagingData<Scope>>) {
-    val store = LocalStore.current
-    val (isExpanded, setIsExpanded) = remember { mutableStateOf(false) }
-
-    Row(horizontalArrangement = SpaceBetween) {
-        ScopeTypeSelectorLabel(
-            scopeType = scopeType,
-            isExpanded = isExpanded,
-            setIsExpanded = setIsExpanded,
-            modifier = Modifier
-                .weight(1f)
-                .align(Alignment.CenterVertically)
-        )
-        IconButton(
-            onClick = { store.dispatch(ClickNewScope(null)) },
-        ) {
-            Icon(Icons.Default.Delete, "remove scope", tint = MaterialTheme.colors.error)
-        }
-        IconButton(
-            onClick = { store.dispatch(CancelScopeSelection) },
-        ) {
-            Icon(Icons.Default.Cancel, "cancel edit", tint = MaterialTheme.colors.error)
-        }
-        ScopeTypeDropDownMenu(
-            isExpanded = isExpanded,
-            onDismiss = { setIsExpanded(false) },
-            onScopeTypeSelected = { store.dispatch(ClickNewScopeType(it)) }
-        )
-    }
-    ScopeList(
-        selectableScopes = scopes,
-        onScopeSelected = { store.dispatch(ClickNewScope(it)) }
-    )
 }
 
 @Composable
